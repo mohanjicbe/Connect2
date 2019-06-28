@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: io.square1:richtext:3.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/richtext-3.0.1.aar/5bfdfc0f2a25fe43f8acc7ff302c8399/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/richtext-3.0.1.aar/5bfdfc0f2a25fe43f8acc7ff302c8399/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.square1/richtext/3.0.1/64c2bdb79d41fdf7aa386eab03d9ec68ea5f3584/richtext-3.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

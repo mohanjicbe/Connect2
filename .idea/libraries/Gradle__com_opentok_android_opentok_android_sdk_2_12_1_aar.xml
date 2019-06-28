@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.opentok.android:opentok-android-sdk:2.12.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/opentok-android-sdk-2.12.1.aar/96969e8f4c11d057958a522b7710b83b/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/opentok-android-sdk-2.12.1.aar/96969e8f4c11d057958a522b7710b83b/jars/libs/libjingle_peerconnection_java.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/opentok-android-sdk-2.12.1.aar/96969e8f4c11d057958a522b7710b83b/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

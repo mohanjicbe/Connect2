@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.allattentionhere:fabulousfilter:0.0.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/fabulousfilter-0.0.2.aar/da989dfcf341541f9d3bdc4d4862c15c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/fabulousfilter-0.0.2.aar/da989dfcf341541f9d3bdc4d4862c15c/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.allattentionhere/fabulousfilter/0.0.2/cea58ae75f7c630958818c5ed0fc78900bffe06a/fabulousfilter-0.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
