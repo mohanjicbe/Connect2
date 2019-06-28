@@ -127,8 +127,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.askquery1);
 
-        /*test ini*/
-        //--------------------------------------------------------------------
+        //----------------Mohan----------------------------------------------------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
