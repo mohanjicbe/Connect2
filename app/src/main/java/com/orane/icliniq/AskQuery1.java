@@ -485,8 +485,8 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             //-------------------------------------------------------------
             if ((Model.have_free_credit).equals("1")) {
                 tvfquery.setVisibility(View.VISIBLE);
-                tvqfee.setVisibility(View.GONE);
-                qfee_text = "";
+                tvqfee.setVisibility(View.VISIBLE);
+                qfee_text = "Free";
             } else {
                 qfee_text = "Query Fee: <b>" + Model.currency_symbol + Model.fee_q + "</b>";
                 tvfquery.setVisibility(View.GONE);
