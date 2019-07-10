@@ -410,10 +410,14 @@ public class AskQuery3 extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    String att_url = tv_attach_url.getText().toString();
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(att_url));
-                    startActivity(i);
+                    try {
+                        String att_url = tv_attach_url.getText().toString();
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(att_url));
+                        startActivity(i);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
