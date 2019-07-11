@@ -421,7 +421,14 @@ public class ArticlesFragment extends Fragment implements ObservableScrollViewCa
                     objItem.setArtTitle(jsonobj1.getString("title"));
                     objItem.setArtAbs(jsonobj1.getString("abstract"));
                     objItem.setArtimgurl(jsonobj1.getString("photo_url"));
+
+/*
+                    String photo_url = ().replaceAll("(?<!http:)//", "/");
+                    System.out.println("photo_url===========" + photo_url);
+*/
+
                     objItem.setCdurl(jsonobj1.getString("article_photo_url"));
+
                     objItem.setSurl(jsonobj1.getString("share_url"));
 
                     listArray.add(objItem);

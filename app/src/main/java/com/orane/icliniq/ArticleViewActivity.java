@@ -244,6 +244,8 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
             System.out.println("get Intent art_title----------" + art_title);
 
             if (img_url != null && !img_url.isEmpty() && !img_url.equals("null") && !img_url.equals("")) {
+
+
                 Picasso.with(getApplicationContext()).load(img_url).placeholder(R.mipmap.thread_bg).error(R.mipmap.logo).into(img_banner);
             } else {
                 img_banner.setVisibility(View.GONE);
@@ -465,6 +467,16 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                         img_banner.setVisibility(View.GONE);
                     }
                 }
+                if (jsonobj_article.has("image_url")) {
+
+                    img_url = jsonobj_article.getString("image_url");
+
+                    if (img_url != null && !img_url.isEmpty() && !img_url.equals("null") && !img_url.equals("")) {
+                        Picasso.with(getApplicationContext()).load(img_url).placeholder(R.mipmap.thread_bg).error(R.mipmap.logo).into(img_banner);
+                    } else {
+                        img_banner.setVisibility(View.GONE);
+                    }
+                }
 
 
                 //------------------------ Doctor  ------------
@@ -506,6 +518,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 tv_date.setTypeface(noto_reg);
 
                 if (img_url != null && !img_url.isEmpty() && !img_url.equals("null") && !img_url.equals("")) {
+                    img_banner.setVisibility(View.VISIBLE);
                     Picasso.with(getApplicationContext()).load(img_url).placeholder(R.mipmap.thread_bg).error(R.mipmap.logo).into(img_banner);
                 } else {
                     img_banner.setVisibility(View.GONE);
@@ -834,7 +847,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 }
             };
 
-
             span.setSpan(cs, 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             span.setSpan(cs, 6, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -844,8 +856,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }*/
 
     private void showDialog(String title, String message) {

@@ -178,16 +178,12 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                 intent.putExtra("qid", qid);
                 intent.putExtra("finisher", new android.os.ResultReceiver(null) {
                     @Override
+                    12 epi,
                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                         finish();
                     }
                 });
                 startActivityForResult(intent, 1);
-                ---
-                Noyyal Media - Coimbatore
-                --
-
-
 
                 */
             }
@@ -210,7 +206,6 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                 //ask_someone("edit");
             }
         });
-
 
     }
 

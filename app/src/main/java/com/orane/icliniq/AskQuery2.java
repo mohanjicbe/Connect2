@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +96,7 @@ public class AskQuery2 extends AppCompatActivity {
     ViewSwitcher viewSwitcher;
     ImageLoader imageLoader;
     LinearLayout questions_layout;
+    JSONObject json_getfee,docprof_jsonobj;
     Integer persona_id_int;
 
 
@@ -106,7 +108,7 @@ public class AskQuery2 extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     Uri selectedImageUri;
     LinearLayout layout_attachfile, file_list, takephoto_layout, browse_layout;
-    public String persona_response, compmore, prevhist, curmedi, pastmedi, labtest, serverResponseMessage, selectedPath, inv_id, inv_fee, inv_strfee, status_postquery, persona_id_val, qid, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
+    public String fee_q_inr,fee_q,persona_response, compmore, prevhist, curmedi, pastmedi, labtest, serverResponseMessage, selectedPath, inv_id, inv_fee, inv_strfee, status_postquery, persona_id_val, qid, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
     Button btn_attach, btn_submit;
     public JSONObject jsonobj_postquery, jsonobj_prepinv, json, jsonobj_questions;
     Toolbar toolbar;
@@ -162,6 +164,21 @@ public class AskQuery2 extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
+        try {
+            json_getfee = new JSONObject();
+            json_getfee.put("user_id", (Model.id));
+            json_getfee.put("item_type", "single_query");
+
+            System.out.println("json_getfee---" + json_getfee.toString());
+
+            new JSON_getFee().execute(json_getfee);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         TextView tvattach = (TextView) findViewById(R.id.tvattach);
         tvtit = (TextView) findViewById(R.id.tvtit);
         tvmore = (TextView) findViewById(R.id.tvmore);
@@ -171,15 +188,18 @@ public class AskQuery2 extends AppCompatActivity {
         tvtit.setTypeface(tf);
 
         tv_attach_warn = (TextView) findViewById(R.id.tv_attach_warn);
-
+/*
         //---------------------------------------------------------------------------
         if ((Model.have_free_credit).equals("1")) {
             tv_attach_warn.setVisibility(View.VISIBLE);
-            tv_attach_warn.setText("Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query " + Model.fee_q);
+
+            String warn_text = "Note : Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query <b>" + Model.fee_q + "</b>";
+            tv_attach_warn.setText(Html.fromHtml(warn_text));
+
         } else {
             tv_attach_warn.setVisibility(View.GONE);
         }
-        //---------------------------------------------------------------------------
+        //---------------------------------------------------------------------------*/
 
         questions_layout = (LinearLayout) findViewById(R.id.questions_layout);
         scrollView1 = (ScrollView) findViewById(R.id.scrollView1);
@@ -1332,6 +1352,81 @@ public class AskQuery2 extends AppCompatActivity {
             }
         }
 
+    }
+
+
+    private class JSON_getFee extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+
+                JSONParser jParser = new JSONParser();
+                docprof_jsonobj = jParser.JSON_POST(urls[0], "getqFee");
+
+                System.out.println("Feedback URL---------------" + urls[0]);
+                System.out.println("json_response_obj-----------" + docprof_jsonobj.toString());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                if (docprof_jsonobj.has("token_status")) {
+                    String token_status = docprof_jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+
+                    fee_q_inr = docprof_jsonobj.getString("fee_val");
+                    fee_q = docprof_jsonobj.getString("str_fee");
+
+                    //tvqfee.setText("(" + fee_q + ")");
+
+
+                    //---------------------------------------------------------------------------
+                    if ((Model.have_free_credit).equals("1")) {
+                        tv_attach_warn.setVisibility(View.VISIBLE);
+
+                        String warn_text = "Note : Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query <b>" + fee_q + "</b>";
+                        tv_attach_warn.setText(Html.fromHtml(warn_text));
+
+                    } else {
+                        tv_attach_warn.setVisibility(View.GONE);
+                    }
+                    //---------------------------------------------------------------------------
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 

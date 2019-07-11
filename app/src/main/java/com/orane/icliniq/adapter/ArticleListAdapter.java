@@ -2,6 +2,8 @@ package com.orane.icliniq.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.R;
 import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.List;
 
 public class ArticleListAdapter extends ArrayAdapter<Item> {
@@ -86,7 +89,21 @@ public class ArticleListAdapter extends ArrayAdapter<Item> {
         //----------------banner------------------------------------------------
         if (holder.img_qasebanner != null && null != objBean.getCdurl() && objBean.getCdurl().trim().length() > 0) {
             holder.img_qasebanner.setVisibility(View.VISIBLE);
-            Picasso.with(getContext()).load(objBean.getCdurl()).placeholder(R.mipmap.banner_palceholder).error(R.mipmap.banner_palceholder).into(holder.imageview_poster);
+            System.out.println("Adaptor-------" + objBean.getCdurl());
+
+/*
+            try {
+                URL url = new URL("https://img.maalaimalar.com/Articles/2019/Jul/201907100945172575_Two-teachers-and-Nutrition-staff-in-government-school_SECVPF.gif");
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                (holder.imageview_poster).setImageBitmap(bmp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+*/
+            Picasso.with(getContext()).load(objBean.getCdurl()).placeholder(R.mipmap.banner_palceholder).error(R.mipmap.banner_palceholder).into(holder.img_qasebanner);
+
+            //Picasso.with(getContext()).load(objBean.getCdurl()).placeholder(R.mipmap.banner_palceholder).error(R.mipmap.banner_palceholder).into(holder.imageview_poster);
         } else {
             holder.img_qasebanner.setVisibility(View.GONE);
         }
@@ -109,7 +126,7 @@ public class ArticleListAdapter extends ArrayAdapter<Item> {
         }
 
 
-        if (holder.tv_docname != null && null != objBean.getArtDocname()&& objBean.getArtDocname().trim().length() > 0) {
+        if (holder.tv_docname != null && null != objBean.getArtDocname() && objBean.getArtDocname().trim().length() > 0) {
             holder.tv_docname.setText(Html.fromHtml(objBean.getArtDocname()));
             holder.tv_docname_share.setText(Html.fromHtml(objBean.getArtDocname()));
         }
@@ -121,11 +138,11 @@ public class ArticleListAdapter extends ArrayAdapter<Item> {
         }
 */
 
-        if (holder.tv_url != null && null != objBean.getArturl()&& objBean.getArturl().trim().length() > 0) {
+        if (holder.tv_url != null && null != objBean.getArturl() && objBean.getArturl().trim().length() > 0) {
             holder.tv_url.setText(Html.fromHtml(objBean.getArturl()));
         }
 
-        if (holder.tv_share_url != null && null != objBean.getSurl()&& objBean.getSurl().trim().length() > 0) {
+        if (holder.tv_share_url != null && null != objBean.getSurl() && objBean.getSurl().trim().length() > 0) {
             holder.tv_share_url.setText(Html.fromHtml(objBean.getSurl()));
         }
 
@@ -134,7 +151,7 @@ public class ArticleListAdapter extends ArrayAdapter<Item> {
 
     public class ViewHolder {
 
-        public TextView article_title, article_desc, tv_speciality, tv_id,tv_docname_share,tv_share_url,tv_url, tv_docname;
+        public TextView article_title, article_desc, tv_speciality, tv_id, tv_docname_share, tv_share_url, tv_url, tv_docname;
         ImageView imageview_poster, img_qasebanner;
     }
 

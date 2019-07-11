@@ -866,7 +866,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
 
                     System.out.println("Submitting Query id:--------" + qid);
-
                     if (qid != null && !qid.isEmpty() && !qid.equals("null") && !qid.equals("")) {
 
 

@@ -10,9 +10,9 @@ import java.io.File;
 
 public class Model {
 
-    public static String App_ver = "19.9.57";
-    public static String App_ver_slno = "120224";
-    public static String App_Rel = "19-June-2019";
+    public static String App_ver = "19.9.60";
+    public static String App_ver_slno = "120227";
+    public static String App_Rel = "10-July-2019";
 
     //public static String font_name = "fonts/NotoSans-Regular.ttf";
     public static String font_name = "fonts/OpenSans-Regular.ttf";
@@ -22,7 +22,7 @@ public class Model {
     public static String font_name_bold = "fonts/OpenSans-SemiBold.ttf";
 
     public static String BASE_URL = "https://www.icliniq.com/";
-    //public static String BASE_URL = "http://54.172.138.170/";
+    //public static String BASE_URL = "http://54.172.138.170/index.php/";
     //public static String BASE_URL = "http://192.168.0.140/projects/icliniq/web/index.php/";
     //public static String BASE_URL="https://icliniq.cloudapp.net/index.php/";
     //public static Bitmap.Config config = new Bitmap.Config("icliniq", "HhEvRrQ9Qdar_mkHVXo_Qg");

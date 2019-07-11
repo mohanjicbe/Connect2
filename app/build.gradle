@@ -9,8 +9,8 @@ android {
         applicationId "com.orane.icliniq"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 120224
-        versionName "19.9.57"
+        versionCode 120227
+        versionName "19.9.60"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -77,7 +77,9 @@ dependencies {
     implementation 'com.pubnub:pubnub-android:3.7.5'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.allattentionhere:fabulousfilter:0.0.2'
-    implementation 'co.lujun:androidtagview:1.1.4'
+
+
+
     implementation 'com.github.armcha:AutoLinkTextView:0.3.0'
     implementation 'com.opentok.android:opentok-android-sdk:2.12.1'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.9.0'

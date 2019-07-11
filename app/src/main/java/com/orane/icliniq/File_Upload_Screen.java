@@ -22,6 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,8 +86,8 @@ public class File_Upload_Screen extends AppCompatActivity {
     ImageView imgSinglePick;
     Button btnGalleryPick;
     Button btnGalleryPickMul;
-
-    String action;
+    JSONObject json_getfee, docprof_jsonobj;
+    String action, fee_q, fee_q_inr;
     ViewSwitcher viewSwitcher;
     ImageLoader imageLoader;
 
@@ -116,6 +117,8 @@ public class File_Upload_Screen extends AppCompatActivity {
     public static final String have_free_credit = "have_free_credit";
     SharedPreferences sharedpreferences;
     private static final int CAMERA_REQUEST = 1888;
+
+    TextView tv_attach_warn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +154,7 @@ public class File_Upload_Screen extends AppCompatActivity {
         takephoto_layout = (LinearLayout) findViewById(R.id.takephoto_layout);
         browse_layout = (LinearLayout) findViewById(R.id.browse_layout);
         file_list = (LinearLayout) findViewById(R.id.file_list);
+        tv_attach_warn = (TextView) findViewById(R.id.tv_attach_warn);
 
         try {
             //------ getting Values ---------------------------
@@ -164,6 +168,19 @@ public class File_Upload_Screen extends AppCompatActivity {
 
         initImageLoader();
         //init();
+
+        try {
+            json_getfee = new JSONObject();
+            json_getfee.put("user_id", (Model.id));
+            json_getfee.put("item_type", "single_query");
+
+            System.out.println("json_getfee---" + json_getfee.toString());
+
+            new JSON_getFee().execute(json_getfee);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         //------------------ Initialize File Attachment ---------------------------------
@@ -1257,6 +1274,81 @@ public class File_Upload_Screen extends AppCompatActivity {
     protected void onDestroy() {
         EasyImage.clearConfiguration(this);
         super.onDestroy();
+    }
+
+
+    private class JSON_getFee extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+
+                JSONParser jParser = new JSONParser();
+                docprof_jsonobj = jParser.JSON_POST(urls[0], "getqFee");
+
+                System.out.println("Feedback URL---------------" + urls[0]);
+                System.out.println("json_response_obj-----------" + docprof_jsonobj.toString());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                if (docprof_jsonobj.has("token_status")) {
+                    String token_status = docprof_jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+
+                    fee_q_inr = docprof_jsonobj.getString("fee_val");
+                    fee_q = docprof_jsonobj.getString("str_fee");
+
+                    //tvqfee.setText("(" + fee_q + ")");
+
+
+                    //---------------------------------------------------------------------------
+                    if ((Model.have_free_credit).equals("1")) {
+                        tv_attach_warn.setVisibility(View.VISIBLE);
+
+                        String warn_text = "Note : Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query <b>" + fee_q + "</b>";
+                        tv_attach_warn.setText(Html.fromHtml(warn_text));
+
+                    } else {
+                        tv_attach_warn.setVisibility(View.GONE);
+                    }
+                    //---------------------------------------------------------------------------
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 

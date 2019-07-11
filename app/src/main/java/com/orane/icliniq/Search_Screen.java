@@ -44,7 +44,6 @@ import com.orane.icliniq.Parallex.ParallexMainActivity;
 import com.orane.icliniq.adapter.SearchListAdapter;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.SearchListParser;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,8 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import co.lujun.androidtagview.TagContainerLayout;
-import co.lujun.androidtagview.TagView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Search_Screen extends BaseActivity implements ObservableScrollViewCallbacks {
@@ -71,7 +68,6 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
     JSONObject jsonobj1;
     CircleImageView imageview_poster;
     LinearLayout innerLay, layout_offer1, layout_offer2, b0_layout, b1_layout, b2_layout, b3_layout;
-    TagContainerLayout tagcontainerLayout1;
     TextView tv_more;
 
     SharedPreferences sharedpreferences;
@@ -147,7 +143,6 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
         titlayout = (LinearLayout) findViewById(R.id.titlayout);
         tag_layout = (LinearLayout) findViewById(R.id.tag_layout);
         search_scrollview = (ScrollView) findViewById(R.id.search_scrollview);
-        tagcontainerLayout1 = (TagContainerLayout) findViewById(R.id.tagcontainerLayout1);
         innerLay = (LinearLayout) findViewById(R.id.innerLay);
         tv_viewall = (TextView) findViewById(R.id.tv_viewall);
         layout1 = (LinearLayout) findViewById(R.id.layout1);
@@ -271,6 +266,7 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
             }
         });
 
+/*
 
         tagcontainerLayout1.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
@@ -328,6 +324,7 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
 
             }
         });
+*/
 
 
         if (search_tag_text != null && !search_tag_text.isEmpty() && !search_tag_text.equals("null") && !search_tag_text.equals("")) {
@@ -979,7 +976,7 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
                         String replaced = mArray[i].replace("\"", "");
                         //tv_tag.setText(replaced);
 
-                        tagcontainerLayout1.addTag(replaced);
+                       // tagcontainerLayout1.addTag(replaced);
 
                         //tag_layout.addView(vi); DVD Write,
                     }
@@ -1196,7 +1193,7 @@ public class Search_Screen extends BaseActivity implements ObservableScrollViewC
 
                     String replaced = mArray[i].replace("\"", "");
                     //tv_tag.setText(replaced);
-                    tagcontainerLayout1.addTag(replaced);
+                    //tagcontainerLayout1.addTag(replaced);
 
                     //tag_layout.addView(vi);
                 }

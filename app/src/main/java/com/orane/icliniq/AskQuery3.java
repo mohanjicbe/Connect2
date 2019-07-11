@@ -326,7 +326,7 @@ public class AskQuery3 extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString(Login_Status, "0");
                         editor.apply();
-                        //===================================sdfsd=========================
+                        //===================================sdfsd=gjhgh========================
                         finishAffinity();
                         Intent intent = new Intent(AskQuery3.this, LoginActivity.class);
                         startActivity(intent);
