@@ -805,6 +805,9 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            /*
+            * 
+            * */
 
             dialog.cancel();
 
