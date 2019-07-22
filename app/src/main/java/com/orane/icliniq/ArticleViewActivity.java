@@ -283,8 +283,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 TakeScreenshot_Share();
             }
         });
-
-
     }
 
     @Override
@@ -506,7 +504,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 System.out.println("doc_name-------" + doc_name);
                 System.out.println("doc_photo_url-------" + doc_photo_url);
 
-
                 Typeface noto_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
 
                 tv_title.setTypeface(noto_reg);
@@ -639,6 +636,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
             startActivity(intent);
             finish();
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -711,6 +709,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                     if (!feedback_text.equals("")) {
 
                         try {
+
                             json_articlefeedback = new JSONObject();
                             json_articlefeedback.put("user_id", (Model.id));
                             json_articlefeedback.put("article_id", id_val);
@@ -733,6 +732,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                             //--------------------------------------------
 
                             alert.dismiss();
+
 
                         } catch (Exception e2) {
                             e2.printStackTrace();
@@ -810,53 +810,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
 
         }
     }
-
-  /*  class ClickableTableSpanImpl extends ClickableTableSpan {
-        @Override
-        public ClickableTableSpan newInstance() {
-            return new ClickableTableSpanImpl();
-        }
-
-        @Override
-        public void onClick(View widget) {
-            System.out.println("Link----------- " + getTableHtml());
-
-
-            Intent intent = new Intent(ArticleViewActivity.this, WebViewActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    public void callclass(){
-
-        try {
-            Spannable span = Spannable.Factory.getInstance().newSpannable(art_description);
-            span.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("main", "link clicked");
-                    Toast.makeText(ArticleViewActivity.this, "link clicked", Toast.LENGTH_SHORT).show();
-                }
-            }, 5, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            ClickableSpan cs = new ClickableSpan() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("main", "textview clicked");
-                    Toast.makeText(ArticleViewActivity.this, "textview clicked", Toast.LENGTH_SHORT).show();
-                }
-            };
-
-            span.setSpan(cs, 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            span.setSpan(cs, 6, span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            tv_desc.setMovementMethod(LinkMovementMethod.getInstance());
-            tv_desc.setText(Html.fromHtml(art_description));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private void showDialog(String title, String message) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
