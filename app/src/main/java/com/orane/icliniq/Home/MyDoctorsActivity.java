@@ -125,13 +125,13 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         Model.kiss.record("android.patient.MyDoctorsList");
         //----------------- Kissmetrics ----------------------------------
+
         //------------ Google firebase Analitics--------------------
         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle params = new Bundle();
         params.putString("user_id", (Model.id));
         Model.mFirebaseAnalytics.logEvent("MyDoctorsList", params);
         //------------ Google firebase Analitics--------------------
-
 
         //----------------- Toolbar Initialization----------------------------------
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -436,11 +436,16 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         protected void onPreExecute() {
             super.onPreExecute();
 
-            mSwipeRefreshLayout.setVisibility(View.GONE);
-            nolayout.setVisibility(View.GONE);
-            netcheck_layout.setVisibility(View.GONE);
-            progressBar_bottom.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            try {
+                mSwipeRefreshLayout.setVisibility(View.GONE);
+                nolayout.setVisibility(View.GONE);
+                netcheck_layout.setVisibility(View.GONE);
+                progressBar_bottom.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -637,9 +642,11 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
 
                         } else {
+
                             if (arrayOfList.size() < 10) {
                                 pagination = false;
                             }
+
                             mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                             nolayout.setVisibility(View.GONE);
                             netcheck_layout.setVisibility(View.GONE);
