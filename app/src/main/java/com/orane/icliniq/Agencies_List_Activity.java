@@ -71,10 +71,10 @@ public class Agencies_List_Activity extends AppCompatActivity {
         myFilter = (EditText) findViewById(R.id.myFilter);
         categories = new ArrayList<String>();
 
-        //tz_jsonstr = getString(R.string.time_zone_json);
-        /*
+        /*tz_jsonstr = getString(R.string.time_zone_json);
+         *
+         * */
 
-         **/
         //tz_jsonstr = "{\"0\":\"$44.99\",\"-1\":\"$34.99\",\"1\":\"$29.99\",\"opt_ftrack\":1}";
 
         try {
@@ -88,6 +88,7 @@ public class Agencies_List_Activity extends AppCompatActivity {
         //---------------------------------------
         new JSON_Timezone().execute("");
         //---------------------------------------
+
 
         dataAdapter = new ArrayAdapter<String>(this, R.layout.agencies_list_row, categories);
         listView.setAdapter(dataAdapter);
@@ -205,6 +206,7 @@ public class Agencies_List_Activity extends AppCompatActivity {
 
                         categories.add(value.toString());
                         tz_map.put(value.toString(), key);
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
