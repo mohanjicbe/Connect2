@@ -20,8 +20,15 @@ import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Constants;
 import com.orane.icliniq.Model.FileInfo;
 import com.orane.icliniq.Model.Model;
+import com.orane.icliniq.Model.MultipartEntity2;
 import com.orane.icliniq.adapter.FileArrayAdapter;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
@@ -240,7 +247,7 @@ public class FileChooserActivity extends ListActivity {
 
             try {
 
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -305,7 +312,7 @@ public class FileChooserActivity extends ListActivity {
         }
     }
 
-    public String upload_file(String fullpath) {
+   /* public String upload_file(String fullpath) {
 
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
@@ -405,7 +412,7 @@ public class FileChooserActivity extends ListActivity {
             }
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream, int length) throws IOException {
         Reader reader = null;
@@ -414,4 +421,45 @@ public class FileChooserActivity extends ListActivity {
         reader.read(buffer);
         return new String(buffer);
     }
+
+
+    private String upload_file(String file_path) {
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/upload?user_id=" + (Model.id) + "&qid=" + (cur_qid) + "&token=" + Model.token + "&enc=1";
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
+
 }

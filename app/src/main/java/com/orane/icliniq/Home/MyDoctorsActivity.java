@@ -9,9 +9,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.AskQuery1;
@@ -120,11 +122,6 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         //============================================================
 
         FlurryAgent.onPageView();
-
-        //----------------- Kissmetrics ----------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.record("android.patient.MyDoctorsList");
-        //----------------- Kissmetrics ----------------------------------
 
         //------------ Google firebase Analitics--------------------
         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -373,8 +370,6 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
 
         listView.setScrollViewCallbacks(this);
-
-
     }
 
     @Override
@@ -383,6 +378,8 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         System.out.println("scrollY---------" + scrollY);
         System.out.println("firstScroll---------" + firstScroll);
         System.out.println("dragging---------" + dragging);
+
+
     }
 
     @Override
@@ -425,7 +422,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
             }
 
         } else {
-            Toast.makeText(MyDoctorsActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyDoctorsActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -578,6 +575,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+
             try {
 
                 //----------------------------------------------------------
@@ -777,14 +775,23 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
     public void setAdapterToListview() {
 
-        objAdapter = new MyDoctorsRowAdapter(MyDoctorsActivity.this, R.layout.my_doctors_row, arrayOfList);
-        listView.setAdapter(objAdapter);
+        try {
+            objAdapter = new MyDoctorsRowAdapter(MyDoctorsActivity.this, R.layout.my_doctors_row, arrayOfList);
+            listView.setAdapter(objAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void add_page_AdapterToListview() {
-        objAdapter.addAll(arrayOfList);
-        listView.setSelection(objAdapter.getCount() - (arrayOfList.size()));
-        objAdapter.notifyDataSetChanged();
+        try {
+            objAdapter.addAll(arrayOfList);
+            listView.setSelection(objAdapter.getCount() - (arrayOfList.size()));
+            objAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -807,10 +814,11 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         if (id == R.id.nav_refresh) {
 
             try {
+
                 String url = Model.BASE_URL + "sapp/myDoc?user_id=" + (Model.id) + "&page=1&sp_id=0&token=" + Model.token;
                 System.out.println("params---------------" + url);
-
                 new MyTask_server().execute(url);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -819,7 +827,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         }
 
 
-        if (id == R.id.nav_newquery) {
+      /*  if (id == R.id.nav_newquery) {
 
             Model.doctor_id = "0";
             Model.qid = "";
@@ -848,7 +856,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
             startActivity(intent);
 
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -863,11 +871,13 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
             spec_text.setText(Model.select_specname);
             tv_showall_text.setVisibility(View.VISIBLE);
+
+            //----------------------------
             String url = Model.BASE_URL + "sapp/myDoc?user_id=" + (Model.id) + "&page=1&sp_id=0&token=" + Model.token;
             System.out.println("params---------------" + url);
             new MyTask_server().execute(url);
+            //----------------------------
         }
-
     }
 
 
@@ -917,7 +927,6 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
                 case R.id.img_share:
 
-
                     View parent3 = (View) v.getParent();
                     //View grand_parent = (View)parent.getParent();
 
@@ -932,7 +941,6 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
                     //TakeScreenshot_Share();
                     break;
 
-
             }
 
         } catch (Exception e) {
@@ -944,7 +952,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
     @Override
     public void onResult(Object result) {
-        Log.d("k9res", "onResult: " + result.toString());
+
         if (result.toString().equalsIgnoreCase("swiped_down")) {
             //do something or nothing
         } else {

@@ -11,9 +11,6 @@ import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,10 +28,13 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -64,7 +64,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
     TextView tv_fee1, tvdocname, tv_strprice, tv_soid, tvtit, tvfquery;
     TextView tv_fee11, tv_tooltit, tv_editbutton, tv_spec_name;
     Button btn_icq100, btn_continue, btn_icq50;
-    public String rel_val, inf_for, doc_id, icq100_id_val, inv_id, inv_fee, inv_strfee, qid, draft_qid, query_txt, str_fees;
+    public String dob_val,rel_val, inf_for, doc_id, icq100_id_val, inv_id, inv_fee, inv_strfee, qid, draft_qid, query_txt, str_fees;
     public JSONObject json_family_new, jsonobj_icq100, jsonobj_icq50, docprof_jsonobj, json_getfee, jsonobj_prepinv, json, jsonobj;
     public String plan_id, Log_Status, fee_val_text, fee_str_text, spec_val, editbutton_txt, soid_val;
     Spinner spinner_height, spinner_weight, spinner_title;
@@ -202,6 +202,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
         //tvprice.setTypeface(font_reg);
         edt_query.setTypeface(font_reg);
 
+
         ((TextView) findViewById(R.id.tv_ask_tit)).setTypeface(font_bold);
         ((TextView) findViewById(R.id.tvtit)).setTypeface(font_reg);
         ((TextView) findViewById(R.id.tv_spec_name)).setTypeface(font_reg);
@@ -326,8 +327,10 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                             if ((query_str.length()) > 0) {
 
-                                String spintext = spinner_speciality.getSelectedItem().toString();
-                                spec_val = spec_map.get(spintext);
+/*                                String spintext = spinner_speciality.getSelectedItem().toString();
+                                spec_val = spec_map.get(spintext);*/
+
+                                String spintext = tv_spec_name.getText().toString();
 
                                 spec_val = Model.select_spec_val;
 
@@ -368,7 +371,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                 //------------ Google firebase Analitics----------------------------------------------
 
                             } else
-                                edt_query.setError("Query cannot be empty");
+                                edt_query.setError("Please enter your query");
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -417,8 +420,10 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                                 if ((query_str.length()) > 0) {
 
-                                    String spintext = spinner_speciality.getSelectedItem().toString();
-                                    spec_val = spec_map.get(spintext);
+                                   /* String spintext = spinner_speciality.getSelectedItem().toString();
+                                    spec_val = spec_map.get(spintext);*/
+
+                                    String spintext = tv_spec_name.getText().toString();
 
                                     spec_val = Model.select_spec_val;
 
@@ -451,7 +456,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                     //------------ Google firebase Analitics----------------------------------------------
 
                                 } else
-                                    edt_query.setError("Query cannot be empty");
+                                    edt_query.setError("Please enter your query");
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -463,7 +468,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                         // ask_login();
                     }
                 } else {
-                    Toast.makeText(Instant_Chat.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Instant_Chat.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -484,10 +489,13 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                                 if ((query_str.length()) > 0) {
 
-                                    String spintext = spinner_speciality.getSelectedItem().toString();
-                                    spec_val = spec_map.get(spintext);
+                                    /*String spintext = spinner_speciality.getSelectedItem().toString();
+                                    spec_val = spec_map.get(spintext);*/
+
+                                    String spintext = tv_spec_name.getText().toString();
 
                                     spec_val = Model.select_spec_val;
+                                    System.out.println("Saving spec_val---------- " + spec_val);
 
                                     query_txt = URLEncoder.encode((edt_query.getText().toString()), "UTF-8");
                                     json = new JSONObject();
@@ -517,7 +525,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                     //------------ Google firebase Analitics----------------------------------------------
 
                                 } else
-                                    edt_query.setError("Query cannot be empty");
+                                    edt_query.setError("Please enter your query");
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -529,7 +537,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                         // ask_login();
                     }
                 } else {
-                    Toast.makeText(Instant_Chat.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Instant_Chat.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -613,7 +621,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
         //edt_query.setText(Model.query_cache);
 
         if ((Model.query_launch).equals("SpecialityListActivity")) {
-            System.out.println("Resume Model.query_launch-----" + Model.select_spec_val);
+            System.out.println("Resume Model.select_spec_val-----" + Model.select_spec_val);
             System.out.println("Resume Model.select_specname-----" + Model.select_specname);
 
             if (Model.select_spec_val.equals("0")) {
@@ -694,7 +702,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                         //------------ Prepare Invoice------------------------------------
 
                     } else {
-                        Toast.makeText(Instant_Chat.this, "Something went wrong. Please back and try again..!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Instant_Chat.this, "Something went wrong. Please go back and try again..!", Toast.LENGTH_LONG).show();
 
 /*                        Intent intent = new Intent(Instant_Chat.this, CenterFabActivity.class);
                         startActivity(intent);*/
@@ -875,7 +883,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
         spec_map.put("Family Physician", "220");
 
         categories.add("Fetal Medicine");
-        spec_map.put("Fetal Medicine", "226");
+        spec_map.put("Fetal Medicine", "266");
 
         categories.add("Fitness Expert");
         spec_map.put("Fitness Expert", "224");
@@ -1458,7 +1466,13 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                             switch (rad_name) {
                                 case "Someone else": {
 
-                                    ask_someone("someone");
+                                    //ask_someone("someone");
+
+                                    Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "someone");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
+
 
                                     radio_id = "0";
 
@@ -1470,7 +1484,13 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                         radio_id = myself_id;
                                         System.out.println("radio_id-----" + radio_id);
                                     } else {
-                                        ask_someone("myself");
+                                        //ask_someone("myself");
+
+                                        Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
+                                        intent.putExtra("add_type", "myself");
+                                        intent.putExtra("profile_id", "0");
+                                        startActivity(intent);
+
                                     }
                                     break;
                                 }
@@ -1552,12 +1572,23 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                             switch (rad_name) {
                                 case "Someone else": {
-                                    ask_someone("someone");
+                                    //ask_someone("someone");
+
+                                    Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "someone");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
 
                                     break;
                                 }
                                 case "Myself": {
-                                    ask_someone("myself");
+                                   // ask_someone("myself");
+
+                                    Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "myself");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
+
                                     break;
                                 }
                             }
@@ -1910,14 +1941,14 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                 e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Select a relationship", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Please select Relationship type", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        edt_age.setError("Enter the Age");
+                        edt_age.setError("Please enter your age");
                         edt_age.requestFocus();
                     }
                 } else {
-                    edt_name.setError("Enter the name");
+                    edt_name.setError("Please enter your name");
                     edt_name.requestFocus();
                 }
 
@@ -4014,6 +4045,12 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            dialog = new ProgressDialog(Instant_Chat.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
         }
 
         @Override
@@ -4045,6 +4082,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                 tit_id = fam_obj.getString("title_id");
                 mem_name = fam_obj.getString("name");
                 age_val = fam_obj.getString("age");
+                dob_val = fam_obj.getString("dob");
                 gender_val = fam_obj.getString("gender");
                 height_val = fam_obj.getString("height");
                 weight_val = fam_obj.getString("weight");
@@ -4055,16 +4093,33 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                 System.out.println("mem_name 1---------------" + mem_name);
                 System.out.println("rel_type 1---------------" + rel_val);
                 System.out.println("age_val 1---------------" + age_val);
+                System.out.println("dob_val 1---------------" + dob_val);
                 System.out.println("gender_val- 1--------------" + gender_val);
                 System.out.println("height_val-1--------------" + height_val);
                 System.out.println("weight_val---------------" + weight_val);
 
-                ask_someone("edit");
+                //ask_someone("edit");
+
+                Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "edit");
+                intent.putExtra("profile_id", radio_id);
+                intent.putExtra("tit_id", tit_id);
+                intent.putExtra("mem_name", mem_name);
+                intent.putExtra("rel_val", rel_val);
+                intent.putExtra("age_val", age_val);
+                intent.putExtra("dob_val", dob_val);
+                intent.putExtra("gender_val", gender_val);
+                intent.putExtra("height_val", height_val);
+                intent.putExtra("weight_val", weight_val);
+                startActivity(intent);
+
+
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
+            dialog.cancel();
         }
 
     }

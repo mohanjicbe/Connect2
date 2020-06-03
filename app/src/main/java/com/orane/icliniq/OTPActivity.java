@@ -11,12 +11,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.fileattach_library.EasyImage;
 import com.orane.icliniq.network.JSONParser;
@@ -61,7 +60,8 @@ public class OTPActivity extends AppCompatActivity {
     EditText edt_otp, edt_phoneno;
     JSONObject jsonobj, json_validate;
     LinearLayout send_layout, otp_layout, timer_layout;
-    public String country_code_no, mVerificationId, userid, isValid_val, country, str_response, selected_cc_value, selected_cc_text, isvalid, pin_val, otp_text, user_id, status_val, user_id_val, otp_code, cc_name, cccode, phoneno_text;
+    public String country_code_no, mVerificationId, userid, isValid_val, country, str_response, selected_cc_value, selected_cc_text, isvalid, pin_val, otp_text, user_id, status_val, user_id_val, otp_code, cc_name,
+            cccode, phoneno_text;
     public static OTPActivity otpinst;
     JSONObject validating_response_json, login_jsonobj, json, request_response_json;
     ProgressBar progressBar;
@@ -113,7 +113,6 @@ public class OTPActivity extends AppCompatActivity {
 
         FlurryAgent.onPageView();
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //--------------------------------------------------------------------
@@ -169,9 +168,9 @@ public class OTPActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        tv_ccode.setText("+" + Model.country_code);
+ /*       //tv_ccode.setText("+" + Model.country_code);
         selected_cc_value = Model.country_code;
-        selected_cc_text = Model.pat_country;
+        selected_cc_text = Model.pat_country;*/
 
 
         progressBar.setMax(60);
@@ -210,9 +209,9 @@ public class OTPActivity extends AppCompatActivity {
 
                 } else {
                     //edt_otp.setError("Enter OTP");
-                    //Snackbar.make(v, "OTP mismatched", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                    Toast.makeText(OTPActivity.this, "OTP mismatched", Toast.LENGTH_SHORT).show();
-                    edt_otp.setError("OTP Mismatched");
+                    //Snackbar.make(v, "The OTP you have entered is incorrect. Please enter a valid OTP", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Toast.makeText(OTPActivity.this, "The OTP you have entered is incorrect. Please try again/Please enter a valid OTP", Toast.LENGTH_SHORT).show();
+                    edt_otp.setError("The OTP you have entered is incorrect. Please try again/Please enter a valid OTP");
                     edt_otp.requestFocus();
                 }
 
@@ -239,7 +238,7 @@ public class OTPActivity extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been sent again to your mobile number.", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -261,6 +260,10 @@ public class OTPActivity extends AppCompatActivity {
                 try {
                     phoneno_text = edt_phoneno.getText().toString();
 
+                    System.out.println("cccode--------------" + cccode);
+                    System.out.println("phoneno_text--------------" + phoneno_text);
+
+
                     if (!phoneno_text.equals("")) {
                         json = new JSONObject();
                         json.put("mobile", phoneno_text);
@@ -274,7 +277,7 @@ public class OTPActivity extends AppCompatActivity {
                         new Async_CheckMobnoExist().execute(json);
 
                     } else {
-                        edt_phoneno.setError("Enter Mobile number");
+                        edt_phoneno.setError("Mobile number is mandatory");
                     }
 
                 } catch (Exception e) {
@@ -310,12 +313,6 @@ public class OTPActivity extends AppCompatActivity {
              if (hasStarted) {
 
                  try {
-                     Model.kiss.record("android.patient.OTP_Receive");
-                     HashMap<String, String> properties = new HashMap<String, String>();
-                     properties.put("android.patient.OTP", otp_value);
-                     properties.put("android.patient.Mobile_number", phoneno_text);
-                     Model.kiss.set(properties);
-                     //----------------------------------------------------------------------------
                      //----------- Flurry -------------------------------------------------
                      Map<String, String> articleParams = new HashMap<String, String>();
                      articleParams.put("android.patient.OTP", otp_value);
@@ -488,19 +485,6 @@ public class OTPActivity extends AppCompatActivity {
 
                     try {
                         System.out.println("Model.mnum---------" + Model.mnum);
-
-                        //--------- Kissmetrics --------------------------------------------------
-                        Model.kiss.record("android.patient.Login_Access_Success");
-                        Model.kiss.identify(Model.kmid);
-
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.patient.Country", Model.browser_country);
-                        //properties.put("android.patient.IMEI No", device_id());
-                        properties.put("android.patient.App_Version", (Model.App_ver));
-                        properties.put("android.patient.token", Model.token);
-                        properties.put("android.patient.Logwith", "OTP_Login");
-                        Model.kiss.set(properties);
-                        //----------------------------------------------------------------------------
 
                         //----------- Flurry -------------------------------------------------
                         FlurryAgent.setUserId(userid);
@@ -1053,7 +1037,11 @@ public class OTPActivity extends AppCompatActivity {
                 selected_cc_value = select_value;
                 selected_cc_text = select_text;
 
-                tv_ccode.setText(selected_cc_value);
+                cccode = select_value;
+
+
+
+                tv_ccode.setText(cccode);
             }
         });
         builderSingle.show();
@@ -1111,16 +1099,16 @@ public class OTPActivity extends AppCompatActivity {
                     }
                 } else {
                     country = jsonobj.getString("country");
-                    country_code_no = jsonobj.getString("code");
+                    cccode = jsonobj.getString("code");
 
                     System.out.println("country----------" + country);
-                    System.out.println("country_code_no----------" + country_code_no);
+                    System.out.println("country_code_no----------" + cccode);
 
                     Model.pat_country = country;
                     Model.browser_country = country;
-                    cccode = country_code_no;
+                    //cccode = country_code_no;
 
-                    tv_ccode.setText("+" + country_code_no);
+                    tv_ccode.setText("+" + cccode);
                 }
             } catch (Exception e) {
                 country = "";
@@ -1136,7 +1124,7 @@ public class OTPActivity extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(OTPActivity.this);
         //alert.setTitle("Mobile no not Exist..!");
-        alert.setMessage("This mobile number is not exist, Do you want to signup now?");
+        alert.setMessage("This mobile number is not registered on iCliniq. Do you want to sign up now? (Please register to continue.)");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Yes, Signup", new View.OnClickListener() {
             @Override

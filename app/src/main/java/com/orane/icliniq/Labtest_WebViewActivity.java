@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,7 +59,6 @@ public class Labtest_WebViewActivity extends BaseActivity implements ObservableS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.labtest_webview);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
         FlurryAgent.onPageView();
 
@@ -178,7 +177,7 @@ public class Labtest_WebViewActivity extends BaseActivity implements ObservableS
         } else {
 
             //-------------------------------------------------------------------
-            String get_Labtest = Model.BASE_URL + "sapp/viewLabTest?code=" + code_val + "&user_id=" + Model.id;
+            String get_Labtest = Model.BASE_URL + "sapp/viewLabTest?code=" + code_val + "&user_id=" + Model.id + "&token=" + Model.token;
             System.out.println("get_Labtest---------" + get_Labtest);
             new JSON_getTestView().execute(get_Labtest);
             //-------------------------------------------------------------------

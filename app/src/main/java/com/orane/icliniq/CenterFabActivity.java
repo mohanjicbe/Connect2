@@ -3,23 +3,14 @@ package com.orane.icliniq;
 import android.Manifest;
 import android.animation.Animator;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -33,12 +24,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.flurry.android.FlurryAgent;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Labtest.Labtest_tabs_Activity;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Parallex.ParallexMainActivity;
@@ -50,10 +52,10 @@ import com.orane.icliniq.fragment.SettingsFragment;
 import com.orane.icliniq.network.JSONParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CenterFabActivity extends AppCompatActivity {
+
     private static final String TAG = CenterFabActivity.class.getSimpleName();
     private ActivityCenterFabBinding bind;
     private VpAdapter adapter;
@@ -72,10 +74,25 @@ public class CenterFabActivity extends AppCompatActivity {
 
     private YoYo.YoYoString rope;
 
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "MyPrefs";
+    public static final String id = "id";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_center_fab);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+/*      //============================================================
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(id, "246125");
+        editor.apply();
+        Model.id = "246125";
+        //============================================================
+*/
 
 /*
         //--------------------------------------------------------------------
@@ -93,7 +110,6 @@ public class CenterFabActivity extends AppCompatActivity {
         }
         //----------- initialize --------------------------------------
 */
-
         //mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //------------ Google firebase Analitics--------------------
@@ -119,9 +135,9 @@ public class CenterFabActivity extends AppCompatActivity {
 
         bind = DataBindingUtil.setContentView(this, R.layout.activity_center_fab);
 
-        viewPager = (ViewPager) findViewById(R.id.vp);
-        bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        viewPager = findViewById(R.id.vp);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        fab = findViewById(R.id.fab);
 
         rope = YoYo.with(Techniques.Pulse)
                 .duration(1200)
@@ -175,11 +191,13 @@ public class CenterFabActivity extends AppCompatActivity {
         bundle.putString("title", "Doctors");
         backupFragment.setArguments(bundle);
         //------------------------------------------
+
         ArticlesFragment favorFragment = new ArticlesFragment();
         bundle = new Bundle();
         bundle.putString("title", "Articles");
         favorFragment.setArguments(bundle);
         //------------------------------------------
+
         SettingsFragment visibilityFragment = new SettingsFragment();
         bundle = new Bundle();
         bundle.putString("title", "Settings");
@@ -202,7 +220,6 @@ public class CenterFabActivity extends AppCompatActivity {
         adapter = new VpAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
     }
-
 
     private void initEvent() {
 
@@ -247,8 +264,9 @@ public class CenterFabActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
-                if (position >= 2)// 2 is center
-                    position++;// if page is 2, need set bottom item to 3, and the same to 3 -> 4
+                if (position >= 2)
+                    position++;
+
                 bottomNavigationView.setCurrentItem(position);
             }
 
@@ -258,7 +276,6 @@ public class CenterFabActivity extends AppCompatActivity {
             }
         });
 
-        // center item click listener
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -280,16 +297,16 @@ public class CenterFabActivity extends AppCompatActivity {
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.setContentView(R.layout.diag_cardviewrow);
 
-                LinearLayout labtest_layout = (LinearLayout) dialog.findViewById(R.id.labtest_layout);
-                LinearLayout htools_layout = (LinearLayout) dialog.findViewById(R.id.htools_layout);
+                LinearLayout labtest_layout = dialog.findViewById(R.id.labtest_layout);
+                LinearLayout htools_layout = dialog.findViewById(R.id.htools_layout);
 
-                LinearLayout layout1 = (LinearLayout) dialog.findViewById(R.id.layout1);
-                LinearLayout layout2 = (LinearLayout) dialog.findViewById(R.id.layout2);
-                LinearLayout layout3 = (LinearLayout) dialog.findViewById(R.id.layout3);
-                TextView tv_chat = (TextView) dialog.findViewById(R.id.tv_chat);
-                TextView tv_pvcons = (TextView) dialog.findViewById(R.id.tv_pvcons);
-                TextView tv_pvcons2 = (TextView) dialog.findViewById(R.id.tv_pvcons2);
-                TextView tv_sub_ask_query = (TextView) dialog.findViewById(R.id.tv_sub_ask_query);
+                LinearLayout layout1 = dialog.findViewById(R.id.layout1);
+                LinearLayout layout2 = dialog.findViewById(R.id.layout2);
+                LinearLayout layout3 = dialog.findViewById(R.id.layout3);
+                TextView tv_chat = dialog.findViewById(R.id.tv_chat);
+                TextView tv_pvcons = dialog.findViewById(R.id.tv_pvcons);
+                TextView tv_pvcons2 = dialog.findViewById(R.id.tv_pvcons2);
+                TextView tv_sub_ask_query = dialog.findViewById(R.id.tv_sub_ask_query);
 
 
                 ((TextView) dialog.findViewById(R.id.tv_chat)).setTypeface(font_name_bold_200);
@@ -306,6 +323,7 @@ public class CenterFabActivity extends AppCompatActivity {
 
                     tv_pvcons.setText("Book a call");
                     tv_pvcons2.setText("Call doctors on Phone/Video");
+
                 } else {
                     labtest_layout.setVisibility(View.VISIBLE);
 
@@ -317,28 +335,38 @@ public class CenterFabActivity extends AppCompatActivity {
                 layout1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(CenterFabActivity.this, AskQuery1.class);
-                        startActivity(intent);
-                        dialog.cancel();
+                        try {
+                            Intent intent = new Intent(CenterFabActivity.this, AskQuery1.class);
+                            startActivity(intent);
+                            dialog.cancel();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
                 htools_layout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(CenterFabActivity.this, WebViewActivity.class);
-                        intent.putExtra("url", Model.BASE_URL + "tool?web_view=true");
-                        intent.putExtra("type", "Health Tools");
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                        try {
 
-                        //------------ Google firebase Analitics--------------------
-                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                        Bundle params = new Bundle();
-                        params.putString("User", Model.id + Model.first_time);
-                        Model.mFirebaseAnalytics.logEvent("Health_Tools", params);
-                        //------------ Google firebase Analitics--------------------
-                        dialog.cancel();
+                            Intent intent = new Intent(CenterFabActivity.this, WebViewActivity.class);
+                            intent.putExtra("url", Model.BASE_URL + "tool?web_view=true");
+                            intent.putExtra("type", "Health Tools");
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
+                            //------------ Google firebase Analitics--------------------
+                            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                            Bundle params = new Bundle();
+                            params.putString("User", Model.id + Model.first_time);
+                            Model.mFirebaseAnalytics.logEvent("Health_Tools", params);
+                            //------------ Google firebase Analitics--------------------
+                            dialog.cancel();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
@@ -358,6 +386,7 @@ public class CenterFabActivity extends AppCompatActivity {
                 layout2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         try {
                             Intent intent = new Intent(CenterFabActivity.this, Instant_Chat.class);
                             startActivity(intent);
@@ -367,6 +396,7 @@ public class CenterFabActivity extends AppCompatActivity {
                         }
                     }
                 });
+
                 layout3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -415,7 +445,7 @@ public class CenterFabActivity extends AppCompatActivity {
 
                     //----------- get Doc Id ---------------------------------------
                     View parent_fav = (View) v.getParent();
-                    TextView tv_url = (TextView) parent_fav.findViewById(R.id.tv_url);
+                    TextView tv_url = parent_fav.findViewById(R.id.tv_url);
                     String tv_url_val = tv_url.getText().toString();
                     System.out.println("tv_url_val-----------" + tv_url_val);
                     //----------- get Doc Id ---------------------------------------
@@ -483,17 +513,9 @@ public class CenterFabActivity extends AppCompatActivity {
 
         try {
 
-            TextView tvid = (TextView) v.findViewById(R.id.tvid);
+            TextView tvid = v.findViewById(R.id.tvid);
 
             String Doc_id = tvid.getText().toString();
-
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext().getApplicationContext());
-            Model.kiss.record("android.patient.doctor_select");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("doctor_id:", tvid.getText().toString());
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
 
             //------------ Google firebase Analitics--------------------
             Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -507,15 +529,12 @@ public class CenterFabActivity extends AppCompatActivity {
                 intent.putExtra("tv_doc_id", Doc_id);
                 startActivity(intent);
             } else {
-                Toast.makeText(CenterFabActivity.this, "Sorry, Something went wrong. GO Back and Try again..!", Toast.LENGTH_LONG).show();
+                Toast.makeText(CenterFabActivity.this, "Sorry, Something went wrong. Go Back and Try again..!", Toast.LENGTH_LONG).show();
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -526,17 +545,9 @@ public class CenterFabActivity extends AppCompatActivity {
             View parent = (View) v.getParent();
             View grand_parent = (View) parent.getParent();
 
-            TextView tvid = (TextView) grand_parent.findViewById(R.id.tvid);
+            TextView tvid = grand_parent.findViewById(R.id.tvid);
 
             String Doc_id = tvid.getText().toString();
-
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext().getApplicationContext());
-            Model.kiss.record("android.patient.doctor_book_select");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("doctor_id:", tvid.getText().toString());
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
 
             //------------ Google firebase Analitics--------------------
             Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -544,7 +555,6 @@ public class CenterFabActivity extends AppCompatActivity {
             params.putString("doctor_id", tvid.getText().toString());
             Model.mFirebaseAnalytics.logEvent("doctor_book_select", params);
             //------------ Google firebase Analitics--------------------
-
 
             if (Doc_id != null && !Doc_id.isEmpty() && !Doc_id.equals("null") && !Doc_id.equals("")) {
                 Intent intent = new Intent(CenterFabActivity.this, ParallexMainActivity.class);
@@ -577,8 +587,8 @@ public class CenterFabActivity extends AppCompatActivity {
                 case R.id.share_layout:
 
                     //View parent = (View) v.getParent();
-                    TextView tv_share_url = (TextView) v.findViewById(R.id.tv_share_url);
-                    TextView tv_docname_share = (TextView) v.findViewById(R.id.tv_docname_share);
+                    TextView tv_share_url = v.findViewById(R.id.tv_share_url);
+                    TextView tv_docname_share = v.findViewById(R.id.tv_docname_share);
 
                     String article_title_val = tv_share_url.getText().toString();
                     String docname_share_val = tv_docname_share.getText().toString();
@@ -620,6 +630,7 @@ public class CenterFabActivity extends AppCompatActivity {
                 e.printStackTrace();
                 System.out.println("Exception--GCM Response Json----" + e.toString());
             }
+
 
             return false;
         }
@@ -670,9 +681,9 @@ public class CenterFabActivity extends AppCompatActivity {
                 case R.id.sharedoc_layout:
 
                     //View parent = (View) v.getParent();
-                    TextView tv_doclink = (TextView) v.findViewById(R.id.tv_doclink);
-                    TextView tvdocname_new = (TextView) v.findViewById(R.id.tvdocname_new);
-                    TextView tv_spec_new = (TextView) v.findViewById(R.id.tv_spec_new);
+                    TextView tv_doclink = v.findViewById(R.id.tv_doclink);
+                    TextView tvdocname_new = v.findViewById(R.id.tvdocname_new);
+                    TextView tv_spec_new = v.findViewById(R.id.tv_spec_new);
 
                     String doclink = tv_doclink.getText().toString();
                     String docname_share_val = tvdocname_new.getText().toString();
@@ -691,6 +702,67 @@ public class CenterFabActivity extends AppCompatActivity {
 
                     break;
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void deal_click(View v) {
+
+        try {
+
+            View parent = (View) v.getParent();
+            View grand_parent = (View) parent.getParent();
+
+
+            TextView tv_offers_id = grand_parent.findViewById(R.id.tv_offers_id);
+            TextView tv_hline = grand_parent.findViewById(R.id.tv_hline);
+            TextView tv_fcode = grand_parent.findViewById(R.id.tv_fcode);
+            TextView tv_isActivePlan = grand_parent.findViewById(R.id.tv_isActivePlan);
+            TextView tv_doc_id = grand_parent.findViewById(R.id.tv_doc_id);
+            TextView tv_qid = grand_parent.findViewById(R.id.tv_qid);
+            TextView tv_offer_type = grand_parent.findViewById(R.id.tv_offer_type);
+
+            String offer_id = tv_offers_id.getText().toString();
+            String tv_hline_text = tv_hline.getText().toString();
+            String tv_fcode_text = tv_fcode.getText().toString();
+            String tv_isActivePlan_text = tv_isActivePlan.getText().toString();
+            String tv_doc_id_text = tv_doc_id.getText().toString();
+            String tv_qid_text = tv_qid.getText().toString();
+            String tv_offer_type_text = tv_offer_type.getText().toString();
+
+            System.out.println("offer_id-----------------" + offer_id);
+
+            System.out.println("tv_fcode_text-----------------" + tv_fcode_text);
+            System.out.println("tv_isActivePlan_text-----------------" + tv_isActivePlan_text);
+            System.out.println("tv_doc_id_text-----------------" + tv_doc_id_text);
+            System.out.println("tv_qid_text-----------------" + tv_qid_text);
+            System.out.println("tv_offer_type_text-----------------" + tv_offer_type_text);
+            System.out.println("tv_hline_text-----------------" + tv_hline_text);
+
+
+            if (tv_isActivePlan_text.equals("0")) {
+                Intent intent = new Intent(CenterFabActivity.this, Offers_view.class);
+                intent.putExtra("offer_id", offer_id);
+                startActivity(intent);
+            } else {
+                if (tv_hline_text.equals("1")) {
+                    Intent intent = new Intent(CenterFabActivity.this, HotlineChatViewActivity.class);
+                    intent.putExtra("selqid", tv_qid_text);
+                    intent.putExtra("Doctor_id", tv_doc_id_text);
+                    intent.putExtra("docurl", "");
+                    intent.putExtra("fcode", tv_fcode_text);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(CenterFabActivity.this, Instant_Chat.class);
+                    intent.putExtra("doctor_id", tv_doc_id_text);
+                    intent.putExtra("plan_id", offer_id);
+                    startActivity(intent);
+                }
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

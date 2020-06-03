@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.BookingListActivity;
 import com.orane.icliniq.CommonActivity;
 import com.orane.icliniq.FamilyProfileListActivity;
@@ -30,9 +30,9 @@ import com.orane.icliniq.Invite_doctors;
 import com.orane.icliniq.LoginActivity;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Patient_Profile_Activity;
-import com.orane.icliniq.QueryActivity;
 import com.orane.icliniq.R;
 import com.orane.icliniq.Referal_Activity;
+import com.orane.icliniq.Terms_WebViewActivity;
 import com.orane.icliniq.Video_WebViewActivity;
 import com.orane.icliniq.WalletTransactions;
 import com.orane.icliniq.WebViewActivity;
@@ -58,7 +58,7 @@ public class SettingsFragment extends Fragment {
     public String noti_sound_val, stop_noti_val, name_val, email_val;
     TextView tv_pname, tv_emailid;
     String str_response;
-    JSONObject logout_jsonobj,logout_json_validate;
+    JSONObject logout_jsonobj, logout_json_validate;
 
     SharedPreferences sharedpreferences;
     public static final String noti_status = "noti_status_key";
@@ -66,6 +66,7 @@ public class SettingsFragment extends Fragment {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
     public static final String app_language = "app_language_key";
+    public static final String token = "token_key";
 
     Map<String, String> lang_map = new HashMap<String, String>();
     Spinner spinner_lang;
@@ -73,7 +74,7 @@ public class SettingsFragment extends Fragment {
     String lang_name, lang_val;
     View view;
     Typeface font_reg, font_bold;
-    LinearLayout suggest_layout,refer_layout;
+    LinearLayout suggest_layout, refer_layout;
 
     public static SettingsFragment newInstance(int pageIndex) {
         SettingsFragment homeFragment = new SettingsFragment();
@@ -88,33 +89,31 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
-
-        suggest_layout = (LinearLayout) view.findViewById(R.id.suggest_layout);
-        refer_layout = (LinearLayout) view.findViewById(R.id.refer_layout);
-        wallet_layout = (LinearLayout) view.findViewById(R.id.wallet_layout);
-        inbox_layout = (LinearLayout) view.findViewById(R.id.inbox_layout);
-        user_layout = (RelativeLayout) view.findViewById(R.id.user_layout);
-        support_layout = (LinearLayout) view.findViewById(R.id.support_layout);
-        my_family_profile = (LinearLayout) view.findViewById(R.id.my_family_profile);
-        about_app_layout = (LinearLayout) view.findViewById(R.id.about_app_layout);
-        mybooking_layout = (LinearLayout) view.findViewById(R.id.mybooking_layout);
-        myvideos_layout = (LinearLayout) view.findViewById(R.id.myvideos_layout);
-        signout_layout = (LinearLayout) view.findViewById(R.id.signout_layout);
-        mywallet_layout = (LinearLayout) view.findViewById(R.id.mywallet_layout);
-        terms_layout = (LinearLayout) view.findViewById(R.id.terms_layout);
-        policy_layout = (LinearLayout) view.findViewById(R.id.policy_layout);
-        reportissue_layout = (LinearLayout) view.findViewById(R.id.reportissue_layout);
-        rate_layout = (LinearLayout) view.findViewById(R.id.rate_layout);
-        share_layout = (LinearLayout) view.findViewById(R.id.share_layout);
-        aredoctor_layout = (LinearLayout) view.findViewById(R.id.aredoctor_layout);
-        pv_consult_layout = (LinearLayout) view.findViewById(R.id.pv_consult_layout);
-        profile_layout = (LinearLayout) view.findViewById(R.id.profile_layout);
-        switch_notisound = (Switch) view.findViewById(R.id.switch_notisound);
-        switch_stopnoti = (Switch) view.findViewById(R.id.switch_stopnoti);
-        spinner_lang = (Spinner) view.findViewById(R.id.spinner_lang);
-        tv_pname = (TextView) view.findViewById(R.id.tv_pname);
-        tv_emailid = (TextView) view.findViewById(R.id.tv_emailid);
+        suggest_layout = view.findViewById(R.id.suggest_layout);
+        refer_layout = view.findViewById(R.id.refer_layout);
+        wallet_layout = view.findViewById(R.id.wallet_layout);
+        inbox_layout = view.findViewById(R.id.inbox_layout);
+        user_layout = view.findViewById(R.id.user_layout);
+        support_layout = view.findViewById(R.id.support_layout);
+        my_family_profile = view.findViewById(R.id.my_family_profile);
+        about_app_layout = view.findViewById(R.id.about_app_layout);
+        mybooking_layout = view.findViewById(R.id.mybooking_layout);
+        myvideos_layout = view.findViewById(R.id.myvideos_layout);
+        signout_layout = view.findViewById(R.id.signout_layout);
+        mywallet_layout = view.findViewById(R.id.mywallet_layout);
+        terms_layout = view.findViewById(R.id.terms_layout);
+        policy_layout = view.findViewById(R.id.policy_layout);
+        reportissue_layout = view.findViewById(R.id.reportissue_layout);
+        rate_layout = view.findViewById(R.id.rate_layout);
+        share_layout = view.findViewById(R.id.share_layout);
+        aredoctor_layout = view.findViewById(R.id.aredoctor_layout);
+        pv_consult_layout = view.findViewById(R.id.pv_consult_layout);
+        profile_layout = view.findViewById(R.id.profile_layout);
+        switch_notisound = view.findViewById(R.id.switch_notisound);
+        switch_stopnoti = view.findViewById(R.id.switch_stopnoti);
+        spinner_lang = view.findViewById(R.id.spinner_lang);
+        tv_pname = view.findViewById(R.id.tv_pname);
+        tv_emailid = view.findViewById(R.id.tv_emailid);
 
         font_reg = Typeface.createFromAsset(getActivity().getAssets(), Model.font_name);
         font_bold = Typeface.createFromAsset(getActivity().getAssets(), Model.font_name_bold);
@@ -141,6 +140,7 @@ public class SettingsFragment extends Fragment {
         stop_noti_val = sharedpreferences.getString(noti_status, "off");
         noti_sound_val = sharedpreferences.getString(noti_sound, "off");
         lang_val = sharedpreferences.getString(app_language, "en");
+        Model.token = sharedpreferences.getString(token, "");
 
 
         if (stop_noti_val.equals("on")) switch_stopnoti.setChecked(true);
@@ -152,7 +152,7 @@ public class SettingsFragment extends Fragment {
 
         try {
             //-----------------------------------------------------
-            String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id;
+            String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id + "&token=" + Model.token;
             System.out.println("url-------------" + url);
             new JSON_get_Patient_Details().execute(url);
             //----------------------------------------
@@ -197,7 +197,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), Video_WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "videos/myfavorite?t=mob&layout=empty&user_id=" + Model.id);
+                i.putExtra("url", Model.BASE_URL + "videos/myfavorite?t=mob&layout=empty&user_id=" + Model.id + "&token=" + Model.token);
                 i.putExtra("type", "My Videos");
                 startActivity(i);
             }
@@ -260,70 +260,6 @@ public class SettingsFragment extends Fragment {
         System.out.println("Model.email-------------" + Model.email);
 
 
-
-      /*  //------- Setting Language ----------------------
-        final List<String> lang_categories = new ArrayList<String>();
-
-        lang_categories.add("Choose Language");
-        lang_map.put("Choose Language", "en");
-
-        if ((Model.browser_country).equals("IN")) {
-            lang_categories.add("English");
-            lang_map.put("English", "en");
-            lang_categories.add("Hindi");
-            lang_map.put("Hindi", "hi");
-            lang_categories.add("Telugu");
-            lang_map.put("Telugu", "te");
-            lang_categories.add("Tamil");
-            lang_map.put("Tamil", "ta");
-            lang_categories.add("Kannada");
-            lang_map.put("Kannada", "ka");
-        }
-
-        ArrayAdapter<String> lang_dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, lang_categories);
-        lang_dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_lang.setAdapter(lang_dataAdapter);
-        //---------------------------------------------
-
-        spinner_lang.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                lang_name = spinner_lang.getSelectedItem().toString();
-                lang_val = lang_map.get(lang_name);
-                Model.app_lang = lang_val;
-
-                *//*Model.cons_lang = lang_name;
-                Model.cons_lang_code = lang_val;*//*
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss.record("android.patient.Sett_Language");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("lang_val", lang_val);
-                properties.put("lang_name", lang_name);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
-
-                //----------- Flurry -------------------------------------------------
-                HashMap<String, String> properties2 = new HashMap<String, String>();
-                properties2.put("lang_val", lang_val);
-                properties2.put("lang_name", lang_name);
-                FlurryAgent.logEvent("android.patient.Sett_Language", properties2);
-                //----------- Flurry -------------------------------------------------
-
-                System.out.println("lang_name----------" + lang_name);
-                System.out.println("lang_val----------" + lang_val);
-
-                set_lang();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-*/
-
         switch_notisound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -338,16 +274,6 @@ public class SettingsFragment extends Fragment {
                 //===============Apply Noti Settings Values=============================================
 
                 System.out.println("noti_sound_val-------" + noti_sound_val);
-
-                try {
-                    Model.kiss.record("android.Patient.Switch_Notify_Sound");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    System.out.println("Exception-----------" + ee.toString());
-                    ee.printStackTrace();
-                }
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -373,15 +299,6 @@ public class SettingsFragment extends Fragment {
                 //===============Apply Noti Settings Values=============================================
 
                 System.out.println("stop_noti_val-------" + stop_noti_val);
-
-                try {
-                    Model.kiss.record("android.Patient.Switch_Notify_Status");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Notify_value", stop_noti_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
             }
         });
 
@@ -390,33 +307,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.Terms");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Intent i = new Intent(getActivity(), WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/terms");
+                Intent i = new Intent(getActivity(), Terms_WebViewActivity.class);
+                i.putExtra("url", "https://www.icliniq.com/p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-
-
-/*                //------------ Tracker ------------------------
-                MyApp.tracker().send(new HitBuilders.EventBuilder()
-                        .setCategory("Settings")
-                        .setAction("terms_layout")
-                        .build());
-                //------------ Tracker ------------------------*/
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
-                Model.kiss.record("android.patient.Sett_Terms");
-                //----------------- Kissmetrics ----------------------------------
-
 
             }
         });
@@ -425,28 +320,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.PrivatePolicy");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Intent i = new Intent(getActivity(), WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy");
+                Intent i = new Intent(getActivity(), Terms_WebViewActivity.class);
+                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-
-                try {
-                    Model.kiss.record("android.Patient.Sett_PrivatePolicy");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
             }
         });
 
@@ -466,19 +344,12 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String url = "http://po.st/icliniqapp";
+                //String url = "https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US";
+                String url = Model.app_url;
+
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-
-                try {
-                    Model.kiss.record("android.Patient.RateApp_Clicked");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.url_link", url);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
             }
 
         });
@@ -493,23 +364,12 @@ public class SettingsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                try {
-                    Model.kiss.record("android.Patient.Sett_ShareApp");
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
             }
         });
 
         aredoctor_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
-                Model.kiss.record("android.patient.AreYouDoctor");
-                //----------------- Kissmetrics ----------------------------------
 
                 String url = "https://play.google.com/store/apps/details?id=com.orane.docassist";
                 Intent i = new Intent(Intent.ACTION_VIEW);
@@ -530,10 +390,6 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
-                Model.kiss.record("android.patient.View_Profile");
-                //----------------- Kissmetrics ----------------------------------
                 Intent i = new Intent(getActivity(), MyProfileActivity.class);
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -570,14 +426,6 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.Sett_Signout");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
 /*                //------------ Tracker ------------------------
                 MyApp.tracker().send(new HitBuilders.EventBuilder()
@@ -597,11 +445,6 @@ public class SettingsFragment extends Fragment {
 
     public void ask_logout() {
 
-        try {
-            Model.kiss.record("android.Patient.Signout");
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        }
 
         final MaterialDialog alert = new MaterialDialog(getActivity());
         alert.setTitle("Logout.!");
@@ -633,7 +476,6 @@ public class SettingsFragment extends Fragment {
                     e.printStackTrace();
                 }
                 //--------------- Logout------------------------------------------------
-
 
 
             }
@@ -677,7 +519,7 @@ public class SettingsFragment extends Fragment {
 
             try {
                 //-----------------------------------------------------
-                String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id;
+                String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id + "&token=" + Model.token;
                 System.out.println("url-------------" + url);
                 new JSON_get_Patient_Details().execute(url);
                 //----------------------------------------

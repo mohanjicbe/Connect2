@@ -26,7 +26,7 @@ public class ShareIntent {
 
             if (actname.equals("MainActivity")) {
                 sAux = "\nGet iCliniq App and talk with the doctors instantly from your phone\n\n";
-                sAux = sAux + Uri.parse("http://po.st/icliniqapp");
+                sAux = sAux + Uri.parse("https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US");
             } else if (actname.equals("SubscriptionPackActivity")) {
                 sAux = "iCliniq Subscription packages - Choose a subscription plan that best suits to you";
             } else if (actname.equals("PrePackActivity")) {
@@ -115,7 +115,7 @@ public class ShareIntent {
 
             sAux = "";
             String sAux = "\nGet iCliniq App and consult doctors instantly from your phone\n\n";
-            sAux = sAux + Uri.parse("http://po.st/icliniqapp");
+            sAux = sAux + Uri.parse("https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US");
 
             shareIntent.putExtra(Intent.EXTRA_TEXT, sAux);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -131,7 +131,7 @@ public class ShareIntent {
 
             sAux = "";
             sAux = "\nGet iCliniq App and consult doctors instantly from your phone\n\n";
-            sAux = sAux + Uri.parse("http://po.st/icliniqapp");
+            sAux = sAux + Uri.parse("https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US");
 
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");

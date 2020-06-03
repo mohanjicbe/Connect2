@@ -9,9 +9,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -442,6 +444,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
                 if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
 
                     String url = Model.BASE_URL + "sapp/myDoc?user_id=" + (Model.id) + "&page=1&sp_id=0&token=" + Model.token;
+                    //String url = "https://covid-19-data.p.rapidapi.com/totals?format=undefined";
                     System.out.println("params---------------" + url);
                     new MyTask_server().execute(url);
 
@@ -453,7 +456,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
             }
 
         } else {
-            Toast.makeText(MyDoctorsActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyDoctorsActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -476,8 +479,11 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         @Override
         protected Void doInBackground(String... params) {
             try {
-                str_response = new JSONParser().getJSONString(params[0]);
+               // str_response = new JSONParser().getJSONString(params[0]);
+                new JSONParser().getJSONString2("");
+
                 System.out.println("str_response--------------" + str_response);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -847,6 +853,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
             return true;
         }
 
+/*
 
         if (id == R.id.nav_newquery) {
 
@@ -878,6 +885,7 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
 
             return true;
         }
+*/
 
         return super.onOptionsItemSelected(item);
     }

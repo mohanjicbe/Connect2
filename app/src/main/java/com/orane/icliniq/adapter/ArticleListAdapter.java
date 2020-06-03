@@ -93,7 +93,7 @@ public class ArticleListAdapter extends ArrayAdapter<Item> {
 
 /*
             try {
-                URL url = new URL("https://img.maalaimalar.com/Articles/2019/Jul/201907100945172575_Two-teachers-and-Nutrition-staff-in-government-school_SECVPF.gif");
+
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 (holder.imageview_poster).setImageBitmap(bmp);
             } catch (Exception e) {

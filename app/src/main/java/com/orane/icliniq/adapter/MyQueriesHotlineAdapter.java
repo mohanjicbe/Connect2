@@ -21,8 +21,10 @@ public class MyQueriesHotlineAdapter extends ArrayAdapter<Item> {
 
     private Activity activity;
     private List<Item> items;
+
     private Item objBean;
     private int row;
+
     private Typeface robo_reg, robo_bold;
 
     public MyQueriesHotlineAdapter(Activity act, int resource, List<Item> arrayList) {

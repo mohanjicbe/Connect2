@@ -7,9 +7,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,52 +109,7 @@ public class BookingListActivity extends AppCompatActivity {
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
             //----------------------------------------------------------
-            /*
-            Investments : (42,500)
-            -------------------------
-            Room Advance : 10,000
-            Aluminium Partition : 13,000
-            Sony Camera : 13,000
-            Tripad Big : 2500
-            Tripad small : 500
-            Color Mic : 500 + 750 = 1250
-            Stabilizer : 1800
 
-            Routine :
-            -----------
-            1. Noyyal Media Website & Hosting - 709/monthly
-            2. Room Rent & EB- 4000
-
-
-            Expected : (40,000)
-            ----------------------
-            1. Table, Chair, visitor chairs - 10,000
-            2. Partition Screen - 2500
-            3. Lightings - 10,000
-            4. stickers - 2500
-            5. Shop Flex board - 2500
-            6. Notice Board, Sample Photos - 1500
-            7. Visiting Card, Catalog, ID card, LetterPad, Photo Sheets, Stamp Seal, Scissors, PP Photo covers,
-            Brown covers, bill book, work book, Expenses book ---- 4000
-            8. 4 GB RAM, USB Storage Devices, Photo Printer -- 5000
-
-            Expected Devices :
-            ----------------------
-            1. DSLR Camera, Lenses & Back Bag: 42,500
-            2. Video Camera - 75,000
-
-            Business Plan :
-            ------------------
-
-            1. Photo Designing, Album making
-            2. Video Editing, Wedding & Cinematic song creations
-            3. Photography, Videography & Drone Pilots
-            4. Live Coverage using Social Media
-            4. Social contents - Namma Coimbatore, Sandhai..
-            5. Photo Frames & Personalized Gifts
-            6.
-
-            */
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

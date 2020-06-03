@@ -7,8 +7,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +33,7 @@ public class Video_WebViewActivity extends BaseActivity implements ObservableScr
 
     public String url, type, token;
     LinearLayout bottom_layout;
-    ObservableWebView webView;
+    WebView webView;
     ImageView close_button;
     TextView mTitle;
     public String search_str = "guestpaythank";
@@ -77,7 +77,7 @@ public class Video_WebViewActivity extends BaseActivity implements ObservableScr
         }
         //------------ Object Creations -------------------------------
 
-        webView = (ObservableWebView) findViewById(R.id.webview);
+        webView = (WebView) findViewById(R.id.webview);
 
 
         try {
@@ -161,7 +161,7 @@ public class Video_WebViewActivity extends BaseActivity implements ObservableScr
         });
 
         webView.loadUrl(url);
-        webView.setScrollViewCallbacks(this);
+       // webView.setScrollViewCallbacks(this);
     }
 
 
@@ -214,7 +214,7 @@ public class Video_WebViewActivity extends BaseActivity implements ObservableScr
             return true;
         }
 
-        if (id == R.id.nav_video_gall) {
+/*        if (id == R.id.nav_video_gall) {
             Intent i = new Intent(Video_WebViewActivity.this, Video_WebViewActivity.class);
             i.putExtra("url", url);
             i.putExtra("type", "Video Gallery");
@@ -227,7 +227,7 @@ public class Video_WebViewActivity extends BaseActivity implements ObservableScr
             i.putExtra("type", "Favourite Videos");
             startActivity(i);
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

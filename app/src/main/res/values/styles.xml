@@ -25,6 +25,10 @@
 
     </style>
 
+    <style name="AppThemeRatingBar" parent="Theme.AppCompat">
+        <item name="colorAccent">#6200ea</item>
+        <item name="android:colorControlNormal">#f9a825</item>
+    </style>
 
     <style name="RegistrationEditTextStyle">
         <item name="android:layout_height">wrap_content</item>

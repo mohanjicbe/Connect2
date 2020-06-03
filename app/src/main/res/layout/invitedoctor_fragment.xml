@@ -211,7 +211,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="left"
                 android:hint="Enter doctor mobile number here"
-                android:inputType="textEmailAddress"
+                android:inputType="number"
                 android:padding="10dp"
                 android:textColor="@color/mds_bluegrey_800"
                 android:textSize="14sp"

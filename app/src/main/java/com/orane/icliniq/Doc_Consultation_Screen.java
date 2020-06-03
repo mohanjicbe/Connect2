@@ -8,9 +8,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Parallex.ConsultFragment;
@@ -243,7 +243,7 @@ public class Doc_Consultation_Screen extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(Doc_Consultation_Screen.this, "No Internet connection, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Doc_Consultation_Screen.this, "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -318,7 +318,7 @@ public class Doc_Consultation_Screen extends AppCompatActivity {
                             }
 
                         } else
-                            edt_query.setError("Query cannot be empty");
+                            edt_query.setError("Please enter your query");
 
                     } else {
                         System.out.println("Log_Status---Zero-----------" + Log_Status);
@@ -377,7 +377,7 @@ public class Doc_Consultation_Screen extends AppCompatActivity {
                         ask_login();
                     }
                 } else
-                    edt_query.setError("Query cannot be empty");
+                    edt_query.setError("Please enter your query");
 
             } catch (Exception e) {
                 e.printStackTrace();

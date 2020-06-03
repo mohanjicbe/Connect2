@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.davemorrissey.labs:subsampling-scale-image-view:3.9.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/subsampling-scale-image-view-3.9.0.aar/c97e60de2d413add6e9125a72388f0e9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/subsampling-scale-image-view-3.9.0.aar/c97e60de2d413add6e9125a72388f0e9/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/04ef63cd890c19e1fa58e65a640e79cd/jetified-subsampling-scale-image-view-3.9.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/04ef63cd890c19e1fa58e65a640e79cd/jetified-subsampling-scale-image-view-3.9.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

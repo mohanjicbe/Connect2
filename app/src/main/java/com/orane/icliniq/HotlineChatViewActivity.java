@@ -21,9 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,15 +38,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import com.flurry.android.FlurryAgent;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.attachment_view.GridViewActivity;
 import com.orane.icliniq.file_picking.utils.FileUtils;
@@ -102,7 +96,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
     Bitmap bitmap;
     JSONArray jarray_files;
     CircleImageView doc_photo;
-    ImageLoader imageLoader;
     LinearLayout files_layout, layout_attachfile, ans_layout, myLayout, query_layout, send_message_layout;
     View vi_ans, vi, vi_files;
     public JSONObject hotline_jsonobj, jsonobj_view, jsonobj_files, chat_post_jsonobj, json, feedback_json, feedback_jsonobj, jsonobj, jsonobj1;
@@ -159,10 +152,9 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         setContentView(R.layout.hotline_chat_view);
 
         FlurryAgent.onPageView();
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         pubnub = new Pubnub(PubnubKeys.PUBLISH_KEY, PubnubKeys.SUBSCRIBE_KEY);
@@ -172,8 +164,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             //getSupportActionBar().setTitle("Chat View");
 
-            tv_tooltit = (TextView) toolbar.findViewById(R.id.tv_tooltit);
-            tv_tooldesc = (TextView) toolbar.findViewById(R.id.tv_tooldesc);
+            tv_tooltit = toolbar.findViewById(R.id.tv_tooltit);
+            tv_tooldesc = toolbar.findViewById(R.id.tv_tooldesc);
 
             Typeface tf_answer = Typeface.createFromAsset(getAssets(), Model.font_name);
             tv_tooltit.setTypeface(tf_answer);
@@ -211,14 +203,14 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         System.out.println("Model.token----------------------" + Model.token);
         //================ Shared Pref ======================
 
-        toolbar_image = (CircleImageView) findViewById(R.id.toolbar_image);
-        take_photo_image = (ImageView) findViewById(R.id.take_photo_image);
-        scrollview = (ScrollView) findViewById(R.id.scrollview);
-        myLayout = (LinearLayout) findViewById(R.id.parent_qalayout);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
-        edt_chat_msg = (EditText) findViewById(R.id.edt_chat_msg);
-        btn_send = (Button) findViewById(R.id.btn_send);
+        toolbar_image = findViewById(R.id.toolbar_image);
+        take_photo_image = findViewById(R.id.take_photo_image);
+        scrollview = findViewById(R.id.scrollview);
+        myLayout = findViewById(R.id.parent_qalayout);
+        progressBar = findViewById(R.id.progressBar);
+        send_message_layout = findViewById(R.id.send_message_layout);
+        edt_chat_msg = findViewById(R.id.edt_chat_msg);
+        btn_send = findViewById(R.id.btn_send);
 
 
         try {
@@ -237,7 +229,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             System.out.println("follouwupcode---------" + follouwupcode);
 
         } catch (Exception e) {
-            System.out.println("get Exception---------" + e.toString());
             e.printStackTrace();
         }
 
@@ -279,6 +270,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             });
         }
 
+        //------------------ Initialize File Attachment ---------------------------------
         EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
@@ -315,15 +307,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Hotline_Chat_TakePhoto");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.Qid:", selqid);
-                    properties.put("android.patient.Doctor_id:", Doctor_id);
-                    properties.put("android.patient.follouwupcode:", follouwupcode);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -366,7 +349,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                         System.out.println("Chat post json------" + json);
                                         new JSONPostQuery().execute(json);
                                     } else {
-                                        Toast.makeText(HotlineChatViewActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(HotlineChatViewActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                                     }
 
                                     getWindow().setSoftInputMode(
@@ -400,7 +383,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
     private void initImageLoader() {
 
-        try {
+        /*try {
 
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
@@ -415,7 +398,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /*private void init() {
@@ -524,18 +507,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             try {
                 String status_txt = chat_post_jsonobj.getString("status");
                 System.out.println("Chat post Status----- " + status_txt);
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Hotline_Chat_PostMsg");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("android.patient.Qid:", selqid);
-                properties.put("android.patient.Doctor_id:", Doctor_id);
-                properties.put("android.patient.follouwupcode:", follouwupcode);
-                properties.put("android.patient.Msg:", chat_msg);
-                properties.put("android.patient.status:", status_txt);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //----------- Flurry -------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -664,7 +635,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                         jsonobj1 = jsonarray.getJSONObject(i);
                         System.out.println("jsonobj_first-----" + jsonobj1.toString());
 
-                        for (int j = 1; j <= 35; j++) {
+                        for (int j = 1; j <= (jsonobj1.length()); j++) {
 
                             question = "";
 
@@ -705,29 +676,28 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                 finish();
                             }*/
 
-
                                 vi = getLayoutInflater().inflate(R.layout.chat_view_question, null);
 
-                                files_layout = (LinearLayout) vi.findViewById(R.id.files_layout);
-                                tvt_morecomp = (TextView) vi.findViewById(R.id.tvt_morecomp);
-                                tv_morecomp = (TextView) vi.findViewById(R.id.tv_morecomp);
-                                tvt_prevhist = (TextView) vi.findViewById(R.id.tvt_prevhist);
-                                tv_prevhist = (TextView) vi.findViewById(R.id.tv_prevhist);
-                                tvt_curmedi = (TextView) vi.findViewById(R.id.tvt_curmedi);
-                                tv_curmedi = (TextView) vi.findViewById(R.id.tv_curmedi);
-                                tvt_pastmedi = (TextView) vi.findViewById(R.id.tvt_pastmedi);
-                                tv_pastmedi = (TextView) vi.findViewById(R.id.tv_pastmedi);
-                                tvt_labtest = (TextView) vi.findViewById(R.id.tvt_labtest);
-                                tv_labtest = (TextView) vi.findViewById(R.id.tv_labtest);
+                                files_layout = vi.findViewById(R.id.files_layout);
+                                tvt_morecomp = vi.findViewById(R.id.tvt_morecomp);
+                                tv_morecomp = vi.findViewById(R.id.tv_morecomp);
+                                tvt_prevhist = vi.findViewById(R.id.tvt_prevhist);
+                                tv_prevhist = vi.findViewById(R.id.tv_prevhist);
+                                tvt_curmedi = vi.findViewById(R.id.tvt_curmedi);
+                                tv_curmedi = vi.findViewById(R.id.tv_curmedi);
+                                tvt_pastmedi = vi.findViewById(R.id.tvt_pastmedi);
+                                tv_pastmedi = vi.findViewById(R.id.tv_pastmedi);
+                                tvt_labtest = vi.findViewById(R.id.tvt_labtest);
+                                tv_labtest = vi.findViewById(R.id.tv_labtest);
 
-                                layout_attachfile = (LinearLayout) vi.findViewById(R.id.layout_attachfile);
-                                query_layout = (LinearLayout) vi.findViewById(R.id.query_layout);
-                                tv_query = (TextView) vi.findViewById(R.id.tv_query);
-                                tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
+                                layout_attachfile = vi.findViewById(R.id.layout_attachfile);
+                                query_layout = vi.findViewById(R.id.query_layout);
+                                tv_query = vi.findViewById(R.id.tv_query);
+                                tv_datetime = vi.findViewById(R.id.tv_datetime);
 
-                                layout_file = (LinearLayout) vi.findViewById(R.id.layout_file);
-                                attachfile = (TextView) vi.findViewById(R.id.attachfile);
-                                tv_filename = (TextView) vi.findViewById(R.id.tv_filename);
+                                layout_file = vi.findViewById(R.id.layout_file);
+                                attachfile = vi.findViewById(R.id.attachfile);
+                                tv_filename = vi.findViewById(R.id.tv_filename);
 
                                 //question = question.replace("\\\n", System.getProperty("line.separator"));
                                 Typeface tf = Typeface.createFromAsset(getAssets(), Model.font_name);
@@ -872,11 +842,11 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                         System.out.println("file_url--------" + file_url);
 
                                         vi_files = getLayoutInflater().inflate(R.layout.attached_file_list, null);
-                                        ImageView file_image = (ImageView) vi_files.findViewById(R.id.file_image);
+                                        ImageView file_image = vi_files.findViewById(R.id.file_image);
                                         //tv_filename = (TextView) vi_files.findViewById(R.id.tv_filename);
-                                        tv_ext = (TextView) vi_files.findViewById(R.id.tv_ext);
-                                        tv_userid = (TextView) vi_files.findViewById(R.id.tv_userid);
-                                        TextView tv_filename_new = (TextView) vi_files.findViewById(R.id.tv_filename);
+                                        tv_ext = vi_files.findViewById(R.id.tv_ext);
+                                        tv_userid = vi_files.findViewById(R.id.tv_userid);
+                                        TextView tv_filename_new = vi_files.findViewById(R.id.tv_filename);
 
                                         //tv_filename.setText(Html.fromHtml(file_url));
                                         //tv_filename.setText(attach_file_text);
@@ -968,25 +938,25 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
                                         vi_ans = getLayoutInflater().inflate(R.layout.chat_view_answer, null);
 
-                                        TextView tvt_probcause = (TextView) vi_ans.findViewById(R.id.tvt_probcause);
-                                        TextView tv_probcause = (TextView) vi_ans.findViewById(R.id.tv_probcause);
-                                        TextView tvt_invdone = (TextView) vi_ans.findViewById(R.id.tvt_invdone);
-                                        TextView tv_invdone = (TextView) vi_ans.findViewById(R.id.tv_invdone);
-                                        TextView tvt_diffdiag = (TextView) vi_ans.findViewById(R.id.tvt_diffdiag);
-                                        TextView tv_diffdiag = (TextView) vi_ans.findViewById(R.id.tv_diffdiag);
-                                        TextView tvt_probdiag = (TextView) vi_ans.findViewById(R.id.tvt_probdiag);
-                                        TextView tv_probdiag = (TextView) vi_ans.findViewById(R.id.tv_probdiag);
-                                        TextView tvt_tratplan = (TextView) vi_ans.findViewById(R.id.tvt_tratplan);
-                                        TextView tv_tratplan = (TextView) vi_ans.findViewById(R.id.tv_tratplan);
-                                        TextView tvt_prevmeasure = (TextView) vi_ans.findViewById(R.id.tvt_prevmeasure);
-                                        TextView tv_prevmeasure = (TextView) vi_ans.findViewById(R.id.tv_prevmeasure);
-                                        TextView tvt_follup = (TextView) vi_ans.findViewById(R.id.tvt_follup);
-                                        TextView tv_follup = (TextView) vi_ans.findViewById(R.id.tv_follup);
+                                        TextView tvt_probcause = vi_ans.findViewById(R.id.tvt_probcause);
+                                        TextView tv_probcause = vi_ans.findViewById(R.id.tv_probcause);
+                                        TextView tvt_invdone = vi_ans.findViewById(R.id.tvt_invdone);
+                                        TextView tv_invdone = vi_ans.findViewById(R.id.tv_invdone);
+                                        TextView tvt_diffdiag = vi_ans.findViewById(R.id.tvt_diffdiag);
+                                        TextView tv_diffdiag = vi_ans.findViewById(R.id.tv_diffdiag);
+                                        TextView tvt_probdiag = vi_ans.findViewById(R.id.tvt_probdiag);
+                                        TextView tv_probdiag = vi_ans.findViewById(R.id.tv_probdiag);
+                                        TextView tvt_tratplan = vi_ans.findViewById(R.id.tvt_tratplan);
+                                        TextView tv_tratplan = vi_ans.findViewById(R.id.tv_tratplan);
+                                        TextView tvt_prevmeasure = vi_ans.findViewById(R.id.tvt_prevmeasure);
+                                        TextView tv_prevmeasure = vi_ans.findViewById(R.id.tv_prevmeasure);
+                                        TextView tvt_follup = vi_ans.findViewById(R.id.tvt_follup);
+                                        TextView tv_follup = vi_ans.findViewById(R.id.tv_follup);
 
-                                        imageview_poster = (CircleImageView) vi_ans.findViewById(R.id.imageview_poster);
-                                        ans_layout = (LinearLayout) vi_ans.findViewById(R.id.ans_layout);
-                                        tv_answer = (TextView) vi_ans.findViewById(R.id.tv_answer);
-                                        tv_datetime = (TextView) vi_ans.findViewById(R.id.tv_datetime);
+                                        imageview_poster = vi_ans.findViewById(R.id.imageview_poster);
+                                        ans_layout = vi_ans.findViewById(R.id.ans_layout);
+                                        tv_answer = vi_ans.findViewById(R.id.tv_answer);
+                                        tv_datetime = vi_ans.findViewById(R.id.tv_datetime);
 
                                         JSONObject ansjsonobject = ansjsonarray.getJSONObject(k);
                                         System.out.println("ansjsonobject---" + ansjsonobject);
@@ -1173,7 +1143,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                 }
                             }
                         }
-
                     }
 
                     //-------- Auto Scroll to Bottom------------------
@@ -1185,15 +1154,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                     });
                     //-------- Auto Scroll to Bottom------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Hotline_ChatView");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.qid:", selqid);
-                    properties.put("android.patient.doctor_id:", Doctor_id);
-                    properties.put("android.patient.follouwupcode:", follouwupcode);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("android.patient.qid:", selqid);
@@ -1243,21 +1203,21 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             if (!chat_msg.equals("")) {
 
                 vi = getLayoutInflater().inflate(R.layout.chat_view_question, null);
-                query_layout = (LinearLayout) vi.findViewById(R.id.query_layout);
-                tv_query = (TextView) vi.findViewById(R.id.tv_query);
-                tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
+                query_layout = vi.findViewById(R.id.query_layout);
+                tv_query = vi.findViewById(R.id.tv_query);
+                tv_datetime = vi.findViewById(R.id.tv_datetime);
 
-                layout_attachfile = (LinearLayout) vi.findViewById(R.id.layout_attachfile);
-                tvt_morecomp = (TextView) vi.findViewById(R.id.tvt_morecomp);
-                tv_morecomp = (TextView) vi.findViewById(R.id.tv_morecomp);
-                tvt_prevhist = (TextView) vi.findViewById(R.id.tvt_prevhist);
-                tv_prevhist = (TextView) vi.findViewById(R.id.tv_prevhist);
-                tvt_curmedi = (TextView) vi.findViewById(R.id.tvt_curmedi);
-                tv_curmedi = (TextView) vi.findViewById(R.id.tv_curmedi);
-                tvt_pastmedi = (TextView) vi.findViewById(R.id.tvt_pastmedi);
-                tv_pastmedi = (TextView) vi.findViewById(R.id.tv_pastmedi);
-                tvt_labtest = (TextView) vi.findViewById(R.id.tvt_labtest);
-                tv_labtest = (TextView) vi.findViewById(R.id.tv_labtest);
+                layout_attachfile = vi.findViewById(R.id.layout_attachfile);
+                tvt_morecomp = vi.findViewById(R.id.tvt_morecomp);
+                tv_morecomp = vi.findViewById(R.id.tv_morecomp);
+                tvt_prevhist = vi.findViewById(R.id.tvt_prevhist);
+                tv_prevhist = vi.findViewById(R.id.tv_prevhist);
+                tvt_curmedi = vi.findViewById(R.id.tvt_curmedi);
+                tv_curmedi = vi.findViewById(R.id.tv_curmedi);
+                tvt_pastmedi = vi.findViewById(R.id.tvt_pastmedi);
+                tv_pastmedi = vi.findViewById(R.id.tv_pastmedi);
+                tvt_labtest = vi.findViewById(R.id.tvt_labtest);
+                tv_labtest = vi.findViewById(R.id.tv_labtest);
 
                 tv_curmedi.setVisibility(View.GONE);
                 tvt_curmedi.setVisibility(View.GONE);
@@ -1306,27 +1266,27 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
                 vi_ans = getLayoutInflater().inflate(R.layout.chat_view_answer, null);
 
-                imageview_poster = (CircleImageView) vi_ans.findViewById(R.id.imageview_poster);
-                ans_layout = (LinearLayout) vi_ans.findViewById(R.id.ans_layout);
-                tv_answer = (TextView) vi_ans.findViewById(R.id.tv_answer);
-                tv_datetime = (TextView) vi_ans.findViewById(R.id.tv_datetime);
+                imageview_poster = vi_ans.findViewById(R.id.imageview_poster);
+                ans_layout = vi_ans.findViewById(R.id.ans_layout);
+                tv_answer = vi_ans.findViewById(R.id.tv_answer);
+                tv_datetime = vi_ans.findViewById(R.id.tv_datetime);
 
                 //Picasso.with(getApplicationContext()).load(doc_photo_url).placeholder(R.mipmap.doctor_icon).error(R.mipmap.logo).into(imageview_poster);
 
-                TextView tvt_probcause = (TextView) vi_ans.findViewById(R.id.tvt_probcause);
-                TextView tv_probcause = (TextView) vi_ans.findViewById(R.id.tv_probcause);
-                TextView tvt_invdone = (TextView) vi_ans.findViewById(R.id.tvt_invdone);
-                TextView tv_invdone = (TextView) vi_ans.findViewById(R.id.tv_invdone);
-                TextView tvt_diffdiag = (TextView) vi_ans.findViewById(R.id.tvt_diffdiag);
-                TextView tv_diffdiag = (TextView) vi_ans.findViewById(R.id.tv_diffdiag);
-                TextView tvt_probdiag = (TextView) vi_ans.findViewById(R.id.tvt_probdiag);
-                TextView tv_probdiag = (TextView) vi_ans.findViewById(R.id.tv_probdiag);
-                TextView tvt_tratplan = (TextView) vi_ans.findViewById(R.id.tvt_tratplan);
-                TextView tv_tratplan = (TextView) vi_ans.findViewById(R.id.tv_tratplan);
-                TextView tvt_prevmeasure = (TextView) vi_ans.findViewById(R.id.tvt_prevmeasure);
-                TextView tv_prevmeasure = (TextView) vi_ans.findViewById(R.id.tv_prevmeasure);
-                TextView tvt_follup = (TextView) vi_ans.findViewById(R.id.tvt_follup);
-                TextView tv_follup = (TextView) vi_ans.findViewById(R.id.tv_follup);
+                TextView tvt_probcause = vi_ans.findViewById(R.id.tvt_probcause);
+                TextView tv_probcause = vi_ans.findViewById(R.id.tv_probcause);
+                TextView tvt_invdone = vi_ans.findViewById(R.id.tvt_invdone);
+                TextView tv_invdone = vi_ans.findViewById(R.id.tv_invdone);
+                TextView tvt_diffdiag = vi_ans.findViewById(R.id.tvt_diffdiag);
+                TextView tv_diffdiag = vi_ans.findViewById(R.id.tv_diffdiag);
+                TextView tvt_probdiag = vi_ans.findViewById(R.id.tvt_probdiag);
+                TextView tv_probdiag = vi_ans.findViewById(R.id.tv_probdiag);
+                TextView tvt_tratplan = vi_ans.findViewById(R.id.tvt_tratplan);
+                TextView tv_tratplan = vi_ans.findViewById(R.id.tv_tratplan);
+                TextView tvt_prevmeasure = vi_ans.findViewById(R.id.tvt_prevmeasure);
+                TextView tv_prevmeasure = vi_ans.findViewById(R.id.tv_prevmeasure);
+                TextView tvt_follup = vi_ans.findViewById(R.id.tvt_follup);
+                TextView tv_follup = vi_ans.findViewById(R.id.tv_follup);
 
                 tv_probcause.setVisibility(View.GONE);
                 tvt_probcause.setVisibility(View.GONE);
@@ -1361,17 +1321,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                     v.vibrate(500);
                 }
                 //--------------- Alert Service -------------------------------------------------------
-
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Hotline_Chat_Receive");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("android.patient.chat_msg:", chat_msg);
-                properties.put("android.patient.Doctor_id:", Doctor_id);
-                properties.put("android.patient.follouwupcode:", follouwupcode);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //----------- Flurry -------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -1431,19 +1380,19 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             if (!(Model.upload_files).equals("")) {
 
                 vi = getLayoutInflater().inflate(R.layout.chat_view_question, null);
-                tv_query = (TextView) vi.findViewById(R.id.tv_query);
-                tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
+                tv_query = vi.findViewById(R.id.tv_query);
+                tv_datetime = vi.findViewById(R.id.tv_datetime);
 
-                tvt_morecomp = (TextView) vi.findViewById(R.id.tvt_morecomp);
-                tv_morecomp = (TextView) vi.findViewById(R.id.tv_morecomp);
-                tvt_prevhist = (TextView) vi.findViewById(R.id.tvt_prevhist);
-                tv_prevhist = (TextView) vi.findViewById(R.id.tv_prevhist);
-                tvt_curmedi = (TextView) vi.findViewById(R.id.tvt_curmedi);
-                tv_curmedi = (TextView) vi.findViewById(R.id.tv_curmedi);
-                tvt_pastmedi = (TextView) vi.findViewById(R.id.tvt_pastmedi);
-                tv_pastmedi = (TextView) vi.findViewById(R.id.tv_pastmedi);
-                tvt_labtest = (TextView) vi.findViewById(R.id.tvt_labtest);
-                tv_labtest = (TextView) vi.findViewById(R.id.tv_labtest);
+                tvt_morecomp = vi.findViewById(R.id.tvt_morecomp);
+                tv_morecomp = vi.findViewById(R.id.tv_morecomp);
+                tvt_prevhist = vi.findViewById(R.id.tvt_prevhist);
+                tv_prevhist = vi.findViewById(R.id.tv_prevhist);
+                tvt_curmedi = vi.findViewById(R.id.tvt_curmedi);
+                tv_curmedi = vi.findViewById(R.id.tv_curmedi);
+                tvt_pastmedi = vi.findViewById(R.id.tvt_pastmedi);
+                tv_pastmedi = vi.findViewById(R.id.tv_pastmedi);
+                tvt_labtest = vi.findViewById(R.id.tvt_labtest);
+                tv_labtest = vi.findViewById(R.id.tv_labtest);
 
                 tv_curmedi.setVisibility(View.GONE);
                 tvt_curmedi.setVisibility(View.GONE);
@@ -1455,7 +1404,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                 tvt_prevhist.setVisibility(View.GONE);
                 tvt_morecomp.setVisibility(View.GONE);
                 tv_morecomp.setVisibility(View.GONE);
-
 
                 tv_query.setText("File Uploaded: " + (Model.upload_files));
 
@@ -1488,7 +1436,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
         try {
 
-            TextView tv_filename = (TextView) v.findViewById(R.id.tv_filename);
+            TextView tv_filename = v.findViewById(R.id.tv_filename);
             String file_name = tv_filename.getText().toString();
             String file_ext = tv_ext.getText().toString();
             String file_userid = tv_userid.getText().toString();
@@ -1511,7 +1459,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(file_full__url));
             startActivity(i);
-
 
 
 /*            Intent i = new Intent(Intent.ACTION_VIEW);
@@ -1578,6 +1525,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                 public void run() {
 
                     try {
+
                         handler.post(new Runnable() {
                             public void run() {
 
@@ -1610,27 +1558,33 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
     public void force_logout() {
 
-        final MaterialDialog alert = new MaterialDialog(HotlineChatViewActivity.this);
-        alert.setTitle("Please Re-Login the App..!");
-        alert.setMessage("Something went wrong. Please Logout and Login again to continue");
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try {
 
-                //============================================================
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString(Login_Status, "0");
-                editor.apply();
-                //============================================================
-                finishAffinity();
-                Intent i = new Intent(HotlineChatViewActivity.this, LoginActivity.class);
-                startActivity(i);
-                alert.dismiss();
-                finish();
-            }
-        });
-        alert.show();
+            final MaterialDialog alert = new MaterialDialog(HotlineChatViewActivity.this);
+            alert.setTitle("Please Re-Login the App..!");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
+            alert.setCanceledOnTouchOutside(false);
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //============================================================
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString(Login_Status, "0");
+                    editor.apply();
+                    //============================================================
+                    finishAffinity();
+                    Intent i = new Intent(HotlineChatViewActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    alert.dismiss();
+                    finish();
+                }
+            });
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1661,7 +1615,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         mAnimals.add("Browse Files");
 
         final CharSequence[] Animals = mAnimals.toArray(new String[mAnimals.size()]);
-        android.support.v7.app.AlertDialog.Builder dialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Attach Files/Images");
         dialogBuilder.setItems(Animals, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
@@ -1702,15 +1656,13 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
                             @Override
                             public void permissionRefused() {
-
                             }
                         });
                     }
-
                 }
             }
         });
-        android.support.v7.app.AlertDialog alertDialogObject = dialogBuilder.create();
+        AlertDialog alertDialogObject = dialogBuilder.create();
         alertDialogObject.show();
     }
 
@@ -1745,16 +1697,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                     System.out.println("selectedPath-------" + selectedPath);
                     System.out.println("selectedfilename-------" + selectedfilename);
                     dumpIntent(data);
-
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Hotline_Take_Photo");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.qid", (selqid));
-                    properties.put("android.patient.attach_file_path", selectedPath);
-                    properties.put("android.patient.attach_filename", selectedfilename);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -1793,14 +1735,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                             final String path = FileUtils.getPath(this, uri);
                             Toast.makeText(HotlineChatViewActivity.this, "File Selected: " + path, Toast.LENGTH_LONG).show();
 
-                            //----------------- Kissmetrics ----------------------------------
-                            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                            Model.kiss.record("android.patient.Browse_Images");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("android.patient.qid", selqid);
-                            properties.put("android.patient.attach_file_path", path);
-                            Model.kiss.set(properties);
-                            //----------------- Kissmetrics ----------------------------------
                             //----------- Flurry -------------------------------------------------
                             Map<String, String> articleParams = new HashMap<String, String>();
                             articleParams.put("android.patient.qid", selqid);
@@ -1894,7 +1828,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
     public void onClickFile(View v) {
 
         try {
-            TextView tv_filename = (TextView) v.findViewById(R.id.tv_filename);
+            TextView tv_filename = v.findViewById(R.id.tv_filename);
             String file_name = tv_filename.getText().toString();
             System.out.println("str_filename-------" + file_name);
 

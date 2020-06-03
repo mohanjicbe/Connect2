@@ -1,32 +1,24 @@
 package com.orane.icliniq.fragment;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
-import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -36,39 +28,32 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.slider.library.Animations.DescriptionAnimation;
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.nineoldandroids.view.ViewHelper;
 import com.orane.icliniq.Answeres_Activity;
 import com.orane.icliniq.AskQuery1;
 import com.orane.icliniq.ConsultationListActivity;
 import com.orane.icliniq.DoctorsListActivity;
-import com.orane.icliniq.HotlineHome;
 import com.orane.icliniq.Instant_Chat;
 import com.orane.icliniq.LoginActivity;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.MyDoctorsActivity;
+import com.orane.icliniq.Offers_List_activity;
 import com.orane.icliniq.Parallex.slidingTab.SlidingTabLayout;
 import com.orane.icliniq.PrePackActivity;
-import com.orane.icliniq.QADetailNew;
 import com.orane.icliniq.QueryActivity;
 import com.orane.icliniq.R;
 import com.orane.icliniq.Search_Screen;
-import com.orane.icliniq.SignupActivity;
 import com.orane.icliniq.SubscriptionPackActivity;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 import com.orane.icliniq.network.ShareIntent;
-import com.orane.icliniq.zoom.Video_Calling_Activity;
 import com.skyfishjy.library.RippleBackground;
 import com.squareup.picasso.Picasso;
 
@@ -86,10 +71,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import me.drakeet.materialdialog.MaterialDialog;
 
 
-public class HomeFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener, ObservableScrollViewCallbacks {
+public class HomeFragment extends Fragment {
 
     Intent intent;
-    private SliderLayout mDemoSlider;
     ImageView img_share_icon, offer_image2, img_search_logo;
     public File imageFile;
     TextView tv_offer_text, btn_free, offer_desc2, offer_title2, textview_title, textview_short, textview_docname, textview_ctype, offer_title, hotlinechat2, tv_pvcons2, offer_desc;
@@ -99,14 +83,16 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     Bitmap bitmap_image;
     JSONObject logout_jsonobj;
     ObservableScrollView scrollview;
+    String isActivePlan;
     SlidingTabLayout slide1;
     JSONObject logout_json_validate;
     JSONArray jsonarray, jsonarr, jsonarr_banner;
     PendingIntent pIntent;
     ImageView offer_image1;
+    JSONObject json_feedback, json_response_obj;
     Bitmap bitmap_images;
     CircleImageView imageview_poster;
-    public String logout_text,chat_tip_val, str_response_banner, qa_photo_url, qa_abstract, qa_title, qa_doctor_name, qa_url, str_response, ticker_text, ContentTitle, ContentText, SummaryText, photo_url, speciality, title_hash, title;
+    public String logout_text, deals_offers_list, report_response, chat_tip_val, str_response_banner, qa_photo_url, qa_abstract, qa_title, qa_doctor_name, qa_url, str_response, ticker_text, ContentTitle, ContentText, SummaryText, photo_url, speciality, title_hash, title;
     Typeface font_reg, fonr_bold;
     Intent i;
     View vi;
@@ -132,9 +118,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     public static final String chat_tip = "chat_tip_key";
     public String uname, docname, pass, stop_noti_val, noti_sound_val;
     ImageView q_logo;
-    LinearLayout layout_AskQuery;
+    LinearLayout layout_AskQuery, deals_layout;
 
-    TextView tv_title, tv_sub_title;
+    TextView tv_title, tv_sub_title, tv_viewall_offers;
     Button btn_getitnow, btn_buynow;
 
     public static HomeFragment newInstance(int pageIndex) {
@@ -149,15 +135,22 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
+
+        //-------- Initialization -----------------------------------------------------
+        sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        Model.id = sharedpreferences.getString(id, "");
+
+        System.out.println("MModel.id---------------------" + Model.id);
+
+        Model.first_time = "Yes";
+        //-------- Initialization -----------------------------------------------------
+
         Model.have_free_credit = "";
 
+/*      Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone ringtoAne = RingtoneManager.getRingtone(getActivity(), notification);
 
 
-
-
-
-/*        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), notification);
         ringtone.play();*/
 
      /*   //--------------- Alert Service -------------------------------------------------------
@@ -180,54 +173,57 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         ((TextView) view.findViewById(R.id.tv_recent)).setTypeface(font_reg);
 
 
-        scrollview = (ObservableScrollView) view.findViewById(R.id.scrollview);
-        tv_pvcons2 = (TextView) view.findViewById(R.id.tv_pvcons2);
-        hotlinechat2 = (TextView) view.findViewById(R.id.hotlinechat2);
+        deals_layout = view.findViewById(R.id.deals_layout);
+        scrollview = view.findViewById(R.id.scrollview);
+        tv_pvcons2 = view.findViewById(R.id.tv_pvcons2);
+        hotlinechat2 = view.findViewById(R.id.hotlinechat2);
         //tvdesc = (TextView) view.findViewById(R.id.tvdesc);
         //tv_sub_ask_query = (TextView) view.findViewById(R.id.tv_sub_ask_query);
-        tv_chat = (TextView) view.findViewById(R.id.tv_chat);
-        tv_sub_chat = (TextView) view.findViewById(R.id.tv_sub_chat);
-        tv_chat_sub_text = (TextView) view.findViewById(R.id.tv_chat_sub_text);
-        tv_offer_text = (TextView) view.findViewById(R.id.tv_offer_text);
-        tv_askquery = (TextView) view.findViewById(R.id.tv_askquery);
-        hotlinechat = (TextView) view.findViewById(R.id.hotlinechat);
-        tv_pvcons = (TextView) view.findViewById(R.id.tv_pvcons);
-        offer_title = (TextView) view.findViewById(R.id.offer_title);
-        offer_desc = (TextView) view.findViewById(R.id.offer_desc);
-        myhealth_layout = (LinearLayout) view.findViewById(R.id.myhealth_layout);
+        tv_chat = view.findViewById(R.id.tv_chat);
+        tv_sub_chat = view.findViewById(R.id.tv_sub_chat);
+        tv_chat_sub_text = view.findViewById(R.id.tv_chat_sub_text);
+        tv_offer_text = view.findViewById(R.id.tv_offer_text);
+        tv_askquery = view.findViewById(R.id.tv_askquery);
+        hotlinechat = view.findViewById(R.id.hotlinechat);
+        tv_pvcons = view.findViewById(R.id.tv_pvcons);
+        offer_title = view.findViewById(R.id.offer_title);
+        offer_desc = view.findViewById(R.id.offer_desc);
+        //myhealth_layout = (LinearLayout) view.findViewById(R.id.myhealth_layout);
+
         // top_search_layout = (LinearLayout) view.findViewById(R.id.top_search_layout);
-        hotline_layout = (LinearLayout) view.findViewById(R.id.hotline_layout);
-        layout2 = (LinearLayout) view.findViewById(R.id.layout2);
-        layout1 = (LinearLayout) view.findViewById(R.id.layout1);
-        layout3 = (LinearLayout) view.findViewById(R.id.layout3);
-        doc_layout = (LinearLayout) view.findViewById(R.id.doc_layout);
-        myquery_layout = (LinearLayout) view.findViewById(R.id.myquery_layout);
+        hotline_layout = view.findViewById(R.id.hotline_layout);
+        layout2 = view.findViewById(R.id.layout2);
+        layout1 = view.findViewById(R.id.layout1);
+        layout3 = view.findViewById(R.id.layout3);
+        doc_layout = view.findViewById(R.id.doc_layout);
+        myquery_layout = view.findViewById(R.id.myquery_layout);
         // seenas_layout = (LinearLayout) view.findViewById(R.id.seenas_layout);
-        home_button = (LinearLayout) view.findViewById(R.id.home_button);
-        innerLay = (LinearLayout) view.findViewById(R.id.innerLay);
-        how_desc = (TextView) view.findViewById(R.id.how_desc);
-        how_title = (TextView) view.findViewById(R.id.how_title);
-        butt_text = (TextView) view.findViewById(R.id.butt_text);
-        img_offer_banner = (ImageView) view.findViewById(R.id.img_offer_banner);
-        tv_viewall = (TextView) view.findViewById(R.id.tv_viewall);
+        home_button = view.findViewById(R.id.home_button);
+        innerLay = view.findViewById(R.id.innerLay);
+        how_desc = view.findViewById(R.id.how_desc);
+        how_title = view.findViewById(R.id.how_title);
+        butt_text = view.findViewById(R.id.butt_text);
+        img_offer_banner = view.findViewById(R.id.img_offer_banner);
+        tv_viewall = view.findViewById(R.id.tv_viewall);
 
-        btn_free = (TextView) view.findViewById(R.id.btn_free);
-        offer_desc2 = (TextView) view.findViewById(R.id.offer_desc2);
-        offer_title2 = (TextView) view.findViewById(R.id.offer_title2);
-        tv_title = (TextView) view.findViewById(R.id.tv_title);
-        tv_sub_title = (TextView) view.findViewById(R.id.tv_sub_title);
-        img_search_logo = (ImageView) view.findViewById(R.id.img_search_logo);
-        img_share_icon = (ImageView) view.findViewById(R.id.img_share_icon);
-        layout3 = (LinearLayout) view.findViewById(R.id.layout3);
-        offer_image1 = (ImageView) view.findViewById(R.id.offer_image1);
-        logo_layout = (LinearLayout) view.findViewById(R.id.logo_layout);
-        layout_offer1 = (LinearLayout) view.findViewById(R.id.layout_offer1);
-        layout_offer2 = (LinearLayout) view.findViewById(R.id.layout_offer2);
-        layout_AskQuery = (LinearLayout) view.findViewById(R.id.layout_AskQuery);
-        offer_image2 = (ImageView) view.findViewById(R.id.offer_image2);
+        btn_free = view.findViewById(R.id.btn_free);
+        offer_desc2 = view.findViewById(R.id.offer_desc2);
+        offer_title2 = view.findViewById(R.id.offer_title2);
+        tv_title = view.findViewById(R.id.tv_title);
+        tv_sub_title = view.findViewById(R.id.tv_sub_title);
+        img_search_logo = view.findViewById(R.id.img_search_logo);
+        img_share_icon = view.findViewById(R.id.img_share_icon);
+        layout3 = view.findViewById(R.id.layout3);
+        offer_image1 = view.findViewById(R.id.offer_image1);
+        logo_layout = view.findViewById(R.id.logo_layout);
+        layout_offer1 = view.findViewById(R.id.layout_offer1);
+        layout_offer2 = view.findViewById(R.id.layout_offer2);
+        layout_AskQuery = view.findViewById(R.id.layout_AskQuery);
+        offer_image2 = view.findViewById(R.id.offer_image2);
+        tv_viewall_offers = view.findViewById(R.id.tv_viewall_offers);
 
-        btn_getitnow = (Button) view.findViewById(R.id.btn_getitnow);
-        btn_buynow = (Button) view.findViewById(R.id.btn_buynow);
+        btn_getitnow = view.findViewById(R.id.btn_getitnow);
+        btn_buynow = view.findViewById(R.id.btn_buynow);
 
 
         btn_getitnow.setOnClickListener(new View.OnClickListener() {
@@ -258,6 +254,17 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             }
         });
 
+        tv_viewall_offers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Offers_List_activity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
+            }
+        });
+
+
         btn_buynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,6 +284,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                         Model.query_launch = "subscription";
                         Intent intent = new Intent(getActivity(), SubscriptionPackActivity.class);
                         startActivity(intent);
+
                         FlurryAgent.logEvent("SubscriptionPackActivity");
                     }
 
@@ -287,11 +295,18 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
 
-        q_logo = (ImageView) view.findViewById(R.id.q_logo);
+        //----------- Deals and Offers--------------------------------------------------------
+        String get_family_url = Model.BASE_URL + "/sapp/listDealsAndOffers?page=1&limit=10&user_id=" + Model.id + "&isHomeReq=1&token=" + Model.token;
+        System.out.println("Home List of Offers---------" + get_family_url);
+        new JSON_deals_offers().execute(get_family_url);
+        //------------Deals and Offers-------------------------------------------------------
+
+
+        q_logo = view.findViewById(R.id.q_logo);
         Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shakeanim);
         q_logo.startAnimation(shake);
 
-        final RippleBackground rippleBackground = (RippleBackground) view.findViewById(R.id.content);
+        final RippleBackground rippleBackground = view.findViewById(R.id.content);
         final Handler handler = new Handler();
 
         tv_title.setTypeface(fonr_bold);
@@ -299,8 +314,8 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
         //bottom_bar = (LinearLayout) getActivity().findViewById(R.id.bottom_bar);
         //sliding_tabs = (SlidingTabLayout) getActivity().findViewById(R.id.sliding_tabs);
-        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
+        toolbar = getActivity().findViewById(R.id.toolbar);
 
         tv_askquery.setTypeface(fonr_bold);
         tv_chat.setTypeface(fonr_bold);
@@ -343,6 +358,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 }
             }
         });
+
 
         logo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -409,7 +425,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 offer_title2.setText("Great offers on prepaid packages");
                 offer_image2.setImageResource(R.mipmap.prep);
             }
-
         } else {
             Model.browser_country = "IN";
         }
@@ -428,7 +443,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
 /*        img_offer_banner.setOnClickListener(new View.OnClickListener() {
@@ -474,7 +488,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 startActivity(intent);
 
                 Model.query_launch = "MainActivity";
-/*                Intent intent = new Intent(getActivity(), HotlineHome.class);
+/*              Intent intent = new Intent(getActivity(), HotlineHome.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);*/
 
@@ -486,13 +500,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             }
         });
 
-
         tv_viewall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Model.query_launch = "MainActivity";
-/*                Intent intent = new Intent(getActivity(), HotlineHome.class);
+/*              Intent intent = new Intent(getActivity(), HotlineHome.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);*/
 
@@ -504,7 +517,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         layout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
+
                     Intent intent = new Intent(getActivity(), QueryActivity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -526,7 +541,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
+
                     Intent intent = new Intent(getActivity(), ConsultationListActivity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -548,33 +565,38 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             @Override
             public void onClick(View v) {
 
-                if (new NetCheck().netcheck(getActivity())) {
+                try {
 
+                    if (new NetCheck().netcheck(getActivity())) {
 
-                    if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                        if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
 
-                        Intent intent = new Intent(getActivity(), MyDoctorsActivity.class);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                            Intent intent = new Intent(getActivity(), MyDoctorsActivity.class);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
-                        //------------ Google firebase Analitics--------------------
-                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
-                        Bundle params = new Bundle();
-                        params.putString("User", Model.id);
-                        Model.mFirebaseAnalytics.logEvent("Home_MyDoctors", params);
-                        //------------ Google firebase Analitics--------------------
+                            //------------ Google firebase Analitics--------------------
+                            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+                            Bundle params = new Bundle();
+                            params.putString("User", Model.id);
+                            Model.mFirebaseAnalytics.logEvent("Home_MyDoctors", params);
+                            //------------ Google firebase Analitics--------------------
+
+                        } else {
+                            force_logout();
+                        }
 
                     } else {
-                        force_logout();
+
+                        Toast.makeText(getActivity(), "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(getActivity(), AskQuery1.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                     }
 
-                } else {
-
-                    Toast.makeText(getActivity(), "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(getActivity(), AskQuery1.class);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -595,13 +617,13 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         });
 
 
-        mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
-
+        //mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
+/*
         //-------- Getting Banners --------------------------------
         String banner_url = Model.BASE_URL + "app/slides";
         System.out.println("banner_url-------" + banner_url);
         new JSON_bannerimages().execute(banner_url);
-        //-------- Getting Banners --------------------------------
+        //-------- Getting Banners --------------------------------*/
 
         //-------- Getting QA --------------------------------
         String qa_url = Model.BASE_URL + "app/qa?page=1";
@@ -624,113 +646,13 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         System.out.println("Gone for Offline ------");
         //============================================================
 
-        //==================== Tool Tip =======================================================================
-/*
-        //-------------------------Image Slider-----------------------------------------------------------
-        mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
-
-      */
-/*      HashMap<String, String> url_maps = new HashMap<String, String>();
-        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
-        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
-        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
-        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");*//*
-
-
-        HashMap<String, Integer> file_maps = new HashMap<String, Integer>();
-        file_maps.put("Hannibal", R.mipmap.slide001);
-        file_maps.put("Big Bang Theory", R.mipmap.slide002);
-        file_maps.put("House of Cards", R.mipmap.slide003);
-        file_maps.put("Game of Thrones", R.mipmap.slide004);
-
-
-        try {
-            for (String name : file_maps.keySet()) {
-                TextSliderView textSliderView = new TextSliderView(getActivity());
-                textSliderView
-                        .description(name)
-                        .image(file_maps.get(name))
-                        .setScaleType(BaseSliderView.ScaleType.Fit)
-                        .setOnSliderClickListener(this);
-
-                textSliderView.bundle(new Bundle());
-                textSliderView.getBundle().putString("extra", name);
-
-                mDemoSlider.addSlider(textSliderView);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("End-----");
-
-        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
-        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        mDemoSlider.setCustomAnimation(new DescriptionAnimation());
-        mDemoSlider.setDuration(4000);
-        mDemoSlider.addOnPageChangeListener(this);
-        mDemoSlider.setPresetTransformer("Accordion");
-        //-------------------------Image Slider-----------------------------------------------------------
-*/
-
-
-        scrollview.setOnTouchListener(new View.OnTouchListener() {
-            float initialY, finalY;
-            boolean isScrollingUp;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = MotionEventCompat.getActionMasked(event);
-
-                switch (action) {
-                    case (MotionEvent.ACTION_DOWN):
-                        initialY = event.getY();
-                    case (MotionEvent.ACTION_UP):
-
-                        finalY = event.getY();
-
-                       /* if (initialY < finalY) {
-                            System.out.println("Scrolling up---Scrolling View--");
-                            isScrollingUp = true;
-
-                            if (bottom_bar.isShown()) {
-                                //hideToolbar();
-                                hideBottomBar();
-                            }
-
-                        } else if (initialY > finalY) {
-                            System.out.println("Scrolling Down-----");
-                            isScrollingUp = false;
-
-                            if (bottom_bar.isShown()) {
-                                //showToolbar();
-                                showBottomBar();
-                            }
-                        }*/
-                    default:
-                }
-                return false;
-            }
-        });
-
-        scrollview.setScrollViewCallbacks(this);
-
-
         return view;
     }
-
 
     public void force_logout() {
 
         try {
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
-            Model.kiss.identify(Model.kmid);
-            Model.kiss.record("android.patient.Force_Logout");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("android.patient.Country:", (Model.browser_country));
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
+
             //------------ Google firebase Analitics--------------------
             Bundle params = new Bundle();
             params.putString("Country", (Model.browser_country));
@@ -739,7 +661,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             final MaterialDialog alert = new MaterialDialog(getActivity());
             alert.setTitle("Please re-login the app..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override
@@ -756,7 +678,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     startActivity(i);
                     alert.dismiss();
                     getActivity().finish();
-
 
                     //-------------- Logout-------------------------------------------------
                     try {
@@ -808,25 +729,30 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         }
     }
 
-    @Override
+   /* @Override
     public void onSliderClick(BaseSliderView slider) {
         //Toast.makeText(getActivity(), slider.getBundle().get("extra") + "", Toast.LENGTH_SHORT).show();
 
-        String hash_val = slider.getBundle().get("extra") + "";
+        try {
+            String hash_val = slider.getBundle().get("extra") + "";
 
-        Intent intent = new Intent(getActivity(), QADetailNew.class);
-        intent.putExtra("KEY_ctype", hash_val);
-        intent.putExtra("KEY_url", hash_val);
-        startActivity(intent);
+            Intent intent = new Intent(getActivity(), QADetailNew.class);
+            intent.putExtra("KEY_ctype", hash_val);
+            intent.putExtra("KEY_url", hash_val);
+            startActivity(intent);
 
-        //------------ Google firebase Analitics--------------------
-        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
-        Bundle params = new Bundle();
-        params.putString("user_id", (Model.id));
-        params.putString("KEY_ctype", hash_val);
-        params.putString("KEY_url", hash_val);
-        Model.mFirebaseAnalytics.logEvent("Force_Logout", params);
-        //------------ Google firebase Analitics--------------------
+            //------------ Google firebase Analitics--------------------
+            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+            Bundle params = new Bundle();
+            params.putString("user_id", (Model.id));
+            params.putString("KEY_ctype", hash_val);
+            params.putString("KEY_url", hash_val);
+            Model.mFirebaseAnalytics.logEvent("Force_Logout", params);
+            //------------ Google firebase Analitics--------------------
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -841,7 +767,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     @Override
     public void onPageScrollStateChanged(int state) {
 
-    }
+    }*/
 
     public static Bitmap getBitmapFromURL(String src) {
         try {
@@ -856,7 +782,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             return null;
         }
     }
-
 
     private boolean toolbarIsShown() {
         return ViewHelper.getTranslationY(slide1) == 0;
@@ -969,7 +894,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
             try {
 
-                //-------Short-films, vada poche, Health, channels, ---------------------------------------------------
+                //--------------------------------------------------
                 jsonarr_banner = new JSONArray(str_response_banner);
 
                 if (str_response_banner.length() > 2) {
@@ -994,7 +919,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                         url_maps_id.put(title_hash, title);
                     }
 
-                    setimages();
+                    //setimages();
                 }
 
             } catch (Exception e) {
@@ -1006,6 +931,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
     }
 
+/*
 
     public void setimages() {
         try {
@@ -1045,6 +971,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         mDemoSlider.setPresetTransformer("Stack");
 
     }
+*/
 
 
     public void apply_offers(String jsonarray_str) {
@@ -1073,12 +1000,12 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     System.out.println("jsononjsec-----" + jsonobj1.toString());
 
                     vi = getActivity().getLayoutInflater().inflate(R.layout.cardview_qa, null);
-                    textview_title = (TextView) vi.findViewById(R.id.textview_title);
-                    textview_short = (TextView) vi.findViewById(R.id.textview_short);
-                    textview_docname = (TextView) vi.findViewById(R.id.textview_docname);
-                    textview_ctype = (TextView) vi.findViewById(R.id.textview_ctype);
-                    tv_url = (TextView) vi.findViewById(R.id.tv_url);
-                    imageview_poster = (CircleImageView) vi.findViewById(R.id.imageview_poster);
+                    textview_title = vi.findViewById(R.id.textview_title);
+                    textview_short = vi.findViewById(R.id.textview_short);
+                    textview_docname = vi.findViewById(R.id.textview_docname);
+                    textview_ctype = vi.findViewById(R.id.textview_ctype);
+                    tv_url = vi.findViewById(R.id.tv_url);
+                    imageview_poster = vi.findViewById(R.id.imageview_poster);
 
                     //---------------- Custom Font --------------------
                     Typeface robo_regular = Typeface.createFromAsset(getActivity().getAssets(), Model.font_name);
@@ -1102,9 +1029,9 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                     innerLay.addView(vi);
                 }
 
-                vi = getActivity().getLayoutInflater().inflate(R.layout.end_card_qa, null);
+                /*vi = getActivity().getLayoutInflater().inflate(R.layout.end_card_qa, null);
 
-                LinearLayout end_qa_layout = (LinearLayout) vi.findViewById(R.id.end_qa_layout);
+                LinearLayout end_qa_layout = vi.findViewById(R.id.end_qa_layout);
 
                 end_qa_layout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1115,7 +1042,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
                 });
 
                 innerLay.addView(vi);
-
+*/
 
             }
         } catch (Exception e) {
@@ -1123,24 +1050,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         }
     }
 
-
-    /*private void showTipWithPosition(ShowCasePosition position) {
-        showTip(
-                position,
-                new Radius(186F)
-        );
-    }
-
-    private void showTip(ShowCasePosition position, ShowCaseRadius radius) {
-        new ShowCaseView.Builder(getActivity())
-                .withTypedPosition(position)
-                .withTypedRadius(radius)
-                .withContent(
-                        "Chat with Doctor for 100 hrs!"
-                )
-                .build()
-                .show(getActivity());
-    }*/
+/*
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
@@ -1169,6 +1079,7 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             //sliding_tabs.animate().translationY(0);
         }
     }
+*/
 
     //------------ Bottom Bar Hide ----------------------------------------------------------------
     private void showBottomBar() {
@@ -1191,10 +1102,10 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
             public void onAnimationUpdate(ValueAnimator animation) {
                 float translationY = (float) animation.getAnimatedValue();
                 ViewHelper.setTranslationY(toolbar, translationY);
-                ViewHelper.setTranslationY((View) toolbar, translationY);
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ((View) toolbar).getLayoutParams();
+                ViewHelper.setTranslationY(toolbar, translationY);
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) toolbar.getLayoutParams();
                 lp.height = (int) -translationY + getScreenHeight() - lp.topMargin;
-                ((View) toolbar).requestLayout();
+                toolbar.requestLayout();
             }
         });
         animator.start();
@@ -1204,7 +1115,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
     protected int getScreenHeight() {
         return getActivity().findViewById(android.R.id.content).getHeight();
     }
-
 
 
     class JSON_logout extends AsyncTask<JSONObject, Void, Boolean> {
@@ -1228,7 +1138,6 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
 
                 JSONParser jParser = new JSONParser();
                 logout_jsonobj = jParser.JSON_POST(urls[0], "logout");
-
 
                 System.out.println("logout_jsonobj---------------" + logout_jsonobj.toString());
 
@@ -1259,4 +1168,182 @@ public class HomeFragment extends Fragment implements BaseSliderView.OnSliderCli
         return am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
+                        // Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Toast.makeText(getActivity(), "No Permission granted", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+
+/*
+    class JSON_Feedback extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+          */
+/*  dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("please wait..");
+            dialog.show();
+            dialog.setCancelable(false);*//*
+
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+                JSONParser jParser = new JSONParser();
+                json_response_obj = jParser.JSON_POST(urls[0], "news_feedback");
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            try {
+
+                if (json_response_obj.has("status")) {
+                    report_response = json_response_obj.getString("status");
+                    System.out.println("report_response--------------" + report_response);
+
+                    if (report_response.equals("1")) {
+                        //say_success();
+                    } else {
+                        //Toast.makeText(getApplicationContext(), "Feedback failed. Please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                // dialog.cancel();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+*/
+
+
+    private class JSON_deals_offers extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                deals_offers_list = jParser.getJSONString(urls[0]);
+
+                System.out.println("Family URL---------------" + urls[0]);
+                System.out.println("deals_offers_list-------------" + deals_offers_list);
+
+                return deals_offers_list;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            try {
+
+                JSONObject jobject_offers = new JSONObject(deals_offers_list);
+
+                String data_text = jobject_offers.getString("data");
+                String is_offer_text = jobject_offers.getString("is_offer");
+
+                JSONArray data_text_array = new JSONArray(data_text);
+
+                System.out.println("data_text_array------" + data_text_array.toString());
+
+                deals_layout.removeAllViews();
+
+                for (int i = 0; i < data_text_array.length(); i++) {
+                    JSONObject jsonobj_files = data_text_array.getJSONObject(i);
+
+                    String title_text = jsonobj_files.getString("title");
+                    String bg_img_text = jsonobj_files.getString("bg_img");
+                    String offers_id = jsonobj_files.getString("id");
+                    String is_hline_val = jsonobj_files.getString("is_hline");
+                    String btn_lbl = jsonobj_files.getString("btn_lbl");
+                    String doc_id = jsonobj_files.getString("doc_id");
+                    String fcode = jsonobj_files.getString("fcode");
+                    String qid = jsonobj_files.getString("qid");
+
+                    if (jsonobj_files.has("isActivePlan")) {
+                        isActivePlan = jsonobj_files.getString("isActivePlan");
+                    }
+
+                    View recc_vi = getLayoutInflater().inflate(R.layout.deals_offers_row, null);
+
+                    LinearLayout deal_full_layout = recc_vi.findViewById(R.id.deal_full_layout);
+                    ImageView deal_bg = recc_vi.findViewById(R.id.deal_bg);
+                    TextView tv_offers_id = recc_vi.findViewById(R.id.tv_offers_id);
+                    TextView tv_join_button = recc_vi.findViewById(R.id.tv_join_button);
+                    TextView tvquery = recc_vi.findViewById(R.id.tvquery);
+                    TextView tv_qtype = recc_vi.findViewById(R.id.tv_qtype);
+                    TextView tv_qid = recc_vi.findViewById(R.id.tv_qid);
+                    TextView tv_hline = recc_vi.findViewById(R.id.tv_hline);
+                    TextView tv_fcode = recc_vi.findViewById(R.id.tv_fcode);
+                    TextView tv_isActivePlan = recc_vi.findViewById(R.id.tv_isActivePlan);
+                    TextView tv_doc_id = recc_vi.findViewById(R.id.tv_doc_id);
+                    TextView tv_offer_type = recc_vi.findViewById(R.id.tv_offer_type);
+
+                    tv_offers_id.setText(Html.fromHtml(offers_id));
+                    tv_hline.setText(Html.fromHtml(is_hline_val));
+                    tvquery.setText(Html.fromHtml(title_text));
+                    tv_join_button.setText(Html.fromHtml(btn_lbl));
+                    tv_fcode.setText(fcode);
+                    tv_isActivePlan.setText(isActivePlan);
+                    tv_doc_id.setText(doc_id);
+                    tv_qid.setText(qid);
+
+                    tv_doc_id.setVisibility(View.GONE);
+
+                    tv_offer_type.setText(is_offer_text);
+                    Picasso.with(getActivity()).load(bg_img_text).placeholder(R.mipmap.thread_bg).error(R.mipmap.logo).into(deal_bg);
+
+                    deals_layout.addView(recc_vi);
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.cancel();
+        }
+    }
 }
+

@@ -8,12 +8,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
@@ -22,7 +22,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextAppearance="@style/toolbar_style" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/tvtit"
@@ -110,6 +110,10 @@
                         android:background="@color/grey_800" />
 
 
+
+
+
+
                     <ScrollView
                         android:id="@+id/scrollView1"
                         android:layout_width="match_parent"
@@ -163,6 +167,7 @@
                         android:textAllCaps="false"
                         android:textColor="@color/app_color" />
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -171,10 +176,10 @@
 
                         <View
                             android:layout_width="3dp"
-                            android:layout_gravity="left|center_vertical"
-                            android:foregroundGravity="center"
                             android:layout_height="match_parent"
-                            android:background="@color/app_color"/>
+                            android:layout_gravity="left|center_vertical"
+                            android:background="@color/app_color"
+                            android:foregroundGravity="center" />
 
 
                         <TextView
@@ -188,6 +193,18 @@
                             android:text="Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query (Rs.199)"
                             android:textColor="@color/black"
                             android:textSize="11dp" />
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:id="@+id/expand_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
 
                     </LinearLayout>
 

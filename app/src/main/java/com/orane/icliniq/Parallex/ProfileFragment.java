@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -120,7 +120,7 @@ public class ProfileFragment extends ScrollViewFragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), Video_WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "video/" + doc_hash_text + "?t=mob&layout=empty&user_id=" + Model.id);
+                i.putExtra("url", Model.BASE_URL + "video/" + doc_hash_text + "?t=mob&layout=empty&user_id=" + Model.id + "&token=" + Model.token);
                 i.putExtra("type", "Video Gallery");
                 startActivity(i);
             }

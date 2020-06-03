@@ -5,9 +5,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
+import com.google.android.material.snackbar.Snackbar;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 
@@ -81,7 +81,7 @@ public class ShareToFriends extends AppCompatActivity {
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
                     String sAux = "\nGet iCliniq App and consult doctors instantly from your phone\n\n";
-                    sAux = sAux + Uri.parse("http://po.st/icliniqapp");
+                    sAux = sAux + Uri.parse("https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US");
                     shareIntent.putExtra(Intent.EXTRA_TEXT, sAux);
                     //shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                     shareIntent.setType("image/jpeg");
@@ -127,7 +127,7 @@ public class ShareToFriends extends AppCompatActivity {
                         snackbar.setActionTextColor(Color.WHITE);
                         View snackbarView = snackbar.getView();
                         snackbarView.setBackgroundColor(Color.GRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         snackbar.show();
                     }
@@ -170,7 +170,7 @@ public class ShareToFriends extends AppCompatActivity {
                         snackbar.setActionTextColor(Color.WHITE);
                         View snackbarView = snackbar.getView();
                         snackbarView.setBackgroundColor(Color.GRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         snackbar.show();
                     }

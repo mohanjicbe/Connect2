@@ -8,8 +8,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -183,7 +183,7 @@ public class PrePackActivity extends AppCompatActivity implements View.OnClickLi
             nolayout.setVisibility(View.GONE);
             netcheck_layout.setVisibility(View.VISIBLE);
 
-            Toast.makeText(PrePackActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrePackActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 

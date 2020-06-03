@@ -38,7 +38,24 @@
                 android:textSize="17dp"
                 app:met_floatingLabel="highlight" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
+            <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+                android:id="@+id/edtpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="sans-serif-light"
+                android:hint="Password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:padding="10dp"
+                android:textSize="17dp"
+                android:text=""
+                android:textColor="@color/black"
+                tools:ignore="HardcodedText" />
+
+          <!--  <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtpassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +67,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:textSize="17dp"
-                app:met_floatingLabel="highlight" />
+                app:met_floatingLabel="highlight" />-->
 
             <TextView
                 android:id="@+id/tvforgotpw"

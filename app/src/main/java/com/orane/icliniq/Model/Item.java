@@ -13,7 +13,7 @@ public class Item {
     private String label;
     private String hid;
     private String dt,fav;
-    private String ty;
+    private String ty,feed;
     private boolean selected;
     private String amt;
     private String des;
@@ -566,6 +566,18 @@ public class Item {
     public String getDocname() {
         return docname;
     }
+
+    //---------- Comments ----------------------
+    public String getFeed() {
+        return feed;
+    }
+
+    public void setFeed(String feed) {
+        this.feed = feed;
+    }
+
+    //---------- Comments ----------------------
+
 
     public String getDocedu() {
         return docedu;

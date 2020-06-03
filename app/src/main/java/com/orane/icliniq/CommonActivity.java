@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.SetLanguage;
@@ -119,7 +118,6 @@ public class CommonActivity extends AppCompatActivity {
         }
 
         //------------ Object Creations -------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         support_mail_id = (TableRow) findViewById(R.id.support_mail_id);
         aboutus_layout = (LinearLayout) findViewById(R.id.aboutus_layout);
@@ -261,7 +259,7 @@ public class CommonActivity extends AppCompatActivity {
                     if (!feedback_text.equals("")) {
                         apply_feedback(feedback_text);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Feedback cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please enter the feedback", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     apply_feedback(radio_sel);
@@ -494,13 +492,6 @@ public class CommonActivity extends AppCompatActivity {
                 /*Model.cons_lang = lang_name;
                 Model.cons_lang_code = lang_val;*/
 
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss.record("android.patient.Sett_Language");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("lang_val", lang_val);
-                properties.put("lang_name", lang_name);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //----------- Flurry -------------------------------------------------
                 HashMap<String, String> properties2 = new HashMap<String, String>();
@@ -538,15 +529,6 @@ public class CommonActivity extends AppCompatActivity {
 
                 System.out.println("noti_sound_val-------" + noti_sound_val);
 
-                try {
-                    Model.kiss.record("android.Patient.Switch_Notify_Sound");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    System.out.println("Exception-----------" + ee.toString());
-                    ee.printStackTrace();
-                }
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
                 Bundle params = new Bundle();
@@ -571,14 +553,6 @@ public class CommonActivity extends AppCompatActivity {
                 //===============Apply Noti Settings Values=============================================
 
                 System.out.println("stop_noti_val-------" + stop_noti_val);
-                try {
-                    Model.kiss.record("android.Patient.Switch_Notify_Status");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Notify_value", stop_noti_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -595,24 +569,13 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.Terms");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
                 Intent i = new Intent(CommonActivity.this, WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/terms");
+                i.putExtra("url", "https://www.icliniq.com/p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Sett_Terms");
-                //----------------- Kissmetrics ----------------------------------
 
 
             }
@@ -622,28 +585,13 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.PrivatePolicy");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
                 Intent i = new Intent(CommonActivity.this, WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy");
+                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
-                try {
-                    Model.kiss.record("android.Patient.Sett_PrivatePolicy");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
             }
         });
@@ -677,19 +625,10 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String url = "http://po.st/icliniqapp";
+                String url = "https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-
-                try {
-                    Model.kiss.record("android.Patient.RateApp_Clicked");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.url_link", url);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
 
             }
@@ -706,11 +645,6 @@ public class CommonActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                try {
-                    Model.kiss.record("android.Patient.Sett_ShareApp");
-                } catch (Exception ee) {
-                    System.out.println("Exception-----------" + ee.toString());
-                }
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -726,10 +660,6 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.AreYouDoctor");
-                //----------------- Kissmetrics ----------------------------------
 
                 String url = "https://play.google.com/store/apps/details?id=com.orane.docassist";
                 Intent i = new Intent(Intent.ACTION_VIEW);
@@ -751,10 +681,7 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-/*               //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.View_Profile");
-                //----------------- Kissmetrics ----------------------------------
+/*
                 Intent i = new Intent(CommonActivity.this, MyProfileActivity.class);
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -791,14 +718,6 @@ public class CommonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Model.kiss.record("android.Patient.Sett_Signout");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.Patient.Sound_value", noti_sound_val);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -814,12 +733,6 @@ public class CommonActivity extends AppCompatActivity {
     }
 
     public void ask_logout() {
-
-        try {
-            Model.kiss.record("android.Patient.Signout");
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        }
 
 
         final MaterialDialog alert = new MaterialDialog(CommonActivity.this);
@@ -903,15 +816,6 @@ public class CommonActivity extends AppCompatActivity {
             System.out.println("Json_feedback---" + json_feedback.toString());
 
             try {
-
-                //----------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.report_issue");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("android.patient.user_id:", Model.id);
-                properties.put("android.patient.report_issue_text:", feedback);
-                Model.kiss.set(properties);
-                //-----------------------------------------
 
                 //--------------------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -1022,7 +926,7 @@ public class CommonActivity extends AppCompatActivity {
     public void say_success() {
 
         final MaterialDialog alert = new MaterialDialog(CommonActivity.this);
-        alert.setTitle("Thankyou.!");
+        alert.setTitle("Thank you.!");
         alert.setMessage("Would you like to post your review on play store. This will help and motivate us a lot");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Sure", new View.OnClickListener() {

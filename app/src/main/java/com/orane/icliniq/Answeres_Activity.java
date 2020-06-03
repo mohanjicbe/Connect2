@@ -8,9 +8,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.orane.icliniq.Model.Item;
@@ -40,7 +40,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,30 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Answeres_Activity extends AppCompatActivity implements ObservableScrollViewCallbacks {
 
 
-    Item objItem;
-    public List<Item> listArray;
-    ProgressBar progressBar;
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    Button btn_reload, btn_qview, btn_qedit;
-    AnswersListAdapter objAdapter;
-    Button btn_askquery;
-    List<Item> arrayOfList;
-    ObservableListView listView;
-    TextView empty_msgmsg;
-    JSONObject object;
-    public String qid, params;
-    Toolbar toolbar;
-    JSONArray jsonarray;
-    LinearLayout nolayout, netcheck_layout;
-    ProgressBar progressBar_bottom;
-    CircleImageView imageview_poster;
-    public String Log_Status, str_response, query_status, hlstatus, doc_url, edit_query;
-    Intent intent;
-
     public static final String query_list_array = "query_list_array_key";
-    public boolean pagination = true;
-
-    SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
     public static final String user_name = "user_name_key";
@@ -93,7 +69,27 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
     public static final String sp_km_id = "sp_km_id_key";
     public static final String first_query = "first_query_key";
     public static final String query_reponse = "query_reponse_key";
-
+    public List<Item> listArray;
+    public String qid, params;
+    public String Log_Status, str_response, query_status, hlstatus, doc_url, edit_query;
+    public boolean pagination = true;
+    Item objItem;
+    ProgressBar progressBar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    Button btn_reload, btn_qview, btn_qedit;
+    AnswersListAdapter objAdapter;
+    Button btn_askquery;
+    List<Item> arrayOfList;
+    ObservableListView listView;
+    TextView empty_msgmsg;
+    JSONObject object;
+    Toolbar toolbar;
+    JSONArray jsonarray;
+    LinearLayout nolayout, netcheck_layout;
+    ProgressBar progressBar_bottom;
+    CircleImageView imageview_poster;
+    Intent intent;
+    SharedPreferences sharedpreferences;
     LinearLayout bg_layout;
     RelativeLayout fab;
 
@@ -103,7 +99,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.answeres);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         FlurryAgent.onPageView();
 
@@ -115,11 +110,11 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
         Model.query_reponse = sharedpreferences.getString(query_reponse, "");
         //============================================================
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //--------------------------------------------------
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         mTitle.setTypeface(khandBold);
         //--------------------------------------------------
@@ -135,27 +130,20 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
         }
         //---------Tool bar-----------------------------------------
 
-        //----------------- Kissmetrics ----------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.record("android.patient.My_Queries");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("android.patient.user_id:", (Model.id));
-        Model.kiss.set(properties);
-        //----------------- Kissmetrics ----------------------------------
 
-        imageview_poster = (CircleImageView) findViewById(R.id.imageview_poster);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
+        imageview_poster = findViewById(R.id.imageview_poster);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar_bottom = findViewById(R.id.progressBar_bottom);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_query_new);
         //bar = (ProgressBar) findViewById(R.id.progressBar);
-        btn_reload = (Button) findViewById(R.id.btn_reload);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        empty_msgmsg = (TextView) findViewById(R.id.empty_msgmsg);
-        listView = (ObservableListView) findViewById(R.id.listview);
-        btn_askquery = (Button) findViewById(R.id.btn_askquery);
-        bg_layout = (LinearLayout) findViewById(R.id.bg_layout);
-        fab = (RelativeLayout) findViewById(R.id.fab);
+        btn_reload = findViewById(R.id.btn_reload);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        nolayout = findViewById(R.id.nolayout);
+        empty_msgmsg = findViewById(R.id.empty_msgmsg);
+        listView = findViewById(R.id.listview);
+        btn_askquery = findViewById(R.id.btn_askquery);
+        bg_layout = findViewById(R.id.bg_layout);
+        fab = findViewById(R.id.fab);
 
         full_process();
 
@@ -185,16 +173,27 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             }
         });
 
+
      /*   fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Model.qid = "";
+                Model.qid = ""
                 Model.compmore = "";
                 Model.prevhist = "";
                 Model.curmedi = "";
                 Model.pastmedi = "";
                 Model.labtest = "";
+                Noyyal Packings and Paper Products
+                -----------------
+                1. Company Logo, Visiting card, Broucher, Letter Pad, Seal,
+                2. Company RC, Bank A/c, Accounts Note,
+                3.
+                Marketting Tac ticks
+                ----------------------
+                1. Advertise in Noyyal Media
+                2. Paid Ads in facebook
+                3.
+
                 Model.query_cache = "";
                 Model.upload_files = "";
 
@@ -204,20 +203,19 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             }
         });*/
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println("position-----" + position);
 
-                btn_qview = (Button) view.findViewById(R.id.btn_qview);
-                btn_qedit = (Button) view.findViewById(R.id.btn_qedit);
+                btn_qview = view.findViewById(R.id.btn_qview);
+                btn_qedit = view.findViewById(R.id.btn_qedit);
 
-                TextView query = (TextView) view.findViewById(R.id.tvquery);
-                final TextView qidval = (TextView) view.findViewById(R.id.tv_qid);
-                TextView tvstatus = (TextView) view.findViewById(R.id.tvstatus);
-                TextView tv_hlstatus = (TextView) view.findViewById(R.id.tv_hlstatus);
-                TextView tv_docurl = (TextView) view.findViewById(R.id.tv_docurl);
+                TextView query = view.findViewById(R.id.tvquery);
+                final TextView qidval = view.findViewById(R.id.tv_qid);
+                TextView tvstatus = view.findViewById(R.id.tvstatus);
+                TextView tv_hlstatus = view.findViewById(R.id.tv_hlstatus);
+                TextView tv_docurl = view.findViewById(R.id.tv_docurl);
 
                 query_status = tvstatus.getText().toString();
                 qid = qidval.getText().toString();
@@ -405,6 +403,7 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
 
         if (scrollState == ScrollState.UP) {
             //mFabToolbar.slideOutFab();
+
             System.out.println("Scrolling UP---------------------------");
             //fab.hide();
             hideBottomBar();
@@ -445,7 +444,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
     }
     //------------ Toolbar Hide ----------------------------------------------------------------
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.query_list_menu, menu);
@@ -462,6 +460,7 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             return true;
         }
 
+
         if (id == R.id.nav_refresh) {
             //------------------------------------------------------------
             params = Model.BASE_URL + "app/qa?user_id=" + (Model.id) + "&format=json&page=1&token=" + Model.token + "&enc=1";
@@ -471,13 +470,13 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
     }
 
   /*  @Override
     public void onResume() {
         super.onResume();
+
 
         System.out.println("Resume Model.query_reponse-----------" + Model.query_reponse);
 
@@ -495,8 +494,14 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
                         System.out.println("jsonobj1-----------" + jsonobj1.toString());
 
                         objItem = new Item();
+
                         objItem.setQid(jsonobj1.getString("id"));
                         objItem.setQuestion(jsonobj1.getString("question"));
+                        1. Noyyal Media - Coimbatore  : --- News Portal
+                        2. Tamil Planet - Like Hotstar
+                        3. Noyyal Express - Tamil Entertainment Channel
+                        4. Noyyal Food Factory - Cooking Channel
+
                         objItem.setStr_status(jsonobj1.getString("str_status"));
                         objItem.setStatus(jsonobj1.getString("status"));
                         objItem.setDatetime(jsonobj1.getString("datetime"));
@@ -569,6 +574,84 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             progressBar_bottom.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
         }*/
+    }
+
+    public void setAdapterToListview() {
+
+        try {
+
+            objAdapter = new AnswersListAdapter(Answeres_Activity.this, R.layout.answeres_row, arrayOfList);
+            listView.setAdapter(objAdapter);
+
+            int count = listView.getCount();
+            System.out.println("After Set count----- " + count);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void add_page_AdapterToListview() {
+
+        try {
+            objAdapter.addAll(arrayOfList);
+            listView.setSelection(objAdapter.getCount() - (arrayOfList.size()));
+            objAdapter.notifyDataSetChanged();
+
+            int count = listView.getCount();
+            System.out.println("After Pagination----- " + count);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void btnRemoveClick(View v) {
+
+        try {
+            final int position = listView.getPositionForView((View) v.getParent());
+            final TextView qidval = v.findViewById(R.id.tv_qid);
+
+            Model.query_launch = "QueryActivity";
+            System.out.println("qid--------------" + qidval.getText().toString());
+            Intent i = new Intent(Answeres_Activity.this, QueryViewActivity.class);
+            i.putExtra("draft_qid", (qidval.getText().toString()));
+            startActivity(i);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onClick_qa(View v) {
+
+        try {
+
+            switch (v.getId()) {
+
+                case R.id.qa_layout:
+
+                    //----------- get Doc Id ---------------------------------------
+                    View parent_fav = (View) v.getParent();
+                    TextView tv_hash_url = parent_fav.findViewById(R.id.tv_hash_url);
+                    String tv_url_val = tv_hash_url.getText().toString();
+
+                    System.out.println("tv_url_val-----------" + tv_url_val);
+                    //----------- get Doc Id ---------------------------------------
+
+                    Intent intent = new Intent(getApplicationContext(), QADetailNew.class);
+                    intent.putExtra("KEY_ctype", "1");
+                    intent.putExtra("KEY_url", tv_url_val);
+                    startActivity(intent);
+
+                    break;
+            }
+
+            System.out.println("onClick-------");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     class MyTask_server extends AsyncTask<String, Void, Void> {
@@ -706,7 +789,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
         }
     }
 
-
     private class MyTask_refresh extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -833,7 +915,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
         }
     }
 
-
     class MyTask_Pagination extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -863,6 +944,7 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
@@ -871,6 +953,7 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             super.onPostExecute(result);
 
             try {
+
                 //----------------------------------------------------------
                 Object json = new JSONTokener(str_response).nextValue();
                 if (json instanceof JSONObject) {
@@ -959,85 +1042,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-
-    public void setAdapterToListview() {
-
-        try {
-
-            objAdapter = new AnswersListAdapter(Answeres_Activity.this, R.layout.answeres_row, arrayOfList);
-            listView.setAdapter(objAdapter);
-
-            int count = listView.getCount();
-            System.out.println("After Set count----- " + count);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void add_page_AdapterToListview() {
-
-        try {
-            objAdapter.addAll(arrayOfList);
-            listView.setSelection(objAdapter.getCount() - (arrayOfList.size()));
-            objAdapter.notifyDataSetChanged();
-
-            int count = listView.getCount();
-            System.out.println("After Pagination----- " + count);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void btnRemoveClick(View v) {
-
-        try {
-            final int position = listView.getPositionForView((View) v.getParent());
-            final TextView qidval = (TextView) v.findViewById(R.id.tv_qid);
-
-            Model.query_launch = "QueryActivity";
-            System.out.println("qid--------------" + qidval.getText().toString());
-            Intent i = new Intent(Answeres_Activity.this, QueryViewActivity.class);
-            i.putExtra("draft_qid", (qidval.getText().toString()));
-            startActivity(i);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onClick_qa(View v) {
-
-        try {
-
-            switch (v.getId()) {
-
-                case R.id.qa_layout:
-
-                    //----------- get Doc Id ---------------------------------------
-                    View parent_fav = (View) v.getParent();
-                    TextView tv_hash_url = (TextView) parent_fav.findViewById(R.id.tv_hash_url);
-                    String tv_url_val = tv_hash_url.getText().toString();
-
-                    System.out.println("tv_url_val-----------" + tv_url_val);
-                    //----------- get Doc Id ---------------------------------------
-
-                    Intent intent = new Intent(getApplicationContext(), QADetailNew.class);
-                    intent.putExtra("KEY_ctype", "1");
-                    intent.putExtra("KEY_url", tv_url_val);
-                    startActivity(intent);
-
-                    break;
-            }
-
-            System.out.println("onClick-------");
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

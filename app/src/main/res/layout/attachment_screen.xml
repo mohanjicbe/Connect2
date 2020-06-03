@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
@@ -24,14 +24,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
-                android:text="About the app"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -79,6 +79,16 @@
                     android:textAllCaps="false"
                     android:textColor="@color/app_color" />
 
+                <LinearLayout
+                    android:id="@+id/file_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_descr"
@@ -88,13 +98,13 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
                     android:fontFamily="sans-serif-condensed"
-                    android:text="Reprt Description"
+                    android:text="Report Description"
                     android:textColor="@color/grey_900"
                     android:textSize="13dp"
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/edt_query"
+                    android:id="@+id/edt_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -125,6 +135,39 @@
                     android:textSize="13dp"
                     android:textStyle="bold" />
 
+                <Spinner
+                    android:id="@+id/spinner_type"
+                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:background="@drawable/spinner"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/edt_age"
+                    android:gravity="center_vertical"
+                    android:padding="0dp" />
+
+                <EditText
+                    android:id="@+id/edt_new_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/edittext_border"
+                    android:fontFamily="sans-serif"
+                    android:gravity="left"
+                    android:hint="Please enter new attachment type"
+                    android:inputType="textMultiLine"
+                    android:isScrollContainer="true"
+                    android:padding="10dp"
+                    android:textColor="@color/mds_bluegrey_700"
+                    android:textSize="15sp"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/select_layout"
@@ -137,7 +180,8 @@
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/button_border_blue_news"
                     android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -209,7 +253,7 @@
                     android:gravity="center"
                     android:paddingLeft="40dp"
                     android:paddingRight="40dp"
-                    android:text="Upload Files"
+                    android:text="Submit"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"

@@ -1,4 +1,3 @@
-
 package com.orane.icliniq;
 
 import android.app.ProgressDialog;
@@ -13,19 +12,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,18 +30,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.luseen.autolinklibrary.AutoLinkMode;
-import com.luseen.autolinklibrary.AutoLinkOnClickListener;
-import com.luseen.autolinklibrary.AutoLinkTextView;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.orane.icliniq.Model.BaseActivity;
-import com.orane.icliniq.Model.LinkTransformationMethod;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Parallex.ParallexMainActivity;
 import com.orane.icliniq.network.JSONParser;
@@ -61,10 +46,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.sufficientlysecure.htmltextview.ClickableTableSpan;
-import org.sufficientlysecure.htmltextview.DrawTableLinkSpan;
-import org.sufficientlysecure.htmltextview.HtmlResImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,15 +53,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.square1.richtextlib.spans.ClickableSpan;
-import io.square1.richtextlib.spans.RemoteBitmapSpan;
-import io.square1.richtextlib.spans.UrlBitmapDownloader;
-import io.square1.richtextlib.spans.YouTubeSpan;
 import io.square1.richtextlib.ui.RichContentView;
-import io.square1.richtextlib.ui.RichContentViewDisplay;
 import me.drakeet.materialdialog.MaterialDialog;
-
-import static java.security.AccessController.getContext;
 
 public class ArticleViewActivity extends BaseActivity implements ObservableScrollViewCallbacks {
 
@@ -119,12 +93,14 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.tipsview);
 
+        //------------ Object Creations -------------------------------
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
         }
@@ -136,40 +112,39 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
         System.out.println("Model.token----------------------" + Model.token);
         //================ Shared Pref ======================
 
-        img_banner = (ImageView) findViewById(R.id.img_banner);
-        img_close = (ImageView) findViewById(R.id.img_close);
-        mToolbar = (RelativeLayout) findViewById(R.id.top_layout);
-        bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
-        feedback_layout = (LinearLayout) findViewById(R.id.feedback_layout);
-        mScrollable = (ObservableScrollView) findViewById(R.id.scrollable);
+        img_banner = findViewById(R.id.img_banner);
+        img_close = findViewById(R.id.img_close);
+        mToolbar = findViewById(R.id.top_layout);
+        bottom_layout = findViewById(R.id.bottom_layout);
+        feedback_layout = findViewById(R.id.feedback_layout);
+        mScrollable = findViewById(R.id.scrollable);
 
-        tv_doc_id = (TextView) findViewById(R.id.tv_doc_id);
-        tv_date = (TextView) findViewById(R.id.tv_date);
-        tv_docedu = (TextView) findViewById(R.id.tv_docedu);
-        tv_docsp = (TextView) findViewById(R.id.tv_docsp);
-        tv_docname = (TextView) findViewById(R.id.tv_docname);
-        tv_title = (TextView) findViewById(R.id.tv_title);
-        tv_share = (TextView) findViewById(R.id.tv_share);
-        doc_photo = (CircleImageView) findViewById(R.id.doc_photo);
-        btn_yes = (Button) findViewById(R.id.btn_yes);
-        btn_no = (Button) findViewById(R.id.btn_no);
-        recome_parentlay = (LinearLayout) findViewById(R.id.recome_parentlay);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        tv_title = (TextView) findViewById(R.id.tv_title);
-        docname = (TextView) findViewById(R.id.docname);
-        tv_abstract = (TextView) findViewById(R.id.tv_abstract);
-        tv_desc = (TextView) findViewById(R.id.tv_desc);
-        tv_cat = (TextView) findViewById(R.id.tv_cat);
-        tvdocname = (TextView) findViewById(R.id.tvdocname);
-        btnask = (Button) findViewById(R.id.btnask);
-        search_text = (EditText) findViewById(R.id.search_text);
-        img_search_hit = (ImageView) findViewById(R.id.img_search_hit);
-        scrollview = (ObservableScrollView) findViewById(R.id.scrollview);
-        reccom_layout = (LinearLayout) findViewById(R.id.reccom_layout);
+        tv_doc_id = findViewById(R.id.tv_doc_id);
+        tv_date = findViewById(R.id.tv_date);
+        tv_docedu = findViewById(R.id.tv_docedu);
+        tv_docsp = findViewById(R.id.tv_docsp);
+        tv_docname = findViewById(R.id.tv_docname);
+        tv_title = findViewById(R.id.tv_title);
+        tv_share = findViewById(R.id.tv_share);
+        doc_photo = findViewById(R.id.doc_photo);
+        btn_yes = findViewById(R.id.btn_yes);
+        btn_no = findViewById(R.id.btn_no);
+        recome_parentlay = findViewById(R.id.recome_parentlay);
+        progressBar = findViewById(R.id.progressBar);
+        tv_title = findViewById(R.id.tv_title);
+        //docname = (TextView) findViewById(R.id.docname);
+        tv_abstract = findViewById(R.id.tv_abstract);
+        tv_desc = findViewById(R.id.tv_desc);
+        tv_cat = findViewById(R.id.tv_cat);
+        tvdocname = findViewById(R.id.tvdocname);
+        btnask = findViewById(R.id.btnask);
+        search_text = findViewById(R.id.search_text);
+        img_search_hit = findViewById(R.id.img_search_hit);
+        scrollview = findViewById(R.id.scrollview);
+        reccom_layout = findViewById(R.id.reccom_layout);
         //bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
-        doctor_layout = (LinearLayout) findViewById(R.id.doctor_layout);
-        webview = (ObservableWebView) findViewById(R.id.webview);
-
+        doctor_layout = findViewById(R.id.doctor_layout);
+        webview = findViewById(R.id.webview);
 
         mScrollable.setScrollViewCallbacks(this);
 
@@ -178,7 +153,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
 
         //tv_desc.setTransformationMethod(new LinkTransformationMethod());
         tv_desc.setMovementMethod(LinkMovementMethod.getInstance());
-
 
         bottom_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,8 +170,8 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
         doctor_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
 
+                try {
 
                     TextView tv_doc_id = view.findViewById(R.id.tv_doc_id);
                     String Doc_id = tv_doc_id.getText().toString();
@@ -574,16 +548,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 //String doc_str = "by " + doc_name + " at " + art_date + " on " + art_cat;
                 //------------------------ Setting Values---------
 
-                //-------------------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Instant-Article-qa");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("android.patient.Title_text", art_title);
-                properties.put("android.patient.Category", art_cat);
-                properties.put("android.patient.Doctor_id", doc_id);
-                properties.put("android.patient.Doctor_Name", doc_name);
-                Model.kiss.set(properties);
-                //-------------------------------------------
 
                 //------------------------------------------------
                 if (reccom_qa.length() > 0)
@@ -598,7 +562,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                     String recc_title_hash = jsonobj3.getString("title_hash");
 
                     View recc_vi = getLayoutInflater().inflate(R.layout.recomm_quest, null);
-                    TextView tv_quest = (TextView) recc_vi.findViewById(R.id.tv_quest);
+                    TextView tv_quest = recc_vi.findViewById(R.id.tv_quest);
                     tv_quest.setText(Html.fromHtml(recc_title));
 
                     Typeface arimo_reg1 = Typeface.createFromAsset(getAssets(), Model.font_name);
@@ -624,7 +588,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
 
         try {
 
-            TextView tv_quest = (TextView) v.findViewById(R.id.tv_quest);
+            TextView tv_quest = v.findViewById(R.id.tv_quest);
             String str = tv_quest.getText().toString();
             String qtext_title_hash = reccom_list.get(str);
             System.out.println("str-----------" + str);
@@ -697,7 +661,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
             alert.setView(view);
             alert.setTitle("Feedback");
 
-            final EditText edt_feedback = (EditText) view.findViewById(R.id.edt_feedback);
+            final EditText edt_feedback = view.findViewById(R.id.edt_feedback);
 
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
@@ -723,13 +687,6 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
 
                             //say_success();
 
-                            //--------------------------------------------
-                            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                            Model.kiss.record("android.patient.Article_Feedback");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("android.patient.Article_Feedback_Text:", feedback_text);
-                            Model.kiss.set(properties);
-                            //--------------------------------------------
 
                             alert.dismiss();
 
@@ -739,7 +696,7 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                         }
 
                     } else {
-                        edt_feedback.setError("Feedback should not be empty");
+                        edt_feedback.setError("Please enter your feedback");
                     }
                 }
             });
@@ -806,8 +763,8 @@ public class ArticleViewActivity extends BaseActivity implements ObservableScrol
                 e.printStackTrace();
             }
             /*
-            * 
-            * */
+             *
+             * */
 
             dialog.cancel();
 

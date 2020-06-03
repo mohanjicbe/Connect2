@@ -18,15 +18,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,18 +42,22 @@ import android.widget.ViewSwitcher;
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.icliniq.Model.Model;
+import com.orane.icliniq.Model.MultipartEntity2;
+import com.orane.icliniq.expand.ExpandableLayout;
 import com.orane.icliniq.file_picking.utils.FileUtils;
 import com.orane.icliniq.fileattach_library.DefaultCallback;
 import com.orane.icliniq.fileattach_library.EasyImage;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -87,17 +95,19 @@ public class Consultation3 extends AppCompatActivity {
     String action;
     public StringBuilder total;
     ViewSwitcher viewSwitcher;
-    ImageLoader imageLoader;
+
+    public String fee_q_inr, fee_q, persona_response, compmore, prevhist, curmedi, pastmedi, labtest, serverResponseMessage, selectedPath, inv_id, inv_fee, inv_strfee, status_postquery, persona_id_val, qid, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
 
     private File fileSelected;
     ImageView thumb_img;
     InputStream is = null;
     Uri selectedImageUri;
-    LinearLayout layout_attachfile, file_list, takephoto_layout, browse_layout;
-    public String str_response, consult_id, sel_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, attach_status, attach_file_url, attach_filename, last_upload_file, serverResponseMessage, selectedfilename, upload_response, inv_id, inv_fee, inv_strfee, filename, selectedPath, cur_qid, files_List = "";
+    JSONObject jsonobj1;
+    LinearLayout expand_layout, layout_attachfile, file_list, takephoto_layout, browse_layout;
+    public String family_list, str_response, consult_id, file_fileUrl_text, filename, cur_qid, files_List = "";
     Button btn_submit, btn_attach;
     int serverResponseCode = 0;
-    public JSONObject prepay_jobject, json;
+    public JSONObject prepay_jobject, json, jsonobj_postquery;
     Toolbar toolbar;
     TextView tvtit, tv_attach_id, tv_attach_url;
     View v;
@@ -113,6 +123,8 @@ public class Consultation3 extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
     private static final String TAG = "FileChooserExampleActivity";
     private static final int REQUEST_CODE = 6384; // onActivityResult request
+
+    EditText tv_compmore, tv_prevhist, tv_curmedi, tv_pastmedi, tv_labtest;
 
 
     @Override
@@ -138,6 +150,7 @@ public class Consultation3 extends AppCompatActivity {
         }
 
         //------------ Object Creations -------------------------------
+        expand_layout = (LinearLayout) findViewById(R.id.expand_layout);
         btn_attach = (Button) findViewById(R.id.btn_attach);
         btn_submit = (Button) findViewById(R.id.btn_submit);
         /*TextView tvattach = (TextView) findViewById(R.id.tvattach);*/
@@ -149,6 +162,12 @@ public class Consultation3 extends AppCompatActivity {
         browse_layout = (LinearLayout) findViewById(R.id.browse_layout);
         file_list = (LinearLayout) findViewById(R.id.file_list);
 
+        tv_compmore = (EditText) findViewById(R.id.tv_compmore);
+        tv_prevhist = (EditText) findViewById(R.id.tv_prevhist);
+        tv_curmedi = (EditText) findViewById(R.id.tv_curmedi);
+        tv_pastmedi = (EditText) findViewById(R.id.tv_pastmedi);
+        tv_labtest = (EditText) findViewById(R.id.tv_labtest);
+
 
         Typeface font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
         Typeface font_bold = Typeface.createFromAsset(getAssets(), Model.font_name_bold);
@@ -159,11 +178,20 @@ public class Consultation3 extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_note)).setTypeface(font_reg);
         ((Button) findViewById(R.id.btn_submit)).setTypeface(font_bold);
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        Typeface tf = Typeface.createFromAsset(getAssets(), Model.font_name);
 
-        initImageLoader();
+        tv_compmore.setTypeface(tf);
+        tv_prevhist.setTypeface(tf);
+        tv_curmedi.setTypeface(tf);
+        tv_pastmedi.setTypeface(tf);
+        tv_labtest.setTypeface(tf);
+
+
+        //initImageLoader();
         //init();
 
-        //------------------ Initialize File Attachment ---------------------------------
+   /*     //------------------ Initialize File Attachment ---------------------------------
         Nammu.init(this);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -184,7 +212,7 @@ public class Consultation3 extends AppCompatActivity {
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
                 .setAllowMultiplePickInGallery(true);
-        //------------------ Initialize File Attachment ---------------------------------
+        //------------------ Initialize File Attachment ---------------------------------*/
 
         //------ getting Values ---------------------------
         Intent intent = getIntent();
@@ -195,7 +223,12 @@ public class Consultation3 extends AppCompatActivity {
         btn_attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attach_dialog();
+                //attach_dialog();
+
+                Intent intent = new Intent(Consultation3.this, Attachment_Screen_Activity.class);
+                intent.putExtra("item_id", consult_id);
+                intent.putExtra("item_type", "booking");
+                startActivity(intent);
             }
         });
 
@@ -204,23 +237,69 @@ public class Consultation3 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (new NetCheck().netcheck(Consultation3.this)) {
-                    //-------------------------------------------
-                    String url = Model.BASE_URL + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=consult&item_id=" + consult_id + "&token=" + Model.token + "&enc=1";
-                    System.out.println("Prepare Invoice url-------------" + url);
-                    new JSON_Prepare_inv().execute(url);
-                    //-------------------------------------------
-                } else {
-                    Toast.makeText(Consultation3.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                try {
+
+                    compmore = tv_compmore.getText().toString();
+                    prevhist = tv_prevhist.getText().toString();
+                    curmedi = tv_curmedi.getText().toString();
+                    pastmedi = tv_pastmedi.getText().toString();
+                    labtest = tv_labtest.getText().toString();
+
+                    if (compmore.equals("")) {
+                        compmore = "";
+                    }
+                    if (prevhist.equals("")) {
+                        prevhist = "";
+                    }
+                    if (curmedi.equals("")) {
+                        curmedi = "";
+                    }
+                    if (pastmedi.equals("")) {
+
+                        pastmedi = "";
+                    }
+                    if (labtest.equals("")) {
+                        labtest = "";
+                    }
+
+                    json = new JSONObject();
+                    json.put("book_id", consult_id);
+                    json.put("complaint_more", compmore);
+                    json.put("p_history", prevhist);
+                    json.put("c_medications", curmedi);
+                    json.put("p_medications", pastmedi);
+                    json.put("tests", labtest);
+
+                    if (new NetCheck().netcheck(Consultation3.this)) {
+                        new JSONPostQuery().execute(json);
+                    }
+
+                    //============================================================
+
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString(first_query, "no");
+                    Model.first_query = "no";
+                    editor.apply();
+                    //============================================================
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        Model.kiss.record("android.Patient.Query_Submit_Crash");
+                        HashMap<String, String> properties = new HashMap<String, String>();
+                        properties.put("android.Patient.Crash_ID", e.toString());
+                        Model.kiss.set(properties);
+                    } catch (Exception ee) {
+                        ee.printStackTrace();
+                    }
                 }
 
-                ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
             }
         });
     }
 
-
+/*
     private void initImageLoader() {
 
         try {
@@ -237,7 +316,7 @@ public class Consultation3 extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -299,6 +378,18 @@ public class Consultation3 extends AppCompatActivity {
                 file_list.addView(addView);
                 //------------------------------------------
             }
+
+
+            if ((Model.query_launch).equals("attached_file")) {
+
+                //-------------------------------------------------------------------
+                String get_family_url = Model.BASE_URL + "sapp/listHReportsData?item_id=" + consult_id + "&item_type=booking&user_id=" + Model.id + "&token=" + Model.token;
+                System.out.println("get_family_url---------" + get_family_url);
+                new JSON_getFileList().execute(get_family_url);
+                //-------------------------------------------------------------------
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -343,6 +434,7 @@ public class Consultation3 extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
+                //str_response = upload_file(urls[0]);
                 str_response = upload_file(urls[0]);
                 System.out.println("upload_response---------" + str_response);
                 return true;
@@ -471,6 +563,12 @@ public class Consultation3 extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
             dialog.dismiss();
+
+            //-------------------------------------------------------------------
+            String get_family_url = Model.BASE_URL + "sapp/listHReportsData?item_id=" + consult_id + "&item_type=booking&user_id=" + Model.id + "&token=" + Model.token;
+            System.out.println("get_family_url---------" + get_family_url);
+            new JSON_getFileList().execute(get_family_url);
+            //-------------------------------------------------------------------
         }
     }
 
@@ -505,6 +603,7 @@ public class Consultation3 extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
 
             try {
+
                 jsonobj_prepinv = new JSONObject(str_response);
                 if (jsonobj_prepinv.has("token_status")) {
                     String token_status = jsonobj_prepinv.getString("token_status");
@@ -551,16 +650,6 @@ public class Consultation3 extends AppCompatActivity {
 
                         if (!(inv_id).equals("0")) {
 
-                            //----------------- Kissmetrics ----------------------------------
-                            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                            Model.kiss.record("android.patient.Prepare_Invoice");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("android.patient.consult_id", consult_id);
-                            properties.put("android.patient.inv_id", inv_id);
-                            properties.put("android.patient.inv_fee", inv_fee);
-                            properties.put("android.patient.inv_strfee", inv_strfee);
-                            Model.kiss.set(properties);
-                            //----------------- Kissmetrics ----------------------------------
 
                             //----------- Flurry -------------------------------------------------
                             Map<String, String> articleParams = new HashMap<String, String>();
@@ -617,7 +706,7 @@ public class Consultation3 extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+    /*public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -641,6 +730,7 @@ public class Consultation3 extends AppCompatActivity {
 
             System.out.println("Source File not exist :" + fullpath);
             return "";
+
         } else {
             try {
 
@@ -715,7 +805,7 @@ public class Consultation3 extends AppCompatActivity {
 
             return contentAsString;
         }
-    }
+    }*/
 
    /* public String convertInputStreamToString(InputStream stream, int length) throws IOException {
         Reader reader = null;
@@ -1009,7 +1099,7 @@ public class Consultation3 extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }*/
 
-    @Override
+ /*   @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1040,7 +1130,8 @@ public class Consultation3 extends AppCompatActivity {
                 }
             }
         });
-    }
+    }*/
+/*
 
     private void onPhotosReturned(List<File> returnedPhotos) {
 
@@ -1092,6 +1183,292 @@ public class Consultation3 extends AppCompatActivity {
     protected void onDestroy() {
         EasyImage.clearConfiguration(this);
         super.onDestroy();
+    }
+*/
+
+
+    private class JSON_getFileList extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(Consultation3.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                family_list = jParser.getJSONString(urls[0]);
+
+                System.out.println("Family URL---------------" + urls[0]);
+
+                return family_list;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            //apply_relaships_radio(family_list);
+
+            try {
+
+                System.out.println("Attached_Files_List----" + family_list);
+
+                JSONObject jsonFileList = new JSONObject(family_list);
+
+                String det_text = jsonFileList.getString("det");
+
+                JSONArray det_jarray = new JSONArray(det_text);
+
+                expand_layout.removeAllViews();
+
+
+                for (int i = 0; i < det_jarray.length(); i++) {
+                    jsonobj1 = det_jarray.getJSONObject(i);
+                    System.out.println("jsonobj_first-----" + jsonobj1.toString());
+
+                    String reportsLabel_text = jsonobj1.getString("reportsLabel");
+                    String data_text = jsonobj1.getString("data");
+
+                    JSONArray data_jarray = new JSONArray(data_text);
+
+                    //------------------------------------
+                    LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View addView = layoutInflater.inflate(R.layout.attachment_expand_view, null);
+
+                    final LinearLayout expand_inner_view = (LinearLayout) addView.findViewById(R.id.expand_inner_view);
+                    TextView tv_att_title = (TextView) addView.findViewById(R.id.tv_att_title);
+                    final ImageView img_right_arrow = (ImageView) addView.findViewById(R.id.img_right_arrow);
+
+                    //img_right_arrow.setImageResource(R.mipmap.down_icon);
+                    tv_att_title.setText(reportsLabel_text);
+
+                    ExpandableLayout expandableLayout = (ExpandableLayout) addView.findViewById(R.id.expandable_layout);
+
+/*                    Random rnd = new Random();
+                    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                    expandableLayout.setBackgroundColor(color);*/
+
+
+                    expandableLayout.setOnExpandListener(new ExpandableLayout.OnExpandListener() {
+                        @Override
+                        public void onExpand(boolean expanded) {
+                            //Toast.makeText(AskQuery2.this, "expand?" + expanded, Toast.LENGTH_SHORT).show();
+
+                            if (expanded) {
+                                img_right_arrow.setImageResource(R.mipmap.up_icon);
+                            } else {
+                                img_right_arrow.setImageResource(R.mipmap.down_icon);
+                            }
+
+                        }
+                    });
+
+                    for (int j = 0; j < data_jarray.length(); j++) {
+                        JSONObject file_jobj = data_jarray.getJSONObject(j);
+                        System.out.println("jsonobj_first-----" + file_jobj.toString());
+
+                        final String attach_id_text = file_jobj.getString("attach_id");
+                        String reportDate_text = file_jobj.getString("reportDate");
+                        final String fileUrl_text = file_jobj.getString("fileUrl");
+                        String isDelete_text = file_jobj.getString("isDelete");
+                        String reportDesc = file_jobj.getString("reportDesc");
+
+                        //------------------------------------
+                        LayoutInflater layoutInflater2 = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View addView2 = layoutInflater2.inflate(R.layout.attachment_expand_view2, null);
+
+                        TextView tv_summ_title2 = (TextView) addView2.findViewById(R.id.tv_summ_title2);
+                        TextView tv_desc_summary_text = (TextView) addView2.findViewById(R.id.tv_desc_summary_text);
+                        Button btn_open = (Button) addView2.findViewById(R.id.btn_open);
+                        Button btn_remove = (Button) addView2.findViewById(R.id.btn_remove);
+
+
+                        tv_summ_title2.setText("File : " + (j + 1) + " Dated on " + reportDate_text);
+                        tv_desc_summary_text.setText(reportDesc);
+                        img_right_arrow.setImageBitmap(BitmapFactory.decodeFile(fileUrl_text));
+
+
+                        System.out.println("attach_id_text-----------" + (attach_id_text));
+                        System.out.println("reportDate_text-----------" + (reportDate_text));
+                        System.out.println("isDelete_text-----------" + (isDelete_text));
+                        System.out.println("reportDesc-----------" + (reportDesc));
+
+                        //------------------------------------------
+                        if (isDelete_text.equals("1")) {
+                            btn_remove.setVisibility(View.VISIBLE);
+                        } else {
+                            btn_remove.setVisibility(View.GONE);
+                        }
+                        //------------------------------------------
+
+
+                        btn_remove.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            /*    View parent = (View) v.getParent();
+                                //View grand_parent = (View)parent.getParent();
+
+                                tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                                String attid = tv_attach_id.getText().toString();*/
+
+                                //---------------------------
+                                String url = Model.BASE_URL + "/sapp/removeHReportData?item_id=" + consult_id + "&item_type=booking&attach_id=" + attach_id_text + "&user_id=" + (Model.id) + "&attach_id=" + attach_id_text + "&token=" + Model.token;
+                                System.out.println("Remover Attach url-------------" + url);
+                                new JSON_remove_file().execute(url);
+                                //---------------------------
+
+                                // System.out.println("Removed attach_id-----------" + attid);
+                                 //((LinearLayout) addView.getParent()).removeView(addView);
+                            }
+                        });
+
+                        btn_open.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                if ("?".contains(fileUrl_text)) {
+                                    file_fileUrl_text = fileUrl_text + "&user_id=" + Model.id + "&token=" + Model.token + "&enc=1";
+                                } else {
+                                    file_fileUrl_text = fileUrl_text + "?user_id=" + Model.id + "&token=" + Model.token + "&enc=1";
+                                }
+
+
+                             /*   Intent intent = new Intent(Consultation3.this, WebViewActivity.class);
+                                intent.putExtra("url", file_fileUrl_text);
+                                intent.putExtra("type", "attachment");
+                                startActivity(intent);*/
+
+
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(file_fileUrl_text));
+                                startActivity(i);
+                            }
+                        });
+
+                        expand_inner_view.addView(addView2);
+                        //-----------------------------------
+
+                    }
+
+                    expand_layout.addView(addView);
+
+
+                    Model.query_launch = "";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.cancel();
+        }
+    }
+
+
+    private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(Consultation3.this);
+            dialog.setMessage("Submitting, please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+                JSONParser jParser = new JSONParser();
+                jsonobj_postquery = jParser.JSON_POST(urls[0], "extraCons");
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                //-------------------------------------------
+                String url = Model.BASE_URL + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=consult&item_id=" + consult_id + "&token=" + Model.token + "&enc=1";
+                System.out.println("Prepare Invoice url-------------" + url);
+                new JSON_Prepare_inv().execute(url);
+                //-------------------------------------------
+                ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.dismiss();
+        }
+    }
+
+
+    private String upload_file(String file_path) {
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/upload4booking?item_id=" + consult_id + "&token=" + Model.token + "&enc=1";
+        System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
+
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
     }
 
 }

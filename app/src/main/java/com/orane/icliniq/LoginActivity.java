@@ -6,27 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
@@ -37,18 +33,6 @@ import java.util.Map;
 
 public class LoginActivity extends Activity {
 
-    Button btnlogin;
-    MaterialEditText edtemail, edtpassword;
-    TextView tvforgotpw;
-    BufferedReader reader = null;
-    JSONObject login_json, json;
-    JSONObject login_jsonobj, jsonobj;
-    public StringBuffer json_response = new StringBuffer();
-    public String str_response, country, code_val, appsFlyerId, isvalid, userid, url, sub_url = "mobileajax/loginSubmit";
-    LinearLayout btn_loginmobno, TextView;
-    TextView requestreg;
-
-    SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
     public static final String sp_km_id = "sp_km_id_key";
@@ -74,7 +58,18 @@ public class LoginActivity extends Activity {
     public static final String token = "token_key";
     public static final String chat_tip = "chat_tip_key";
     public static final String ref_code = "ref_code_key";
-
+    public StringBuffer json_response = new StringBuffer();
+    public String str_response, country, code_val, appsFlyerId, isvalid, userid, url, sub_url = "mobileajax/loginSubmit";
+    Button btnlogin;
+    MaterialEditText edtemail;
+    ShowHidePasswordEditText edtpassword;
+    TextView tvforgotpw;
+    BufferedReader reader = null;
+    JSONObject login_json, json;
+    JSONObject login_jsonobj, jsonobj;
+    LinearLayout btn_loginmobno, TextView;
+    TextView requestreg;
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,16 +78,15 @@ public class LoginActivity extends Activity {
 
         FlurryAgent.onPageView();
         //------------ Initialization ---------------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
+
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        btnlogin = (Button) findViewById(R.id.btnlogin);
-        edtemail = (MaterialEditText) findViewById(R.id.edtemail);
-        edtpassword = (MaterialEditText) findViewById(R.id.edtpassword);
-        tvforgotpw = (TextView) findViewById(R.id.tvforgotpw);
-        requestreg = (TextView) findViewById(R.id.requestreg);
-        btn_loginmobno = (LinearLayout) findViewById(R.id.btn_loginmobno);
-
+        btnlogin = findViewById(R.id.btnlogin);
+        edtemail = findViewById(R.id.edtemail);
+        edtpassword = findViewById(R.id.edtpassword);
+        tvforgotpw = findViewById(R.id.tvforgotpw);
+        requestreg = findViewById(R.id.requestreg);
+        btn_loginmobno = findViewById(R.id.btn_loginmobno);
         //------------ Initialization ---------------------------------------
 
         Typeface font_bold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
@@ -106,11 +100,6 @@ public class LoginActivity extends Activity {
         ((TextView) findViewById(R.id.tv_otptext)).setTypeface(font_bold);
         ((TextView) findViewById(R.id.tv_forgottext)).setTypeface(font_normal);
         ((TextView) findViewById(R.id.requestreg)).setTypeface(font_normal);
-
-
-        //==================Kissmetrics=======================================
-        Model.kiss.record("android.patient.Login_Screen");
-        //--------------------Kissmetrics--------------------------------------------------------
 
         tvforgotpw.setText(Html.fromHtml(getResources().getString(R.string.forgotpw)));
 
@@ -158,7 +147,6 @@ public class LoginActivity extends Activity {
         requestreg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 intent.putExtra("finisher", new android.os.ResultReceiver(null) {
@@ -216,8 +204,8 @@ public class LoginActivity extends Activity {
                 String password = edtpassword.getText().toString();
 
                 try {
-                    if (uname.equals("")) edtemail.setError("Username cannot be empty");
-                    else if (password.equals("")) edtpassword.setError("Password cannot be empty");
+                    if (uname.equals("")) edtemail.setError("Please enter your mail id or mobile number");
+                    else if (password.equals("")) edtpassword.setError("Please enter your password");
                     else {
 
                         login_json = new JSONObject();
@@ -228,17 +216,12 @@ public class LoginActivity extends Activity {
                         if (new NetCheck().netcheck(LoginActivity.this)) {
                             new JSONAsyncTask_LoginSubmit().execute(login_json);
                         } else {
-                            Toast.makeText(LoginActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Please Check your Internet Connection", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (Exception e) {
 
                     e.printStackTrace();
-
-                    Model.kiss.record("android.patient.Login_Crash");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.Crash", e.toString());
-                    Model.kiss.set(properties);
                 }
             }
         });
@@ -345,18 +328,6 @@ public class LoginActivity extends Activity {
                     try {
                         System.out.println("Model.mnum---------" + Model.mnum);
 
-                        //--------- Kissmetrics --------------------------------------------------
-                        Model.kiss.record("android.patient.Login_Access_Success");
-                        Model.kiss.identify(Model.kmid);
-
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.patient.Country", Model.browser_country);
-                        properties.put("android.patient.App_Version", (Model.App_ver));
-                        properties.put("android.patient.token", Model.token);
-                        properties.put("android.patient.Logwith", (edtemail.getText().toString() + "/" + (edtpassword.getText().toString())));
-                        Model.kiss.set(properties);
-                        //----------------------------------------------------------------------------
-
                         //----------- Flurry -------------------------------------------------
                         FlurryAgent.setUserId(userid);
                         Map<String, String> articleParams = new HashMap<String, String>();
@@ -375,7 +346,6 @@ public class LoginActivity extends Activity {
                         //------------ Google firebase Analitics---------------------------------------------
 
                     } catch (Exception t) {
-                        System.out.println("Kissmetrics Exception-first--" + t.toString());
                         t.printStackTrace();
                     }
 
@@ -385,16 +355,8 @@ public class LoginActivity extends Activity {
 
                 } else {
 
-                    Toast.makeText(getApplicationContext(), "Login Failed. Try Again...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Incorrect Username or Password. Please enter your valid Username and Password", Toast.LENGTH_LONG).show();
 
-                    //=========================================================
-                    Model.kiss.record("android.patient.Login_Access_Failed");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.App_Version", (Model.App_ver));
-                    properties.put("android.patient.token", Model.token);
-                    properties.put("android.patient.Logwith", (edtemail.getText().toString() + "/" + (edtpassword.getText().toString())));
-                    Model.kiss.set(properties);
-                    //----------------------------------------------------------------------------
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("android.patient.App_Version", (Model.App_ver));
@@ -429,7 +391,7 @@ public class LoginActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-/*            dialog = new ProgressDialog(LoginActivity.this);
+/*          dialog = new ProgressDialog(LoginActivity.this);
             dialog.setMessage("Please wait");
             dialog.show();
             dialog.setCancelable(false);*/
@@ -439,6 +401,7 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(String... urls) {
 
             try {
+
                 str_response = new JSONParser().getJSONString(urls[0]);
                 System.out.println("str_response--------------" + str_response);
 
@@ -458,6 +421,7 @@ public class LoginActivity extends Activity {
 
                 if (jsonobj.has("token_status")) {
                     String token_status = jsonobj.getString("token_status");
+
                     if (token_status.equals("0")) {
 
                         //============================================================
@@ -471,6 +435,7 @@ public class LoginActivity extends Activity {
                         startActivity(intent);
                         finish();
                     }
+
                 } else {
 
                     country = jsonobj.getString("country");
@@ -482,8 +447,8 @@ public class LoginActivity extends Activity {
                     Model.browser_country = country;
                     Model.pat_country = country;
                     Model.country_code = code_val;
-
                 }
+
             } catch (Exception e) {
                 country = "";
                 e.printStackTrace();

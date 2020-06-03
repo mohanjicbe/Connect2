@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +50,7 @@ public class ThankyouActivity extends AppCompatActivity {
 
 
         if (type_val.equals("query")) {
-            note_title.setText("Your Query has been posted");
+            note_title.setText("Your query has been successfully posted");
             note_desc.setText("You will be notified once the doctor answer the query");
         } else if (type_val.equals("consultation")) {
             note_title.setText("Your Consultation booking has been done.");

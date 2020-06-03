@@ -48,14 +48,14 @@
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="175dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:ellipsize="end"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:maxLines="1"
-            android:text="Rajendran"
+            android:text="Rajendran dakdsas adsas dasdas  asdasdas"
             android:textColor="@color/mds_bluegrey_800"
             android:textSize="13sp" />
 

@@ -11,9 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -33,9 +30,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
@@ -56,7 +56,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import me.drakeet.materialdialog.MaterialDialog;
@@ -132,7 +131,7 @@ public class Invoice_Page_New extends AppCompatActivity {
         mob_no = sharedpreferences.getString(sp_mnum, "");
 
         //-------------------- Toolbar --------------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -140,7 +139,7 @@ public class Invoice_Page_New extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -150,75 +149,75 @@ public class Invoice_Page_New extends AppCompatActivity {
         }
         //-------------------- Toolbar --------------------------------------
 
-        tv_gst_val = (TextView) findViewById(R.id.tv_gst_val);
-        tv_gst_text = (TextView) findViewById(R.id.tv_gst_text);
-        up_arrow = (ImageView) findViewById(R.id.up_arrow);
-        down_arrow = (ImageView) findViewById(R.id.down_arrow);
-        btn_paypal = (Button) findViewById(R.id.btn_paypal);
-        btn_add = (Button) findViewById(R.id.btn_add);
-        btn_confirm = (Button) findViewById(R.id.btn_confirm);
-        btn_coupon_apply = (Button) findViewById(R.id.btn_coupon_apply);
-        coupon_layout = (RelativeLayout) findViewById(R.id.coupon_layout);
-        sub_layout = (LinearLayout) findViewById(R.id.sub_layout);
-        india_pay_layout = (LinearLayout) findViewById(R.id.india_pay_layout);
-        scrollview = (ScrollView) findViewById(R.id.scrollview);
-        edt_coupon = (MaterialEditText) findViewById(R.id.edt_coupon);
-        ftrack_text = (TextView) findViewById(R.id.ftrack_text);
-        tv_paymethod_text = (TextView) findViewById(R.id.tv_paymethod_text);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        tv_third_pay = (TextView) findViewById(R.id.tv_third_pay);
-        inv_title = (TextView) findViewById(R.id.inv_title);
-        tv_strfees = (TextView) findViewById(R.id.tv_strfees);
-        tv_invdesc = (TextView) findViewById(R.id.tv_invdesc);
-        tv_invfeetot = (TextView) findViewById(R.id.tv_invfeetot);
-        tv_mywallbal = (TextView) findViewById(R.id.tv_mywallbal);
-        tv_revert = (TextView) findViewById(R.id.tv_revert);
-        tvdelmodelab = (TextView) findViewById(R.id.tvdelmodelab);
-        tv_ftrackmode = (TextView) findViewById(R.id.tv_ftrackmode);
-        tv_second_pay = (TextView) findViewById(R.id.tv_second_pay);
-        revert_layout = (LinearLayout) findViewById(R.id.revert_layout);
-        show_wallet_layout = (LinearLayout) findViewById(R.id.show_wallet_layout);
-        ftrack_layout = (RelativeLayout) findViewById(R.id.ftrack_layout);
-        first_layout = (RelativeLayout) findViewById(R.id.first_layout);
-        first_inner_layout = (LinearLayout) findViewById(R.id.first_inner_layout);
-        second_layout = (RelativeLayout) findViewById(R.id.second_layout);
-        second_inner_layout = (LinearLayout) findViewById(R.id.second_inner_layout);
-        third_layout = (RelativeLayout) findViewById(R.id.third_layout);
-        btn_make_pay = (Button) findViewById(R.id.btn_make_pay);
-        img_free = (ImageView) findViewById(R.id.img_free);
-        img_paytm = (ImageView) findViewById(R.id.img_paytm);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        btn_check = (CheckBox) findViewById(R.id.btn_check);
-        inv_amt = (TextView) findViewById(R.id.inv_amt);
-        card_input_widget = (CardInputWidget) findViewById(R.id.card_input_widget);
+        tv_gst_val = findViewById(R.id.tv_gst_val);
+        tv_gst_text = findViewById(R.id.tv_gst_text);
+        up_arrow = findViewById(R.id.up_arrow);
+        down_arrow = findViewById(R.id.down_arrow);
+        btn_paypal = findViewById(R.id.btn_paypal);
+        btn_add = findViewById(R.id.btn_add);
+        btn_confirm = findViewById(R.id.btn_confirm);
+        btn_coupon_apply = findViewById(R.id.btn_coupon_apply);
+        coupon_layout = findViewById(R.id.coupon_layout);
+        sub_layout = findViewById(R.id.sub_layout);
+        india_pay_layout = findViewById(R.id.india_pay_layout);
+        scrollview = findViewById(R.id.scrollview);
+        edt_coupon = findViewById(R.id.edt_coupon);
+        ftrack_text = findViewById(R.id.ftrack_text);
+        tv_paymethod_text = findViewById(R.id.tv_paymethod_text);
+        progressBar = findViewById(R.id.progressBar);
+        tv_third_pay = findViewById(R.id.tv_third_pay);
+        inv_title = findViewById(R.id.inv_title);
+        tv_strfees = findViewById(R.id.tv_strfees);
+        tv_invdesc = findViewById(R.id.tv_invdesc);
+        tv_invfeetot = findViewById(R.id.tv_invfeetot);
+        tv_mywallbal = findViewById(R.id.tv_mywallbal);
+        tv_revert = findViewById(R.id.tv_revert);
+        tvdelmodelab = findViewById(R.id.tvdelmodelab);
+        tv_ftrackmode = findViewById(R.id.tv_ftrackmode);
+        tv_second_pay = findViewById(R.id.tv_second_pay);
+        revert_layout = findViewById(R.id.revert_layout);
+        show_wallet_layout = findViewById(R.id.show_wallet_layout);
+        ftrack_layout = findViewById(R.id.ftrack_layout);
+        first_layout = findViewById(R.id.first_layout);
+        first_inner_layout = findViewById(R.id.first_inner_layout);
+        second_layout = findViewById(R.id.second_layout);
+        second_inner_layout = findViewById(R.id.second_inner_layout);
+        third_layout = findViewById(R.id.third_layout);
+        btn_make_pay = findViewById(R.id.btn_make_pay);
+        img_free = findViewById(R.id.img_free);
+        img_paytm = findViewById(R.id.img_paytm);
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_check = findViewById(R.id.btn_check);
+        inv_amt = findViewById(R.id.inv_amt);
+        card_input_widget = findViewById(R.id.card_input_widget);
 
-        tv_base_text = (TextView) findViewById(R.id.tv_base_text);
-        tv_base_val = (TextView) findViewById(R.id.tv_base_val);
-        tv_cgst_text = (TextView) findViewById(R.id.tv_cgst_text);
-        tv_cgst_val = (TextView) findViewById(R.id.tv_cgst_val);
-        tv_sgst_text = (TextView) findViewById(R.id.tv_sgst_text);
-        tv_sgst_val = (TextView) findViewById(R.id.tv_sgst_val);
-        tv_ihfee_val = (TextView) findViewById(R.id.tv_ihfee_val);
-        tv_igcharges = (TextView) findViewById(R.id.tv_igcharges);
+        tv_base_text = findViewById(R.id.tv_base_text);
+        tv_base_val = findViewById(R.id.tv_base_val);
+        tv_cgst_text = findViewById(R.id.tv_cgst_text);
+        tv_cgst_val = findViewById(R.id.tv_cgst_val);
+        tv_sgst_text = findViewById(R.id.tv_sgst_text);
+        tv_sgst_val = findViewById(R.id.tv_sgst_val);
+        tv_ihfee_val = findViewById(R.id.tv_ihfee_val);
+        tv_igcharges = findViewById(R.id.tv_igcharges);
 
 
-        third_inner_layout = (LinearLayout) findViewById(R.id.third_inner_layout);
-        radio1 = (RadioButton) findViewById(R.id.radio1);
-        radio2 = (RadioButton) findViewById(R.id.radio2);
-        radio3 = (RadioButton) findViewById(R.id.radio3);
-        arrow1 = (ImageView) findViewById(R.id.arrow1);
-        arrow2 = (ImageView) findViewById(R.id.arrow2);
-        arrow3 = (ImageView) findViewById(R.id.arrow3);
+        third_inner_layout = findViewById(R.id.third_inner_layout);
+        radio1 = findViewById(R.id.radio1);
+        radio2 = findViewById(R.id.radio2);
+        radio3 = findViewById(R.id.radio3);
+        arrow1 = findViewById(R.id.arrow1);
+        arrow2 = findViewById(R.id.arrow2);
+        arrow3 = findViewById(R.id.arrow3);
 
-        edt_name_on_card = (EditText) findViewById(R.id.edt_name_on_card);
-        edt_phone = (EditText) findViewById(R.id.edt_phone);
-        edt_cardnum = (MaterialEditText) findViewById(R.id.edt_cardnum);
-        edt_expiry_date = (MaterialEditText) findViewById(R.id.edt_expiry_date);
-        edt_cvv = (MaterialEditText) findViewById(R.id.edt_cvv);
+        edt_name_on_card = findViewById(R.id.edt_name_on_card);
+        edt_phone = findViewById(R.id.edt_phone);
+        edt_cardnum = findViewById(R.id.edt_cardnum);
+        edt_expiry_date = findViewById(R.id.edt_expiry_date);
+        edt_cvv = findViewById(R.id.edt_cvv);
 
-        layout_curr = (LinearLayout) findViewById(R.id.layout_curr);
-        ihc_layout = (LinearLayout) findViewById(R.id.ihc_layout);
-        other_fee__layout = (LinearLayout) findViewById(R.id.other_fee__layout);
+        layout_curr = findViewById(R.id.layout_curr);
+        ihc_layout = findViewById(R.id.ihc_layout);
+        other_fee__layout = findViewById(R.id.other_fee__layout);
 
         //--------------------- Fonts Sett -------------------------------------------
         Typeface font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
@@ -292,7 +291,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                     force_logout();
                 }
             } else {
-                Toast.makeText(Invoice_Page_New.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Invoice_Page_New.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -307,7 +306,7 @@ public class Invoice_Page_New extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //--------------------------------------------------------
-                String url3 = Model.BASE_URL + "/app/doTxn?user_id=" + (Model.id) + "&inv_id=" + (inv_id);
+                String url3 = Model.BASE_URL + "/app/doTxn?user_id=" + (Model.id) + "&inv_id=" + inv_id + "&token=" + Model.token;
                 System.out.println("url-----------" + url3);
                 new JSON_txnid().execute(url3);
                 //-------------------------------------------------------
@@ -343,15 +342,6 @@ public class Invoice_Page_New extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_FastTrack");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.user_id", (Model.id));
-                    properties.put("android.patient.inv_id", inv_id);
-                    properties.put("android.patient.inv_strfee", inv_strfee);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -408,7 +398,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                                 }
                             } else {
                                 btn_check.setChecked(false);
-                                Toast.makeText(getApplicationContext(), "Enter Coupon Code", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Pleas enter Coupon Code", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -425,7 +415,7 @@ public class Invoice_Page_New extends AppCompatActivity {
         });
 
         try {
-            LinearLayout l1 = (LinearLayout) findViewById(R.id.someone_layout);
+            LinearLayout l1 = findViewById(R.id.someone_layout);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -484,7 +474,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                         e2.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Enter Coupon Code", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter Coupon Code", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -498,15 +488,6 @@ public class Invoice_Page_New extends AppCompatActivity {
 
                 try {
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_FastTrack");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.user_id", (Model.id));
-                    properties.put("android.patient.inv_id", inv_id);
-                    properties.put("android.patient.inv_strfee", inv_strfee);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -551,15 +532,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                     new JSON_Prepare_inv().execute(url);
                     //-----------------------------------------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_Fasttrack_Revert");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("qid", qid);
-                    properties.put("Invoice_no", (inv_id));
-                    properties.put("Invoice_fee", (inv_strfee));
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -774,15 +746,6 @@ public class Invoice_Page_New extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Invoice_RazorPay");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("qid:", qid);
-                properties.put("Invoice_no:", inv_id);
-                properties.put("Invoice_fee:", inv_strfee);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //----------- Flurry -------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -826,16 +789,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                     Model.mFirebaseAnalytics.logEvent("Invoice_Paytm", params);
                     //------------ Google firebase Analitics---------------------------------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_Paytm");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("Query_id:", qid);
-                    properties.put("Invoice_no:", (inv_id));
-                    properties.put("Invoice_fee:", (inv_strfee));
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
-
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("Query_id:", qid);
@@ -850,6 +803,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                     startActivity(i);
                     finish();
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -872,15 +826,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                     Model.mFirebaseAnalytics.logEvent("Invoice_Stripe", params);
                     //------------ Google firebase Analitics---------------------------------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_Stripe");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("qid:", qid);
-                    properties.put("Invoice_no:", inv_id);
-                    properties.put("Invoice_fee:", inv_strfee);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -906,15 +851,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                             Model.mFirebaseAnalytics.logEvent("Invoice_Stripe", params);
                             //------------ Google firebase Analitics---------------------------------------------
 
-                            //----------------- Kissmetrics ----------------------------------
-                            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                            Model.kiss.record("android.patient.Invoice_Stripe");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("qid:", qid);
-                            properties.put("Invoice_no:", inv_id);
-                            properties.put("Invoice_fee:", inv_strfee);
-                            Model.kiss.set(properties);
-                            //----------------- Kissmetrics ----------------------------------
 
                         } else {
                             edt_cvv.setError("Enter CVV number");
@@ -960,15 +896,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                     Model.mFirebaseAnalytics.logEvent("Invoice_freecharge", params);
                     //------------ Google firebase Analitics---------------------------------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_freecharge");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("Query_id:", qid);
-                    properties.put("Invoice_no:", (inv_id));
-                    properties.put("Invoice_fee:", (inv_strfee));
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -1004,15 +931,6 @@ public class Invoice_Page_New extends AppCompatActivity {
                     Model.mFirebaseAnalytics.logEvent("Invoice_PayPal", params);
                     //------------ Google firebase Analitics---------------------------------------------
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_PayPal");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("qid:", qid);
-                    properties.put("Invoice_no:", inv_id);
-                    properties.put("Invoice_fee:", inv_strfee);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -1056,7 +974,12 @@ public class Invoice_Page_New extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
+
+            finishAffinity();
+            Intent i = new Intent(Invoice_Page_New.this, CenterFabActivity.class);
+            startActivity(i);
             finish();
+
             return true;
         }
 
@@ -1080,6 +1003,12 @@ public class Invoice_Page_New extends AppCompatActivity {
                 @Override
                 public void run() {
                     doubleBackToExitPressedOnce = false;
+
+                    finishAffinity();
+                    Intent i = new Intent(Invoice_Page_New.this, CenterFabActivity.class);
+                    startActivity(i);
+                    finish();
+
                 }
             }, 2000);
         } catch (Exception e) {
@@ -1129,7 +1058,7 @@ public class Invoice_Page_New extends AppCompatActivity {
 
                             Model.query_launch = "Askquery2";
 
-                            Intent intent = new Intent(Invoice_Page_New.this, ThankyouActivity.class);
+                              Intent intent = new Intent(Invoice_Page_New.this, ThankyouActivity.class);
                             intent.putExtra("type", type_val);
                             startActivity(intent);
                             finish();
@@ -1225,20 +1154,6 @@ public class Invoice_Page_New extends AppCompatActivity {
 
                     System.out.println("inv_browsercountry--------------------" + inv_browsercountry);
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Invoice_View");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.qid", qid);
-                    properties.put("android.patient.inv_id", inv_id);
-                    properties.put("android.patient.inv_title_txt", inv_title_txt);
-                    properties.put("android.patient.inv_desc_txt", inv_desc_txt);
-                    properties.put("android.patient.inv_strfee", inv_strfee);
-                    properties.put("android.patient.inv_walletfee", inv_walletfee);
-                    properties.put("android.patient.inv_btnconfirm", "" + inv_btnconfirm);
-                    properties.put("android.patient.inv_browsercountry", inv_browsercountry);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -1605,8 +1520,8 @@ public class Invoice_Page_New extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-            try {
 
+            try {
                 System.out.println("json_applycoupon---------------------" + json_applycoupon.toString());
 
                 if (json_applycoupon.has("token_status")) {
@@ -1631,18 +1546,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                         btn_check.setChecked(false);
                         edt_coupon.setText("");
 
-                        Toast.makeText(getApplicationContext(), "Success..! Your Coupon has been applied", Toast.LENGTH_LONG).show();
-
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Invoice_Coupon");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.patient.user_id", (Model.id));
-                        properties.put("android.patient.inv_id", inv_id);
-                        properties.put("android.patient.coupon", edt_coupon_text);
-                        properties.put("android.patient.country_code", (Model.inv_browsercountry));
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
+                        Toast.makeText(getApplicationContext(), "Your coupon has been applied successfully", Toast.LENGTH_LONG).show();
 
                         //----------- Flurry -------------------------------------------------
                         HashMap<String, String> articleParams = new HashMap<String, String>();
@@ -1660,12 +1564,13 @@ public class Invoice_Page_New extends AppCompatActivity {
                         //--------------------------------------------------------
 
                         //--------------------------------------------------------
-                        String url3 = Model.BASE_URL + "/app/doTxn?user_id=" + (Model.id) + "&inv_id=" + (inv_id);
+                        String url3 = Model.BASE_URL + "/app/doTxn?user_id=" + (Model.id) + "&inv_id=" + inv_id + "&token=" + Model.token;
                         System.out.println("url-----------" + url3);
                         new JSON_txnid().execute(url3);
                         //--------------------------------------------------------
 
                     } else {
+
                         btn_check.setChecked(false);
                         edt_coupon.setError(apply_coupon_status);
                         Toast.makeText(getApplicationContext(), apply_coupon_status, Toast.LENGTH_LONG).show();
@@ -1688,7 +1593,7 @@ public class Invoice_Page_New extends AppCompatActivity {
 
             final MaterialDialog alert = new MaterialDialog(Invoice_Page_New.this);
             alert.setTitle("Please re-login the app..!");
-            alert.setMessage("Something went wrong. Please login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override
@@ -1719,6 +1624,7 @@ public class Invoice_Page_New extends AppCompatActivity {
         //final String public_key = "rzp_live_rqj0TdNTXlZUhQ";
         final String public_key = Model.razor_pay_public_key;
         final Activity activity = this;
+
         final Checkout co = new Checkout();
         co.setPublicKey(public_key);
 
@@ -1739,7 +1645,6 @@ public class Invoice_Page_New extends AppCompatActivity {
             Double totamt = amtval * 100;
 
             int final_totamt = (int) Math.round(totamt);
-
 
             System.out.println("Totamt--double------------" + final_totamt);
             System.out.println("Notes---------" + new JSONObject("{inv_id: '" + (inv_id) + "'}").toString());
@@ -1765,15 +1670,6 @@ public class Invoice_Page_New extends AppCompatActivity {
     public void onPaymentSuccess(String razorpayPaymentID) {
         try {
             try {
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.RazorPay_Successful");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("razorpayPaymentID:", razorpayPaymentID);
-                properties.put("Invoice_no:", (inv_id));
-                properties.put("Invoice_fee:", (inv_strfee));
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //----------- Flurry -------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -1804,19 +1700,9 @@ public class Invoice_Page_New extends AppCompatActivity {
     public void onPaymentError(int code, String response) {
 
         try {
-            Toast.makeText(this, "Payment failed: " + Integer.toString(code) + " " + response, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Payment failed: " + code + " " + response, Toast.LENGTH_SHORT).show();
 
             try {
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.RazorPay_Failed");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("Invoice_no:", inv_id);
-                properties.put("Invoice_fee:", inv_strfee);
-                properties.put("Response:", response);
-                properties.put("Response_Code:", "" + code);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
                 //----------- Flurry -------------------------------------------------
                 Map<String, String> articleParams = new HashMap<String, String>();
                 articleParams.put("Invoice_no:", inv_id);

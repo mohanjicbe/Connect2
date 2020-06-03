@@ -7,12 +7,13 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+
+import androidx.core.view.MotionEventCompat;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,8 +27,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.orane.icliniq.LoginActivity;
@@ -172,14 +173,6 @@ public class DoctorsFragment extends Fragment {
                 CircleImageView imageview_poster = (CircleImageView) view.findViewById(R.id.imageview_poster);*/
 
                 Doc_id = tvid.getText().toString();
-
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity().getApplicationContext());
-                Model.kiss.record("android.patient.doctor_select");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("doctor_id:", tvid.getText().toString());
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -458,6 +451,8 @@ public class DoctorsFragment extends Fragment {
                             objItem.setCfee(jsonobj1.getString("cfee"));
                             objItem.setQfee(jsonobj1.getString("qfee"));
                             objItem.setFav(jsonobj1.getString("is_fav"));
+                            objItem.setAmt(jsonobj1.getString("avg_rating"));
+                            objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
 
                             listArray.add(objItem);
                         }
@@ -581,6 +576,9 @@ public class DoctorsFragment extends Fragment {
                             objItem.setCfee(jsonobj1.getString("cfee"));
                             objItem.setQfee(jsonobj1.getString("qfee"));
                             objItem.setFav(jsonobj1.getString("is_fav"));
+                            objItem.setAmt(jsonobj1.getString("avg_rating"));
+                            objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
+
 
                             listArray.add(objItem);
                         }
@@ -707,6 +705,9 @@ public class DoctorsFragment extends Fragment {
                             objItem.setCfee(jsonobj1.getString("cfee"));
                             objItem.setQfee(jsonobj1.getString("qfee"));
                             objItem.setFav(jsonobj1.getString("is_fav"));
+                            objItem.setAmt(jsonobj1.getString("avg_rating"));
+                            objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
+
 
                             listArray.add(objItem);
 

@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,7 +115,7 @@ public class Webview_Facebook_Activity extends AppCompatActivity {
 /*      if (new NetCheck().netcheck(Webview_Facebook_Activity.this)) {
             startWebView("<iframe src=\"https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Ficliniq%2Fposts%2F1281005855302759%3A0&width=500\" width=\"500\" height=\"589\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\"></iframe>");
         } else {
-            Toast.makeText(Webview_Facebook_Activity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Webview_Facebook_Activity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }*/
 
     }
@@ -180,7 +180,7 @@ public class Webview_Facebook_Activity extends AppCompatActivity {
             webView.getSettings().setJavaScriptEnabled(true);
             webView.loadUrl(url);
         } else {
-            Toast.makeText(Webview_Facebook_Activity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Webview_Facebook_Activity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }*/
 

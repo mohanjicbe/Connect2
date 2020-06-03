@@ -6,8 +6,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.Menu;
@@ -148,7 +148,7 @@ public class Invite_doctors extends AppCompatActivity {
                             new Async_InviteDoctor().execute(json);
 
                         } else {
-                            edt_mobno.setError("Mobile number cannot be empty");
+                            edt_mobno.setError("Mobile number is mandatory");
                             edt_mobno.requestFocus();
                         }
 

@@ -7,10 +7,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Item;
 import com.orane.icliniq.Model.Model;
@@ -391,7 +393,7 @@ public class HotlineDoctorsActivity extends AppCompatActivity {
                 progressBar_bottom.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
 
-                Toast.makeText(HotlineDoctorsActivity.this, "Internet is not connected. please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HotlineDoctorsActivity.this, "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -811,7 +813,7 @@ public class HotlineDoctorsActivity extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(HotlineDoctorsActivity.this);
         alert.setTitle("Please Re-Login the App..!");
-        alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+        alert.setMessage("Something went wrong. Please go back and try again..!e");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override

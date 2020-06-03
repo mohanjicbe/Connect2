@@ -1,7 +1,7 @@
 package com.orane.icliniq.Parallex.libs;
 
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v4.view.ViewPager;
+import androidx.collection.SparseArrayCompat;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 
 

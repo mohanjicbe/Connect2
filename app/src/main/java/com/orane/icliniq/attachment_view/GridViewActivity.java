@@ -3,10 +3,9 @@ package com.orane.icliniq.attachment_view;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +13,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
@@ -30,7 +32,6 @@ import com.orane.icliniq.Attachment_WebViewActivity;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Model.Utils;
 import com.orane.icliniq.R;
-import com.orane.icliniq.WebViewActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,7 +72,7 @@ public class GridViewActivity extends AppCompatActivity {
         setContentView(R.layout.attach_activity_gridview);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -99,8 +100,8 @@ public class GridViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mGridView = (GridView) findViewById(R.id.gridView);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mGridView = findViewById(R.id.gridView);
+        mProgressBar = findViewById(R.id.progressBar);
 
         mGridData = new ArrayList<>();
         mGridAdapter = new GridViewAdapter(this, R.layout.attach_grid_item_layout, mGridData);
@@ -114,6 +115,7 @@ public class GridViewActivity extends AppCompatActivity {
                 //Get item at position
 
                 try {
+
                     GridItem item = (GridItem) parent.getItemAtPosition(position);
                     String url_text = item.getImage();
                     extension = attach_map.get(url_text);
@@ -134,7 +136,14 @@ public class GridViewActivity extends AppCompatActivity {
 
                     System.out.println("file_full__url------------------- " + file_full__url);
 
-                    Download_file(file_full__url, extension);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(file_full__url));
+                    startActivity(i);
+
+
+                    //Download_file(file_full__url, extension);
+
+
 
                    /* if (extension.equals("pdf")
                             || (extension.equals("PDF"))
@@ -211,16 +220,6 @@ public class GridViewActivity extends AppCompatActivity {
 
                     }*/
 
-
-                    try {
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Open_Attachemnt");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.patient.url:", url_text);
-                        Model.kiss.set(properties);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
                     //--------- Flurry ----------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -331,7 +330,7 @@ public class GridViewActivity extends AppCompatActivity {
     }
 
 
-    public void Download_file(final String file_path, final String extension) {
+   /* public void Download_file(final String file_path, final String extension) {
 
         try {
 
@@ -392,7 +391,7 @@ public class GridViewActivity extends AppCompatActivity {
                                     || (extension.equals("jpeg"))
                                     || (extension.equals("JPEG"))
                                     || (extension.equals("tiff"))
-                                    ) {
+                            ) {
                                 //-------------------- webview -------------------------------------------
                                 Intent i = new Intent(getApplicationContext(), Attachment_WebViewActivity.class);
                                 i.putExtra("url", "file:///" + imgFile.toString());
@@ -414,7 +413,7 @@ public class GridViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+*/
 
     public void ask_to_save(final String file_path) {
 
@@ -422,7 +421,7 @@ public class GridViewActivity extends AppCompatActivity {
 
             final MaterialDialog alert = new MaterialDialog(GridViewActivity.this);
             alert.setTitle("Downloading file..");
-            alert.setMessage("This file can view only after downloading. Do you want to download now?");
+            alert.setMessage("This file can be viewed only after download. Do you want to download now?");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("Download", new View.OnClickListener() {
                 @Override

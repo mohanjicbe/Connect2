@@ -7,10 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Item;
 import com.orane.icliniq.Model.Model;
@@ -294,7 +296,7 @@ public class HotlineDoctorsQueriesActivity extends AppCompatActivity implements 
                     progressBar_bottom.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
 
-                    Toast.makeText(HotlineDoctorsQueriesActivity.this, "Internet is not connected. please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HotlineDoctorsQueriesActivity.this, "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -369,7 +371,7 @@ public class HotlineDoctorsQueriesActivity extends AppCompatActivity implements 
             progressBar_bottom.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
 
-            Toast.makeText(HotlineDoctorsQueriesActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HotlineDoctorsQueriesActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 

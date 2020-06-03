@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -382,7 +382,7 @@ public class WebViewActivity_Persona extends BaseActivity implements ObservableS
 
                     Model.have_free_credit = "0";
 
-                    Toast.makeText(getApplicationContext(), "Your query has been posted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Your query has been successfully posted", Toast.LENGTH_SHORT).show();
 
                     //============================================================
                     SharedPreferences.Editor editor = sharedpreferences.edit();

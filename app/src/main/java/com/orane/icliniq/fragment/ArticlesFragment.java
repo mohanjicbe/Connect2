@@ -7,11 +7,12 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.orane.icliniq.ArticleViewActivity;
@@ -124,10 +124,8 @@ public class ArticlesFragment extends Fragment implements ObservableScrollViewCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.articles_list, container, false);
         System.out.println("OnCreateVIEW Fragment-------------");
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getActivity());
 
         //================ Shared Pref ===============================
         sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -148,7 +146,6 @@ public class ArticlesFragment extends Fragment implements ObservableScrollViewCa
 
         try {
             FlurryAgent.onPageView();
-            Model.kiss.record("android.Patient.Articles_List");
 
             //------------ Google firebase Analitics--------------------
             Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());

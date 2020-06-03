@@ -1,6 +1,5 @@
 package com.orane.icliniq;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,18 +12,16 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.Sqlite.Contact;
 import com.orane.icliniq.Sqlite.DatabaseHandler;
@@ -37,7 +34,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -335,11 +331,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("KEY_url", icliniq_url);
                 //startActivity(intent);
 
-            } else if (item_type.equals("5")) {
-                intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("url", icliniq_url);
-                intent.putExtra("type", push_title);
-                //startActivity(intent);
             } else {
                 intent = new Intent(this, WebViewActivity.class);
                 intent.putExtra("url", icliniq_url);
@@ -384,7 +375,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             db.addContact(new Notify("" + time, push_msg, push_type, push_title, formattedDate));
             //------- Sqlite ---------------------------------------
 */
-
+/*
             //----------------- Kissmetrics ----------------------------------
             Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
             Model.kiss.record("android.patient.Pushnotification");
@@ -394,7 +385,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             properties.put("android.patient.push.type", push_type);
             properties.put("android.patient.push.qid", push_qid);
             Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
+            //----------------- Kissmetrics ----------------------------------*/
 
             //----------- Flurry -------------------------------------------------
             Map<String, String> articleParams = new HashMap<String, String>();
@@ -419,7 +410,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (push_type.equals("28")) {
             System.out.println("img_url--=-=-=-" + img_url);
-            new convertBitmap().execute(img_url);
+            //new convertBitmap().execute(img_url);
 
             if (img_url != null && !img_url.isEmpty() && !img_url.equals("null") && !img_url.equals("")) {
                 //------------- Notification with Images -----------------------

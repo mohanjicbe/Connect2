@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".Parallex.ParallexMainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
@@ -52,11 +52,11 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -73,6 +73,7 @@
             android:id="@+id/bg_layout"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:visibility="gone"
             android:background="@mipmap/bg_loading"
             android:orientation="horizontal"
             android:padding="10dp">
@@ -87,8 +88,7 @@
             android:layout_gravity="center_vertical"
             android:background="@mipmap/docbg_small"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="2"
-                        android:text=""
+                        android:text="Doctor Name"
                         android:textColor="@color/white"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -139,9 +139,44 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="2"
-                        android:text=""
+                        android:text="Education"
                         android:textColor="@color/white"
                         android:textSize="13sp" />
+
+
+                    <LinearLayout
+                        android:id="@+id/rating_layout"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="2dp"
+                        android:layout_gravity="left"
+                        android:gravity="left"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="false"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_star_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-light"
+                            android:maxLines="4"
+                            android:layout_gravity="left"
+                            android:gravity="left"
+                            android:text="(Average rating: 3.8 based on 8 ratings)"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvspec"
@@ -151,7 +186,7 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:maxLines="2"
-                        android:text=""
+                        android:text="Specialities"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 
@@ -242,19 +277,6 @@
             app:shouldExpand="true"
             app:tabBackground="@layout/parallex_sliding_tab_view" />
 
-
-        <!--<android.support.design.widget.TabLayout
-            android:id="@+id/navig_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:elevation="2dp"
-            app:tabGravity="fill"
-            app:tabMaxWidth="0dp"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/mds_bluegrey_800"
-            app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
-            app:tabTextColor="@color/grey_400" />-->
 
     </LinearLayout>
 

@@ -9,12 +9,12 @@
     android:background="@color/grey_100"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
@@ -23,7 +23,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextAppearance="@style/toolbar_style" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -40,7 +40,7 @@
             android:orientation="vertical"
             android:paddingBottom="30dp">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -54,8 +54,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
 
                     <TextView
                         android:id="@+id/tv_attach"
@@ -95,6 +95,17 @@
                         android:textAllCaps="false"
                         android:textColor="@color/app_color"
                         android:textStyle="bold" />
+
+
+                    <LinearLayout
+                        android:id="@+id/expand_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
 
 
                     <LinearLayout
@@ -175,8 +186,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:visibility="gone"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:layout_width="25dp"
@@ -213,7 +224,6 @@
                                 android:layout_marginTop="5dp"
                                 android:orientation="vertical">
 
-
                             </LinearLayout>
                         </ScrollView>
 
@@ -226,9 +236,9 @@
 
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -241,9 +251,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
                     android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
+                    android:layout_marginBottom="2dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -258,7 +268,111 @@
 
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
+
+
+            <LinearLayout
+                android:id="@+id/extra_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvmore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Provide more details "
+                    android:textColor="@color/grey_900"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/tv_compmore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center|left"
+                    android:hint="More details about the presenting complaint"
+                    android:inputType="textMultiLine"
+                    android:minHeight="40dp"
+                    android:padding="10dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/tv_prevhist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center|left"
+                    android:hint="Previous history of the same issue (if any)."
+                    android:inputType="textMultiLine"
+                    android:minHeight="40dp"
+                    android:padding="10dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/tv_curmedi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center|left"
+                    android:hint="Current medications"
+                    android:inputType="textMultiLine"
+                    android:minHeight="40dp"
+                    android:padding="10dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/tv_pastmedi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center|left"
+                    android:hint="Past medications of the same issue"
+                    android:inputType="textMultiLine"
+                    android:minHeight="40dp"
+                    android:padding="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/tv_labtest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center|left"
+                    android:hint="Lab tests performed"
+                    android:inputType="textMultiLine"
+                    android:minHeight="40dp"
+                    android:padding="10dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
 
             <Button
@@ -267,8 +381,8 @@
                 android:layout_height="35dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="25dp"
                 android:background="@drawable/button_rounded"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -291,10 +405,10 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:visibility="gone">
 
         <TextView
@@ -473,10 +587,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
-                android:layout_marginBottom="-10dp"
                 android:layout_marginLeft="-10dp"
-                android:layout_marginRight="-10dp"
                 android:layout_marginTop="-10dp"
+                android:layout_marginRight="-10dp"
+                android:layout_marginBottom="-10dp"
                 android:horizontalSpacing="-15dp"
                 android:numColumns="3"
                 android:padding="0dp"

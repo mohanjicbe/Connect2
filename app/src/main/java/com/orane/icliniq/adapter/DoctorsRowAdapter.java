@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.orane.icliniq.Model.Item;
@@ -57,24 +58,52 @@ public class DoctorsRowAdapter extends ArrayAdapter<Item> {
         objBean = items.get(position);
 
 
-        holder.tv_spec_new = (TextView) view.findViewById(R.id.tv_spec_new);
-        holder.tvdocname_new = (TextView) view.findViewById(R.id.tvdocname_new);
-        holder.tvcfee = (TextView) view.findViewById(R.id.tvcfee);
-        holder.tvqfee = (TextView) view.findViewById(R.id.tvqfee);
-        holder.tvdocname = (TextView) view.findViewById(R.id.tvdocname);
-        holder.tvedu = (TextView) view.findViewById(R.id.tvedu);
-        holder.tvspec = (TextView) view.findViewById(R.id.tvspec);
-        holder.tvid = (TextView) view.findViewById(R.id.tvid);
-        holder.tv_url = (TextView) view.findViewById(R.id.tv_url);
-        holder.tv_doclink = (TextView) view.findViewById(R.id.tv_doclink);
-        holder.imageview_poster = (CircleImageView) view.findViewById(R.id.imageview_poster);
-        holder.img_fav_ribbon = (ImageView) view.findViewById(R.id.img_fav_ribbon);
+        holder.tv_spec_new = view.findViewById(R.id.tv_spec_new);
+        holder.tvdocname_new = view.findViewById(R.id.tvdocname_new);
+        holder.tvcfee = view.findViewById(R.id.tvcfee);
+        holder.tvqfee = view.findViewById(R.id.tvqfee);
+        holder.tvdocname = view.findViewById(R.id.tvdocname);
+        holder.tvedu = view.findViewById(R.id.tvedu);
+        holder.tvspec = view.findViewById(R.id.tvspec);
+        holder.tvid = view.findViewById(R.id.tvid);
+        holder.tv_url = view.findViewById(R.id.tv_url);
+        holder.tv_doclink = view.findViewById(R.id.tv_doclink);
+        holder.imageview_poster = view.findViewById(R.id.imageview_poster);
+        holder.img_fav_ribbon = view.findViewById(R.id.img_fav_ribbon);
+        holder.tv_star_text = view.findViewById(R.id.tv_star_text);
+        holder.ratingBar = view.findViewById(R.id.ratingBar);
 
+
+        //----------------Ratting------------------------------------------------
+        if (holder.ratingBar != null && null != objBean.getAmt() && objBean.getAmt().trim().length() > 0) {
+
+            holder.ratingBar.setVisibility(View.VISIBLE);
+            holder.tv_star_text.setVisibility(View.VISIBLE);
+
+            holder.ratingBar.setRating(Float.parseFloat(objBean.getAmt()));
+            System.out.println("Inner Ratting Value.........." + objBean.getDocname() + "----" + objBean.getAmt());
+        } else {
+            holder.ratingBar.setVisibility(View.GONE);
+            holder.tv_star_text.setVisibility(View.GONE);
+        }
+        //----------------------------------------------------------------
+        System.out.println("Outer Ratting Value.........." + objBean.getDocname() + "----" + objBean.getAmt());
+
+        //----------------------------------------------------------------
+        if (holder.tv_star_text != null && null != objBean.getArtTitle()
+                && objBean.getArtTitle().trim().length() > 0) {
+            holder.tv_star_text.setVisibility(View.GONE);
+            holder.tv_star_text.setText(Html.fromHtml(objBean.getArtTitle()));
+        } else {
+            holder.tv_star_text.setVisibility(View.GONE);
+        }
+        //----------------------------------------------------------------
 
         if (holder.tvcfee != null && null != objBean.getCfee()
                 && objBean.getCfee().trim().length() > 0) {
             holder.tvcfee.setText(Html.fromHtml(objBean.getCfee()));
         }
+
         if (holder.tvqfee != null && null != objBean.getQfee()
                 && objBean.getQfee().trim().length() > 0) {
             holder.tvqfee.setText(Html.fromHtml(objBean.getQfee()));
@@ -103,6 +132,7 @@ public class DoctorsRowAdapter extends ArrayAdapter<Item> {
                 && objBean.getDocurl().trim().length() > 0) {
             holder.tv_doclink.setText(Html.fromHtml(objBean.getDocurl()));
         }
+
 
         //----------- IS Favorite ---------------------------------------
         if (holder.img_fav_ribbon != null && null != objBean.getFav()
@@ -138,9 +168,10 @@ public class DoctorsRowAdapter extends ArrayAdapter<Item> {
 
     public class ViewHolder {
 
-        public TextView tvid, tv_doclink, tvspec, tvedu, tvdocname, tvcfee, tvqfee, tv_url, tvdocname_new, tv_spec_new;
+        public TextView tvid, tv_star_text, tv_doclink, tvspec, tvedu, tvdocname, tvcfee, tvqfee, tv_url, tvdocname_new, tv_spec_new;
         CircleImageView imageview_poster;
         ImageView img_fav_ribbon;
+        RatingBar ratingBar;
     }
 
 

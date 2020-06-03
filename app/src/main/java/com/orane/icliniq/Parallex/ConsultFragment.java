@@ -8,9 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.icliniq.Ask_FamilyProfile;
 import com.orane.icliniq.Doc_Consultation1;
@@ -249,7 +249,7 @@ public class ConsultFragment extends ScrollViewFragment {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getActivity(), "No Internet connection, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -324,7 +324,7 @@ public class ConsultFragment extends ScrollViewFragment {
                             }
 
                         } else
-                            edt_query.setError("Query cannot be empty");
+                            edt_query.setError("Please enter your query");
                             edt_query.requestFocus();
 
                     } else {
@@ -384,7 +384,7 @@ public class ConsultFragment extends ScrollViewFragment {
                         ask_login();
                     }
                 } else
-                    edt_query.setError("Query cannot be empty");
+                    edt_query.setError("Please enter your query");
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -2,8 +2,8 @@ package com.orane.icliniq;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -288,7 +288,7 @@ public class SpecialityListActivity extends AppCompatActivity {
         spec_map.put("Family Physician", "220");
 
         categories.add("Fetal Medicine");
-        spec_map.put("Fetal Medicine", "226");
+        spec_map.put("Fetal Medicine", "266");
 
         categories.add("Fitness Expert");
         spec_map.put("Fitness Expert", "224");

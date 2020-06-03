@@ -8,10 +8,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Item;
@@ -145,7 +147,7 @@ public class InboxActivity extends AppCompatActivity implements ObservableScroll
         //------------ Google firebase Analitics---------------------------------------------
 
         imageview_poster = (CircleImageView) findViewById(R.id.imageview_poster);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+       // fab = (FloatingActionButton) findViewById(R.id.fab);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
@@ -158,7 +160,7 @@ public class InboxActivity extends AppCompatActivity implements ObservableScroll
         btn_askquery = (Button) findViewById(R.id.btn_askquery);
 
 
-        fab.setVisibility(View.GONE);
+       // fab.setVisibility(View.GONE);
 
         full_process();
 
@@ -430,7 +432,7 @@ public class InboxActivity extends AppCompatActivity implements ObservableScroll
                             progressBar_bottom.setVisibility(View.GONE);
                             progressBar.setVisibility(View.GONE);
 
-                            fab.setVisibility(View.GONE);
+                            //fab.setVisibility(View.GONE);
 
                         } else {
 
@@ -444,7 +446,7 @@ public class InboxActivity extends AppCompatActivity implements ObservableScroll
                             progressBar_bottom.setVisibility(View.GONE);
                             progressBar.setVisibility(View.GONE);
 
-                            fab.setVisibility(View.VISIBLE);
+                           // fab.setVisibility(View.GONE);
 
                             setAdapterToListview();
                         }

@@ -6,9 +6,12 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,17 +93,17 @@ public class WalletTransactions extends AppCompatActivity {
 
         Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
-        btn_reload = (Button) findViewById(R.id.btn_reload);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        empty_msgmsg = (TextView) findViewById(R.id.empty_msgmsg);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
-        listView = (ListView) findViewById(R.id.listview);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar_bottom = findViewById(R.id.progressBar_bottom);
+        btn_reload = findViewById(R.id.btn_reload);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        nolayout = findViewById(R.id.nolayout);
+        empty_msgmsg = findViewById(R.id.empty_msgmsg);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_query_new);
+        listView = findViewById(R.id.listview);
 
         //------------------------------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -221,15 +224,18 @@ public class WalletTransactions extends AppCompatActivity {
             if (isInternetOn()) {
                 try {
                     if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                        //-----------------------------------------
                         String url = Model.BASE_URL + "sapp/listearning?user_id=" + (Model.id) + "&browser_country=" + (Model.browser_country) + "&page=1&token=" + Model.token;
                         System.out.println("url---------" + url);
                         new MyTask_server().execute(url);
+                        //---------------------------------------------
                     } else {
                         Toast.makeText(getApplicationContext(), "Something went wrong, please try again.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             } else {
                 nolayout.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setVisibility(View.GONE);
@@ -521,7 +527,9 @@ public class WalletTransactions extends AppCompatActivity {
                     System.out.println("This is JSON ARRAY---------------" + str_response);
 
                     JSONArray jsonarr = new JSONArray(str_response);
+
                     for (int i = 0; i < jsonarr.length(); i++) {
+
                         JSONObject jsonobj1 = jsonarr.getJSONObject(i);
 
                         System.out.println("jsonobj1-----------" + jsonobj1.toString());
@@ -570,7 +578,6 @@ public class WalletTransactions extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 
 

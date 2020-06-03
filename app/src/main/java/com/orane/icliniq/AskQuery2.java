@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -19,11 +18,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,35 +37,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.daimajia.easing.linear.Linear;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.icliniq.Model.Model;
+import com.orane.icliniq.Model.MultipartEntity2;
+import com.orane.icliniq.expand.ExpandableLayout;
 import com.orane.icliniq.file_picking.utils.FileUtils;
 import com.orane.icliniq.fileattach_library.DefaultCallback;
 import com.orane.icliniq.fileattach_library.EasyImage;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,18 +85,18 @@ public class AskQuery2 extends AppCompatActivity {
 
     View addView, vi_q;
     GridView gridGallery;
+
     Handler handler;
     ImageView attach_line;
     Button btnGalleryPick;
+    JSONObject jsonobj1;
     public StringBuilder total;
     View vi;
-    String action;
+    String action, family_list, file_fileUrl_text;
     ViewSwitcher viewSwitcher;
-    ImageLoader imageLoader;
     LinearLayout questions_layout;
-    JSONObject json_getfee,docprof_jsonobj;
+    JSONObject json_getfee, docprof_jsonobj;
     Integer persona_id_int;
-
 
     InputStream is = null;
     int serverResponseCode = 0;
@@ -107,8 +105,8 @@ public class AskQuery2 extends AppCompatActivity {
     View recc_vi;
     private static final int FILE_SELECT_CODE = 0;
     Uri selectedImageUri;
-    LinearLayout layout_attachfile, file_list, takephoto_layout, browse_layout;
-    public String fee_q_inr,fee_q,persona_response, compmore, prevhist, curmedi, pastmedi, labtest, serverResponseMessage, selectedPath, inv_id, inv_fee, inv_strfee, status_postquery, persona_id_val, qid, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
+    LinearLayout layout_attachfile, expand_layout, file_list, takephoto_layout, browse_layout;
+    public String fee_q_inr, fee_q, persona_response, compmore, prevhist, curmedi, pastmedi, labtest, serverResponseMessage, selectedPath, inv_id, inv_fee, inv_strfee, status_postquery, persona_id_val, qid, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
     Button btn_attach, btn_submit;
     public JSONObject jsonobj_postquery, jsonobj_prepinv, json, jsonobj_questions;
     Toolbar toolbar;
@@ -134,7 +132,6 @@ public class AskQuery2 extends AppCompatActivity {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Typeface tf = Typeface.createFromAsset(getAssets(), Model.font_name);
@@ -148,7 +145,7 @@ public class AskQuery2 extends AppCompatActivity {
 
         try {
             //----------------- Toolbar ------------------------------
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -164,8 +161,8 @@ public class AskQuery2 extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         try {
+
             json_getfee = new JSONObject();
             json_getfee.put("user_id", (Model.id));
             json_getfee.put("item_type", "single_query");
@@ -174,47 +171,46 @@ public class AskQuery2 extends AppCompatActivity {
 
             new JSON_getFee().execute(json_getfee);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        TextView tvattach = (TextView) findViewById(R.id.tvattach);
-        tvtit = (TextView) findViewById(R.id.tvtit);
-        tvmore = (TextView) findViewById(R.id.tvmore);
+        TextView tvattach = findViewById(R.id.tvattach);
+        tvtit = findViewById(R.id.tvtit);
+        tvmore = findViewById(R.id.tvmore);
 
         tvmore.setTypeface(tf);
         tvattach.setTypeface(tf);
         tvtit.setTypeface(tf);
 
-        tv_attach_warn = (TextView) findViewById(R.id.tv_attach_warn);
+        tv_attach_warn = findViewById(R.id.tv_attach_warn);
 /*
         //---------------------------------------------------------------------------
         if ((Model.have_free_credit).equals("1")) {
             tv_attach_warn.setVisibility(View.VISIBLE);
-
             String warn_text = "Note : Doctors take more effort to read your reports/photos. So queries with reports have to be posted as a Paid query <b>" + Model.fee_q + "</b>";
             tv_attach_warn.setText(Html.fromHtml(warn_text));
-
         } else {
             tv_attach_warn.setVisibility(View.GONE);
         }
         //---------------------------------------------------------------------------*/
 
-        questions_layout = (LinearLayout) findViewById(R.id.questions_layout);
-        scrollView1 = (ScrollView) findViewById(R.id.scrollView1);
-        btn_attach = (Button) findViewById(R.id.btn_attach);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        layout_attachfile = (LinearLayout) findViewById(R.id.layout_attachfile);
-        takephoto_layout = (LinearLayout) findViewById(R.id.takephoto_layout);
-        browse_layout = (LinearLayout) findViewById(R.id.browse_layout);
-        file_list = (LinearLayout) findViewById(R.id.file_list);
-        tv_compmore = (EditText) findViewById(R.id.tv_compmore);
-        tv_prevhist = (EditText) findViewById(R.id.tv_prevhist);
-        tv_curmedi = (EditText) findViewById(R.id.tv_curmedi);
-        tv_pastmedi = (EditText) findViewById(R.id.tv_pastmedi);
-        tv_labtest = (EditText) findViewById(R.id.tv_labtest);
-        attach_line = (ImageView) findViewById(R.id.attach_line);
+        expand_layout = findViewById(R.id.expand_layout);
+        questions_layout = findViewById(R.id.questions_layout);
+        scrollView1 = findViewById(R.id.scrollView1);
+        btn_attach = findViewById(R.id.btn_attach);
+        btn_submit = findViewById(R.id.btn_submit);
+        layout_attachfile = findViewById(R.id.layout_attachfile);
+        takephoto_layout = findViewById(R.id.takephoto_layout);
+        browse_layout = findViewById(R.id.browse_layout);
+        file_list = findViewById(R.id.file_list);
+
+        tv_compmore = findViewById(R.id.tv_compmore);
+        tv_prevhist = findViewById(R.id.tv_prevhist);
+        tv_curmedi = findViewById(R.id.tv_curmedi);
+        tv_pastmedi = findViewById(R.id.tv_pastmedi);
+        tv_labtest = findViewById(R.id.tv_labtest);
+        attach_line = findViewById(R.id.attach_line);
 
         tv_compmore.setTypeface(tf);
         tv_prevhist.setTypeface(tf);
@@ -230,7 +226,6 @@ public class AskQuery2 extends AppCompatActivity {
         System.out.println("Get Intent qid-----" + qid);
         System.out.println("Get Intent persona_id_val-----" + persona_id_val);
         //------ getting Values ---------------------------
-
 
         initImageLoader();
         // init0();
@@ -252,6 +247,7 @@ public class AskQuery2 extends AppCompatActivity {
             });
         }
 
+        //----------
         EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
@@ -260,7 +256,6 @@ public class AskQuery2 extends AppCompatActivity {
         //------------------ Initialize File Attachment ---------------------------------
 
 /*
-
         //---------------------------------------
         String url = "http://192.168.0.113/icliniq/web/index.php/sapp/listPersonaQuestion?qid=567";
         System.out.println("Persona url-------------" + url);
@@ -272,15 +267,19 @@ public class AskQuery2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                attach_dialog();
+                try {
+                    //attach_dialog();
 
-/*                try {
-                    File_Picking_Test sintent = new File_Picking_Test();
-                    sintent.get_Image(AskQuery2.this, "Take");
+                    //-------------------------------------------
+                    Intent intent = new Intent(AskQuery2.this, Attachment_Screen_Activity.class);
+                    intent.putExtra("item_id", qid);
+                    intent.putExtra("item_type", "query");
+                    startActivity(intent);
+                    //-------------------------------------------
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                }*/
-
+                }
             }
         });
 
@@ -325,7 +324,6 @@ public class AskQuery2 extends AppCompatActivity {
                     }
 
                     //============================================================
-
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(first_query, "no");
                     Model.first_query = "no";
@@ -334,14 +332,7 @@ public class AskQuery2 extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    try {
-                        Model.kiss.record("android.Patient.Query_Submit_Crash");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.Patient.Crash_ID", e.toString());
-                        Model.kiss.set(properties);
-                    } catch (Exception ee) {
-                        ee.printStackTrace();
-                    }
+
                 }
             }
         });
@@ -349,7 +340,8 @@ public class AskQuery2 extends AppCompatActivity {
 
     private void initImageLoader() {
 
-        try {
+       /* try {
+
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                     .bitmapConfig(Bitmap.Config.RGB_565).build();
@@ -360,9 +352,10 @@ public class AskQuery2 extends AppCompatActivity {
             ImageLoaderConfiguration config = builder.build();
             imageLoader = ImageLoader.getInstance();
             imageLoader.init(config);
+
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
@@ -400,6 +393,7 @@ public class AskQuery2 extends AppCompatActivity {
                 if (jsonobj_postquery.has("token_status")) {
                     String token_status = jsonobj_postquery.getString("token_status");
                     if (token_status.equals("0")) {
+
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString(Login_Status, "0");
@@ -417,7 +411,6 @@ public class AskQuery2 extends AppCompatActivity {
 
                     if (status_postquery.equals("1")) {
 
-
                         persona_id_int = Integer.parseInt(persona_id_val);
 
                         if (persona_id_int > 0) {
@@ -432,6 +425,7 @@ public class AskQuery2 extends AppCompatActivity {
                             startActivity(i);
                             finish();
                             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
                         } else {
                             //---------------------------------------
                             String url = (Model.BASE_URL) + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=query&item_id=" + qid + "&token=" + Model.token + "&enc=1";
@@ -460,65 +454,13 @@ public class AskQuery2 extends AppCompatActivity {
         System.out.println("Model.upload_files--------------" + Model.upload_files);
         //file_list.removeAllViews();
 
-        if (!(Model.upload_files).equals("")) {
+        if ((Model.query_launch).equals("attached_file")) {
 
-            //------------------------------------
-            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View addView = layoutInflater.inflate(R.layout.upload_file_list, null);
-            TextView tv_quest = (TextView) addView.findViewById(R.id.tv_quest);
-            ImageView close_button = (ImageView) addView.findViewById(R.id.close_button);
-            thumb_img = (ImageView) addView.findViewById(R.id.imageView4);
-            tv_attach_url = (TextView) addView.findViewById(R.id.tv_attach_url);
-            tv_attach_id = (TextView) addView.findViewById(R.id.tv_attach_id);
-
-            tv_quest.setText(Model.upload_files);
-            tv_attach_id.setText(Model.attach_id);
-            tv_attach_url.setText(Model.attach_file_url);
-            thumb_img.setImageBitmap(BitmapFactory.decodeFile(Model.local_file_url));
-
-            System.out.println("Model.upload_files-----------" + (Model.upload_files));
-            System.out.println("Model.attach_qid-----------" + (Model.attach_qid));
-            System.out.println("Model.attach_id-----------" + (Model.attach_id));
-            System.out.println("Model.attach_file_url-----------" + (Model.attach_file_url));
-
-            close_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    View parent = (View) v.getParent();
-                    //View grand_parent = (View)parent.getParent();
-
-                    tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
-                    String attid = tv_attach_id.getText().toString();
-
-                    //------------------------------------------------------------
-                    String url = Model.BASE_URL + "/sapp/removeQAttachment?user_id=" + (Model.id) + "&attach_id=" + attid + "&token=" + Model.token;
-                    System.out.println("Remover Attach url-------------" + url);
-                    new JSON_remove_file().execute(url);
-                    //------------------------------------------------------------
-
-                    ((LinearLayout) addView.getParent()).removeView(addView);
-
-                    System.out.println("Removed attach_id-----------" + attid);
-                }
-            });
-
-            thumb_img.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    String att_url = tv_attach_url.getText().toString();
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(att_url));
-                    startActivity(i);
-                }
-            });
-
-            file_list.addView(addView);
-            //Model.upload_files = "";
-            //------------------------------------
-
-            layout_attachfile.setVisibility(View.VISIBLE);
+            //-------------------------------------------------------------------
+            String get_family_url = Model.BASE_URL + "sapp/listHReportsData?item_id=" + qid + "&item_type=query&user_id=" + Model.id + "&token=" + Model.token;
+            System.out.println("get_family_url---------" + get_family_url);
+            new JSON_getFileList().execute(get_family_url);
+            //-------------------------------------------------------------------
         }
 
         Model.upload_files = "";
@@ -540,9 +482,11 @@ public class AskQuery2 extends AppCompatActivity {
         if (id == android.R.id.home) {
 
             if ((Model.query_launch).equals("Doctorprofile")) {
+                //---------------------------------------------
                 Intent intent = new Intent(AskQuery2.this, DoctorProfileActivity.class);
                 startActivity(intent);
                 finish();
+                //---------------------------------------------
             } else {
 /*                Intent intent = new Intent(AskQuery2.this, AskQuery1.class);
                 startActivity(intent);*/
@@ -599,6 +543,7 @@ public class AskQuery2 extends AppCompatActivity {
                 if (jsonobj_prepinv.has("token_status")) {
                     String token_status = jsonobj_prepinv.getString("token_status");
                     if (token_status.equals("0")) {
+
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString(Login_Status, "0");
@@ -625,15 +570,6 @@ public class AskQuery2 extends AppCompatActivity {
 
                         Model.have_free_credit = "0";
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Query_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
 
                         //----------- Flurry -------------------------------------------------
                         Map<String, String> articleParams = new HashMap<String, String>();
@@ -653,7 +589,7 @@ public class AskQuery2 extends AppCompatActivity {
                         Model.mFirebaseAnalytics.logEvent("Query_Submit_Success", params);
                         //------------ Google firebase Analitics--------------------
 
-                        ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
+                        //  ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
                         Intent intent = new Intent(AskQuery2.this, Invoice_Page_New.class);
                         intent.putExtra("qid", qid);
@@ -669,7 +605,7 @@ public class AskQuery2 extends AppCompatActivity {
 
                         Model.have_free_credit = "0";
 
-                        Toast.makeText(getApplicationContext(), "Your query has been posted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Your query has been successfully posted", Toast.LENGTH_SHORT).show();
 
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -677,19 +613,9 @@ public class AskQuery2 extends AppCompatActivity {
                         editor.apply();
                         //============================================================
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Query_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
-
                         System.out.println("query_id--------------" + qid);
 
-                        ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
+                        //  ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
                         Intent i = new Intent(AskQuery2.this, QueryViewActivity.class);
                         i.putExtra("qid", qid);
@@ -702,7 +628,6 @@ public class AskQuery2 extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 
 
@@ -725,7 +650,7 @@ public class AskQuery2 extends AppCompatActivity {
 
             try {
 
-                (new JSONParser()).getJSONFromUrl(urls[0]);
+                new JSONParser().getJSONFromUrl(urls[0]);
 
                 return true;
             } catch (Exception e) {
@@ -737,12 +662,18 @@ public class AskQuery2 extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
 
+            //-------------------------------------------------------------------
+            String get_family_url = Model.BASE_URL + "sapp/listHReportsData?item_id=" + qid + "&item_type=query&user_id=" + Model.id + "&token=" + Model.token;
+            System.out.println("get_family_url---------" + get_family_url);
+            new JSON_getFileList().execute(get_family_url);
+            //-------------------------------------------------------------------
+
             dialog.dismiss();
 
         }
     }
 
-/*    public void attach_dialog() {
+ /*   public void attach_dialog() {
         List<String> mAnimals = new ArrayList<String>();
         mAnimals.add("Take Photo");
         //mAnimals.add("Attach Images");
@@ -765,10 +696,11 @@ public class AskQuery2 extends AppCompatActivity {
             }
         });
 
+
         AlertDialog alertDialogObject = dialogBuilder.create();
         alertDialogObject.show();
-    }*/
-
+    }
+*/
 
     public void attach_dialog() {
         List<String> mAnimals = new ArrayList<String>();
@@ -864,7 +796,8 @@ public class AskQuery2 extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
+
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -910,11 +843,11 @@ public class AskQuery2 extends AppCompatActivity {
                     LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View addView = layoutInflater.inflate(R.layout.upload_file_list, null);
 
-                    TextView tv_quest = (TextView) addView.findViewById(R.id.tv_quest);
-                    ImageView close_button = (ImageView) addView.findViewById(R.id.close_button);
-                    thumb_img = (ImageView) addView.findViewById(R.id.imageView4);
-                    tv_attach_url = (TextView) addView.findViewById(R.id.tv_attach_url);
-                    tv_attach_id = (TextView) addView.findViewById(R.id.tv_attach_id);
+                    TextView tv_quest = addView.findViewById(R.id.tv_quest);
+                    ImageView close_button = addView.findViewById(R.id.close_button);
+                    thumb_img = addView.findViewById(R.id.imageView4);
+                    tv_attach_url = addView.findViewById(R.id.tv_attach_url);
+                    tv_attach_id = addView.findViewById(R.id.tv_attach_id);
 
                     tv_quest.setText(last_upload_file);
                     tv_attach_id.setText(attach_id);
@@ -933,7 +866,7 @@ public class AskQuery2 extends AppCompatActivity {
                             View parent = (View) v.getParent();
                             //View grand_parent = (View)parent.getParent();
 
-                            tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                            tv_attach_id = parent.findViewById(R.id.tv_attach_id);
                             String attid = tv_attach_id.getText().toString();
 
                             //---------------------------
@@ -969,7 +902,7 @@ public class AskQuery2 extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+    /*public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -1031,7 +964,6 @@ public class AskQuery2 extends AppCompatActivity {
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                 }
-
                 dos.writeBytes(lineEnd);
                 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
@@ -1063,11 +995,11 @@ public class AskQuery2 extends AppCompatActivity {
             return contentAsString;
         }
     }
-
+*/
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -1210,16 +1142,6 @@ public class AskQuery2 extends AppCompatActivity {
             selectedPath = (returnedPhotos.get(i).toString());
             selectedfilename = (returnedPhotos.get(i)).getName();
 
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-            Model.kiss.record("android.patient.Attach_Take_Photo");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("android.patient.Qid", (attach_qid));
-            properties.put("android.patient.attach_file_path", selectedPath);
-            properties.put("android.patient.attach_filename", selectedfilename);
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
-
             //----------- Flurry -------------------------------------------------
             Map<String, String> articleParams = new HashMap<String, String>();
             articleParams.put("android.patient.Qid", (attach_qid));
@@ -1303,9 +1225,9 @@ public class AskQuery2 extends AppCompatActivity {
 
 
                     vi = getLayoutInflater().inflate(R.layout.persona_q_view, null);
-                    TextView tv_quest = (TextView) vi.findViewById(R.id.tv_quest);
-                    TextView tv_quest_id = (TextView) vi.findViewById(R.id.tv_quest_id);
-                    LinearLayout check_layout = (LinearLayout) vi.findViewById(R.id.check_layout);
+                    TextView tv_quest = vi.findViewById(R.id.tv_quest);
+                    TextView tv_quest_id = vi.findViewById(R.id.tv_quest_id);
+                    LinearLayout check_layout = vi.findViewById(R.id.check_layout);
 
                     tv_quest.setText(question_text);
                     tv_quest_id.setText(persona_question_id);
@@ -1429,5 +1351,240 @@ public class AskQuery2 extends AppCompatActivity {
         }
     }
 
+
+    private class JSON_getFileList extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery2.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                family_list = jParser.getJSONString(urls[0]);
+
+                System.out.println("Family URL---------------" + urls[0]);
+
+                return family_list;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            //apply_relaships_radio(family_list);
+
+            try {
+
+                System.out.println("Attached_Files_List----" + family_list);
+
+                JSONObject jsonFileList = new JSONObject(family_list);
+                String det_text = jsonFileList.getString("det");
+                JSONArray det_jarray = new JSONArray(det_text);
+
+                expand_layout.removeAllViews();
+
+
+                for (int i = 0; i < det_jarray.length(); i++) {
+                    jsonobj1 = det_jarray.getJSONObject(i);
+                    System.out.println("jsonobj_first-----" + jsonobj1.toString());
+
+                    String reportsLabel_text = jsonobj1.getString("reportsLabel");
+                    String data_text = jsonobj1.getString("data");
+
+                    JSONArray data_jarray = new JSONArray(data_text);
+
+                    //------------------------------------
+                    LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View addView = layoutInflater.inflate(R.layout.attachment_expand_view, null);
+
+                    final LinearLayout expand_inner_view = addView.findViewById(R.id.expand_inner_view);
+                    TextView tv_att_title = addView.findViewById(R.id.tv_att_title);
+                    final ImageView img_right_arrow = addView.findViewById(R.id.img_right_arrow);
+
+                    //img_right_arrow.setImageResource(R.mipmap.down_icon);
+                    tv_att_title.setText(reportsLabel_text);
+
+                    ExpandableLayout expandableLayout = addView.findViewById(R.id.expandable_layout);
+
+/*                  Random rnd = new Random();
+                    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                    expandableLayout.setBackgroundColor(color);*/
+
+                    expandableLayout.setOnExpandListener(new ExpandableLayout.OnExpandListener() {
+                        @Override
+                        public void onExpand(boolean expanded) {
+                            //Toast.makeText(AskQuery2.this, "expand?" + expanded, Toast.LENGTH_SHORT).show();
+
+                            if (expanded) {
+                                img_right_arrow.setImageResource(R.mipmap.up_icon);
+                            } else {
+                                img_right_arrow.setImageResource(R.mipmap.down_icon);
+                            }
+
+                        }
+                    });
+
+
+                    for (int j = 0; j < data_jarray.length(); j++) {
+                        JSONObject file_jobj = data_jarray.getJSONObject(j);
+                        System.out.println("jsonobj_first-----" + file_jobj.toString());
+
+                        final String attach_id_text = file_jobj.getString("attach_id");
+                        String reportDate_text = file_jobj.getString("reportDate");
+                        final String fileUrl_text = file_jobj.getString("fileUrl");
+                        String isDelete_text = file_jobj.getString("isDelete");
+                        String reportDesc = file_jobj.getString("reportDesc");
+
+                        //------------------------------------
+                        LayoutInflater layoutInflater2 = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View addView2 = layoutInflater2.inflate(R.layout.attachment_expand_view2, null);
+
+                        TextView tv_summ_title2 = addView2.findViewById(R.id.tv_summ_title2);
+                        TextView tv_desc_summary_text = addView2.findViewById(R.id.tv_desc_summary_text);
+                        Button btn_open = addView2.findViewById(R.id.btn_open);
+                        Button btn_remove = addView2.findViewById(R.id.btn_remove);
+
+
+                        tv_summ_title2.setText("File : " + (j + 1) + " Dated on " + reportDate_text);
+                        tv_desc_summary_text.setText(reportDesc);
+                        img_right_arrow.setImageBitmap(BitmapFactory.decodeFile(fileUrl_text));
+
+
+                        System.out.println("attach_id_text-----------" + (attach_id_text));
+                        System.out.println("reportDate_text-----------" + (reportDate_text));
+                        System.out.println("isDelete_text-----------" + (isDelete_text));
+                        System.out.println("reportDesc-----------" + (reportDesc));
+
+                        //------------------------------------------
+                        if (isDelete_text.equals("1")) {
+                            btn_remove.setVisibility(View.VISIBLE);
+                        } else {
+                            btn_remove.setVisibility(View.GONE);
+                        }
+                        //------------------------------------------
+
+
+                        btn_remove.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            /*    View parent = (View) v.getParent();
+                                //View grand_parent = (View)parent.getParent();
+
+                                tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                                String attid = tv_attach_id.getText().toString();*/
+
+                                //---------------------------
+                                String url = Model.BASE_URL + "/sapp/removeHReportData?item_id=" + qid + "&item_type=query&attach_id=" + attach_id_text + "&user_id=" + (Model.id) + "&attach_id=" + attach_id_text + "&token=" + Model.token;
+                                System.out.println("Remover Attach url-------------" + url);
+                                new JSON_remove_file().execute(url);
+                                //---------------------------
+
+                                // System.out.println("Removed attach_id-----------" + attid);
+
+                                // ((LinearLayout) addView.getParent()).removeView(addView);
+                            }
+                        });
+
+                        btn_open.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                if ("?".contains(fileUrl_text)) {
+                                    file_fileUrl_text = fileUrl_text + "&user_id=" + Model.id + "&token=" + Model.token + "&enc=1";
+                                } else {
+                                    file_fileUrl_text = fileUrl_text + "?user_id=" + Model.id + "&token=" + Model.token + "&enc=1";
+                                }
+
+
+/*                                Intent intent = new Intent(AskQuery2.this, WebViewActivity.class);
+                                intent.putExtra("url", file_fileUrl_text);
+                                intent.putExtra("type", "attachment");
+                                startActivity(intent);*/
+
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(file_fileUrl_text));
+                                startActivity(i);
+
+                            }
+                        });
+
+                        expand_inner_view.addView(addView2);
+                        //-----------------------------------
+
+                    }
+
+                    expand_layout.addView(addView);
+
+
+                    Model.query_launch = "";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.cancel();
+        }
+    }
+
+
+    public void setup_expand() {
+
+
+    }
+
+
+    private String upload_file(String file_path) {
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/upload?user_id=" + (Model.id) + "&qid=" + (qid) + "&token=" + Model.token + "&enc=1";
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
+    }
 
 }

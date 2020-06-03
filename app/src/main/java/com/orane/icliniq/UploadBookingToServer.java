@@ -246,7 +246,7 @@ public class UploadBookingToServer extends Activity {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(UploadBookingToServer.this, "File Upload Complete.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadBookingToServer.this, "File uploaded successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Upload File Response-----------------" + serverResponseMessage);
                         }
                     });

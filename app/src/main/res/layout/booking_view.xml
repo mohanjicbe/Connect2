@@ -7,12 +7,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
@@ -20,7 +20,7 @@
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:id="@+id/main_layout"
@@ -33,8 +33,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,10 +67,10 @@
                             android:id="@+id/content"
                             android:layout_width="110dp"
                             android:layout_height="110dp"
+                            android:visibility="gone"
                             app:rb_color="@color/blue_300"
                             app:rb_duration="3000"
                             app:rb_radius="10dp"
-                            android:visibility="gone"
                             app:rb_rippleAmount="4"
                             app:rb_scale="6">
 
@@ -165,7 +164,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:layout_width="match_parent"
@@ -187,13 +186,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|left"
-                    android:visibility="gone"
                     android:fontFamily="sans-serif"
                     android:gravity="center_vertical|left"
                     android:text="Status:"
                     android:textColor="@color/grey_900"
                     android:textSize="15sp"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvstatus"
@@ -214,8 +213,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0.5dip"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/black_line" />
@@ -290,12 +289,39 @@
                 </LinearLayout>
 
 
+                <Button
+                    android:id="@+id/btn_attach"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/blue_border_button"
+                    android:elevation="10dp"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:text="Attach Files/Images"
+                    android:textAllCaps="false"
+                    android:textColor="@color/app_color" />
+
+                <LinearLayout
+                    android:id="@+id/expand_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="25dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -318,12 +344,19 @@
                         android:id="@+id/tvquery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
                         android:fontFamily="sans-serif-light"
                         android:text="Helping several thousands of users everyday with health issues from Psychiatry, Radiology, Dermatology, OB/GYN, Oncology and 80+ other specialities."
                         android:textColor="@color/grey_900"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                    <com.github.ksoichiro.android.observablescrollview.ObservableWebView
+                        android:id="@+id/webview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/appBarLayout" />
 
 
                     <ImageView
@@ -331,8 +364,8 @@
                         android:layout_height="0.5dip"
                         android:layout_marginTop="7dp"
                         android:scaleType="centerCrop"
-                        android:visibility="gone"
-                        android:src="@mipmap/black_line" />
+                        android:src="@mipmap/black_line"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -341,9 +374,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@color/blue_50"
                     android:fontFamily="sans-serif-light"
                     android:padding="10dp"

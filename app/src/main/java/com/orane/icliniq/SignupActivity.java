@@ -11,9 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,47 +29,28 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hbb20.CountryCodePicker;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class SignupActivity extends AppCompatActivity {
-
-    Button btn_cancel;
-    ScrollView scrollview;
-    JSONObject jsonobj;
-    JSONObject post_json, login_jsonobj, json, json_validate;
-    CheckBox checkterms;
-    Spinner spinner_speciality;
-    ProgressBar progressBar;
-    Button btn_submit;
-    TextView tv_terms, tv_privacy;
-    EditText edt_promo, edt_otp;
-    LinearLayout signup_layout;
-    EditText edtmobno, edt_phoneno, edtconfirmpassword;
-    EditText edtname, edtemail, edtpassword;
-    public String pin_val, err_val, isValid_val, country_code_val, selected_cc_value, selected_cc_text, str_response, userId, mobno = "", fname, emailid, pwd, country;
-    Map<String, String> spec_map = new HashMap<String, String>();
-    LinearLayout mob_layout, otp_layout;
-    TextView tv_mobno, tv_timertext;
-    public String err_text, isvalid, userid;
-    TextView tvterms, tv_ccode, tv_resend;
-    LinearLayout timer_layout;
-    RelativeLayout ccode_layout;
-    MyCountDownTimer myCountDownTimer;
-    CheckBox check0;
-    Button btn_otp_submit;
-    Map<String, String> cc_map = new HashMap<String, String>();
-    CountryCodePicker countryCodePicker;
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
@@ -99,12 +77,57 @@ public class SignupActivity extends AppCompatActivity {
     public static final String sp_has_free_follow = "sp_has_free_follow_key";
     public static final String token = "token_key";
     public static final String ref_code = "ref_code_key";
-
+    public String pin_val, err_val, isValid_val, country_code_val, selected_cc_value, selected_cc_text, str_response, userId, mobno = "", fname, emailid, c_pwd, pwd, country;
+    public String err_text, isvalid, userid;
+    Button btn_cancel;
+    ScrollView scrollview;
+    JSONObject jsonobj;
+    JSONObject post_json, login_jsonobj, json, json_validate;
+    CheckBox checkterms;
+    Spinner spinner_speciality;
+    ProgressBar progressBar;
+    Button btn_submit;
+    TextView tv_terms, tv_privacy;
+    EditText edt_promo, edt_otp;
+    LinearLayout signup_layout;
+    EditText edtmobno, edt_phoneno, edtconfirmpassword;
+    EditText edtname, edtemail, edt_confirm_password;
+    ShowHidePasswordEditText edtpassword;
+    Map<String, String> spec_map = new HashMap<String, String>();
+    LinearLayout mob_layout, otp_layout;
+    TextView tv_mobno, tv_timertext;
+    TextView tvterms, tv_ccode, tv_resend;
+    LinearLayout timer_layout;
+    RelativeLayout ccode_layout;
+    MyCountDownTimer myCountDownTimer;
+    CheckBox check0;
+    Button btn_otp_submit;
+    Map<String, String> cc_map = new HashMap<String, String>();
+    CountryCodePicker countryCodePicker;
     SharedPreferences sharedpreferences;
-    private boolean hasStarted = false;
     CheckBox check1;
-
     RelativeLayout name_title_layout;
+    private boolean hasStarted = false;
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null) {
+            return false;
+        } else {
+            return Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +153,7 @@ public class SignupActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -139,35 +162,36 @@ public class SignupActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Signing Up");
         }
         //------------ Object Creations -------------------------------
-        countryCodePicker = (CountryCodePicker) findViewById(R.id.ccp);
-        btn_cancel = (Button) findViewById(R.id.btn_cancel);
-        scrollview = (ScrollView) findViewById(R.id.scrollview);
-        tvterms = (TextView) findViewById(R.id.tvterms);
-        tv_ccode = (TextView) findViewById(R.id.tv_ccode);
-        mob_layout = (LinearLayout) findViewById(R.id.mob_layout);
-        checkterms = (CheckBox) findViewById(R.id.checkterms);
-        edtconfirmpassword = (EditText) findViewById(R.id.edtconfirmpassword);
-        edt_promo = (EditText) findViewById(R.id.edt_promo);
-        edtname = (EditText) findViewById(R.id.edtname);
-        edtemail = (EditText) findViewById(R.id.edtemail);
-        edtpassword = (EditText) findViewById(R.id.edtpassword);
-        edtmobno = (EditText) findViewById(R.id.edtmobno);
-        edt_phoneno = (EditText) findViewById(R.id.edt_phoneno);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        ccode_layout = (RelativeLayout) findViewById(R.id.ccode_layout);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        signup_layout = (LinearLayout) findViewById(R.id.signup_layout);
-        otp_layout = (LinearLayout) findViewById(R.id.otp_layout);
-        timer_layout = (LinearLayout) findViewById(R.id.timer_layout);
-        tv_timertext = (TextView) findViewById(R.id.tv_timertext);
-        tv_mobno = (TextView) findViewById(R.id.tv_mobno);
-        tv_resend = (TextView) findViewById(R.id.tv_resend);
-        btn_otp_submit = (Button) findViewById(R.id.btn_otp_submit);
-        edt_otp = (EditText) findViewById(R.id.edt_otp);
-        check1 = (CheckBox) findViewById(R.id.check1);
-        check0 = (CheckBox) findViewById(R.id.check0);
-        tv_terms = (TextView) findViewById(R.id.tv_terms);
-        tv_privacy = (TextView) findViewById(R.id.tv_privacy);
+        countryCodePicker = findViewById(R.id.ccp);
+        btn_cancel = findViewById(R.id.btn_cancel);
+        scrollview = findViewById(R.id.scrollview);
+        tvterms = findViewById(R.id.tvterms);
+        tv_ccode = findViewById(R.id.tv_ccode);
+        mob_layout = findViewById(R.id.mob_layout);
+        checkterms = findViewById(R.id.checkterms);
+        edtconfirmpassword = findViewById(R.id.edtconfirmpassword);
+        edt_promo = findViewById(R.id.edt_promo);
+        edtname = findViewById(R.id.edtname);
+        edtemail = findViewById(R.id.edtemail);
+        edtpassword = findViewById(R.id.edtpassword);
+        edt_confirm_password = findViewById(R.id.edt_confirm_password);
+        edtmobno = findViewById(R.id.edtmobno);
+        edt_phoneno = findViewById(R.id.edt_phoneno);
+        btn_submit = findViewById(R.id.btn_submit);
+        ccode_layout = findViewById(R.id.ccode_layout);
+        progressBar = findViewById(R.id.progressBar);
+        signup_layout = findViewById(R.id.signup_layout);
+        otp_layout = findViewById(R.id.otp_layout);
+        timer_layout = findViewById(R.id.timer_layout);
+        tv_timertext = findViewById(R.id.tv_timertext);
+        tv_mobno = findViewById(R.id.tv_mobno);
+        tv_resend = findViewById(R.id.tv_resend);
+        btn_otp_submit = findViewById(R.id.btn_otp_submit);
+        edt_otp = findViewById(R.id.edt_otp);
+        check1 = findViewById(R.id.check1);
+        check0 = findViewById(R.id.check0);
+        tv_terms = findViewById(R.id.tv_terms);
+        tv_privacy = findViewById(R.id.tv_privacy);
 
         countryCodePicker.registerCarrierNumberEditText(edt_phoneno);
 
@@ -196,7 +220,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(SignupActivity.this, Terms_WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "p/terms");
+                i.putExtra("url", Model.BASE_URL + "p/terms?nolayout=1");
                 i.putExtra("type", "Terms of use");
                 startActivity(i);
             }
@@ -207,7 +231,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(SignupActivity.this, Terms_WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "p/privacy");
+                i.putExtra("url", Model.BASE_URL + "p/privacy?nolayout=1");
                 i.putExtra("type", "privacy policy");
                 startActivity(i);
             }
@@ -235,7 +259,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(SignupActivity.this, WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "p/terms");
+                i.putExtra("url", Model.BASE_URL + "p/terms?nolayout=1");
                 i.putExtra("type", "Terms and Conditions");
                 startActivity(i);
             }
@@ -267,7 +291,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Intent i = new Intent(SignupActivity.this, Terms_WebViewActivity.class);
-                    i.putExtra("url", Model.BASE_URL + "p/terms");
+                    i.putExtra("url", Model.BASE_URL + "p/terms?nolayout=1");
                     i.putExtra("type", "Terms");
                     startActivity(i);
                     //overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -282,56 +306,73 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-              /*  if (check0.isChecked()) {
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please agree to terms and conditions", Toast.LENGTH_SHORT).show();
-                    //checkterms.setError("Please agree to terms and conditions");
-                }*/
-
                 fname = edtname.getText().toString();
                 emailid = edtemail.getText().toString();
                 pwd = edtpassword.getText().toString();
+                c_pwd = edt_confirm_password.getText().toString();
                 mobno = edt_phoneno.getText().toString();
 
                 if ((fname.length() > 0)) {
                     if ((emailid.length() > 0)) {
                         if ((pwd.length() > 0)) {
-                            if ((mobno.length() > 0)) {
+                            if ((pwd.equals(c_pwd))) {
 
-                                if (check0.isChecked()) {
-                                    if (check1.isChecked()) {
-                                        String pcode = edt_promo.getText().toString();
-                                        if (!pcode.equals("")) {
-                                            sumbit_signup();
+                                if ((mobno.length() > 0)) {
+                                    if (check0.isChecked()) {
+
+                                        if (pwd.length() < 8 || !isValidPassword(pwd)) {
+                                            System.out.println("Pwd is Not Valid");
+                                            edtpassword.requestFocus();
+                                            new AlertDialog.Builder(SignupActivity.this)
+                                                    //.setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("In valid Password")
+                                                    .setMessage("Password should contain atleast 1 Uppercase, 1 lowercase, 1 number, 1 special symbol and minimum 8 charecters")
+                                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
                                         } else {
-                                            edt_promo.setError("Enter promo code");
-                                            edt_promo.requestFocus();
+
+                                            if (check1.isChecked()) {
+                                                String pcode = edt_promo.getText().toString();
+                                                if (!pcode.equals("")) {
+                                                    sumbit_signup();
+                                                } else {
+                                                    edt_promo.setError("Please enter the promo code");
+                                                    edt_promo.requestFocus();
+                                                }
+                                            } else {
+                                                sumbit_signup();
+                                            }
                                         }
                                     } else {
-                                        sumbit_signup();
+                                        Toast.makeText(getApplicationContext(), "Please agree the terms and privacy policy", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Please agree to terms and conditions", Toast.LENGTH_SHORT).show();
+                                    edt_phoneno.setError("Please enter your valid mobile number");
+                                    edt_phoneno.requestFocus();
                                 }
-
                             } else {
-                                edt_phoneno.setError("Mobile no cannot be empty");
-                                edt_phoneno.requestFocus();
+                                edt_confirm_password.setError("Entered passwords do not match");
+                                edt_confirm_password.requestFocus();
                             }
+
                         } else {
-                            edtpassword.setError("Password cannot be empty");
+                            edtpassword.setError("Please enter your password");
                             edtpassword.requestFocus();
                         }
                     } else {
-                        edtemail.setError("Email cannot be empty");
+                        edtemail.setError("Please enter your valid Email address");
                         edtemail.requestFocus();
                     }
                 } else {
-                    edtname.setError("Name cannot be empty");
+                    edtname.setError("Please enter your name");
                     edtname.requestFocus();
                 }
-
-
             }
         });
 
@@ -360,10 +401,10 @@ public class SignupActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Code is not matched", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "The OTP you have entered is incorrect. Please try again/Please enter a valid OTP", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Code is cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter the code", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -374,7 +415,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Toast.makeText(getApplicationContext(), "OTP has been sent again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "OTP has been sent again to your mobile number.", Toast.LENGTH_SHORT).show();
 
                 progressBar.setMax(60);
                 //--------------Send OTP---------------------------------------------
@@ -413,100 +454,6 @@ public class SignupActivity extends AppCompatActivity {
 
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    private class JSON_getCountry extends AsyncTask<String, Void, Boolean> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-/*            dialog = new ProgressDialog(SignupActivity.this);
-            dialog.setMessage("Please wait");
-            dialog.show();
-            dialog.setCancelable(false);*/
-            scrollview.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Boolean doInBackground(String... urls) {
-
-            try {
-                str_response = new JSONParser().getJSONString(urls[0]);
-                System.out.println("str_response--------------" + str_response);
-                return true;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            try {
-
-                jsonobj = new JSONObject(str_response);
-
-                if (jsonobj.has("token_status")) {
-                    String token_status = jsonobj.getString("token_status");
-                    if (token_status.equals("0")) {
-
-                        //============================================================
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putString(Login_Status, "0");
-                        editor.apply();
-                        //============================================================
-
-                        finishAffinity();
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                } else {
-
-                    country = jsonobj.getString("country");
-                    country_code_val = jsonobj.getString("code");
-
-                    System.out.println("country----------" + country);
-                    System.out.println("country_code_val----------" + country_code_val);
-
-                    Model.browser_country = country;
-                    Model.pat_country = country;
-                    tv_ccode.setText("+" + country_code_val);
-
-/*                  if (country.equals("IN")) {
-                    mob_layout.setVisibility(View.GONE);
-                    btn_submit.setVisibility(View.VISIBLE);
-
-                    } else {
-                        mob_layout.setVisibility(View.GONE);
-                        btn_submit.setVisibility(View.GONE);
-                    }*/
-                }
-
-            } catch (Exception e) {
-                country = "";
-                e.printStackTrace();
-            }
-
-            scrollview.setVisibility(View.VISIBLE);
-            //dialog.cancel();
-
-        }
-    }
-
-
-    public final static boolean isValidEmail(CharSequence target) {
-        if (target == null) {
-            return false;
-        } else {
-            return Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
     }
 
     @Override
@@ -554,7 +501,7 @@ public class SignupActivity extends AppCompatActivity {
 
             final MaterialDialog alert = new MaterialDialog(SignupActivity.this);
             alert.setTitle("Internet is not available..!");
-            alert.setMessage("Seems Internet is not available. please re-connect and try again.");
+            alert.setMessage("Please check your Internet Connection and try again");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("TRY AGAIN", new View.OnClickListener() {
                 @Override
@@ -1112,6 +1059,141 @@ public class SignupActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
+    public void ask_Signup(String err) {
+
+        final MaterialDialog alert = new MaterialDialog(SignupActivity.this);
+        alert.setTitle("Warning..!");
+        alert.setMessage(err);
+        alert.setCanceledOnTouchOutside(false);
+        alert.setPositiveButton("Ok", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alert.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public void sumbit_signup() {
+
+        try {
+
+            String fname_text = edtname.getText().toString();
+            String pwd_text = edtpassword.getText().toString();
+
+            mobno = mobno.replace(" ", "");
+            mobno = mobno.trim();
+
+            json_validate = new JSONObject();
+            json_validate.put("email", emailid);
+            json_validate.put("ccode", country_code_val);
+            json_validate.put("mobile", mobno);
+            json_validate.put("fname", fname_text);
+            json_validate.put("pwd", pwd_text);
+
+            System.out.println("json_validate----" + json_validate.toString());
+
+            new Async_validateEmailMobno().execute(json_validate);
+
+            //--------------------------------------------------
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if ((Model.terms_isagree) != null && !(Model.terms_isagree).isEmpty() && !(Model.terms_isagree).equals("null") && !(Model.terms_isagree).equals("") && !(Model.terms_isagree).equals("false")) {
+            checkterms.setChecked(true);
+        }
+    }
+
+    private class JSON_getCountry extends AsyncTask<String, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+/*            dialog = new ProgressDialog(SignupActivity.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);*/
+            scrollview.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... urls) {
+
+            try {
+                str_response = new JSONParser().getJSONString(urls[0]);
+                System.out.println("str_response--------------" + str_response);
+                return true;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                jsonobj = new JSONObject(str_response);
+
+                if (jsonobj.has("token_status")) {
+                    String token_status = jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                } else {
+
+                    country = jsonobj.getString("country");
+                    country_code_val = jsonobj.getString("code");
+
+                    System.out.println("country----------" + country);
+                    System.out.println("country_code_val----------" + country_code_val);
+
+                    Model.browser_country = country;
+                    Model.pat_country = country;
+                    tv_ccode.setText("+" + country_code_val);
+
+/*                  if (country.equals("IN")) {
+                    mob_layout.setVisibility(View.GONE);
+                    btn_submit.setVisibility(View.VISIBLE);
+
+                    } else {
+                        mob_layout.setVisibility(View.GONE);
+                        btn_submit.setVisibility(View.GONE);
+                    }*/
+                }
+
+            } catch (Exception e) {
+                country = "";
+                e.printStackTrace();
+            }
+
+            scrollview.setVisibility(View.VISIBLE);
+            //dialog.cancel();
+
+        }
+    }
 
     class Async_validateEmailMobno extends AsyncTask<JSONObject, Void, Boolean> {
 
@@ -1135,7 +1217,6 @@ public class SignupActivity extends AppCompatActivity {
                 JSONParser jParser = new JSONParser();
                 login_jsonobj = jParser.JSON_POST(urls[0], "validatemobnoexists");
 
-
                 System.out.println("Signup json---------------" + login_jsonobj.toString());
 
                 return true;
@@ -1147,8 +1228,8 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-            try {
 
+            try {
 
                 isValid_val = login_jsonobj.getString("isValid");
                 System.out.println("isValid_val ---" + isValid_val);
@@ -1179,6 +1260,7 @@ public class SignupActivity extends AppCompatActivity {
                     //--------------Send OTP---------------------------------------------
 
                     //---------- Start Timer -------------------------------
+
                     try {
                         if (hasStarted) {
                             myCountDownTimer.cancel();
@@ -1211,22 +1293,6 @@ public class SignupActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void ask_Signup(String err) {
-
-        final MaterialDialog alert = new MaterialDialog(SignupActivity.this);
-        alert.setTitle("Warning..!");
-        alert.setMessage(err);
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("Ok", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                alert.dismiss();
-            }
-        });
-        alert.show();
     }
 
     public class MyCountDownTimer extends CountDownTimer {
@@ -1365,20 +1431,18 @@ public class SignupActivity extends AppCompatActivity {
                             //success();
 
                             try {
-                                //=========================================================
-                                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                                Model.kiss.record("android.patient.Signup_Success");
-                                Model.kiss.identify(Model.kmid);
-                                HashMap<String, String> properties = new HashMap<String, String>();
-                                properties.put("android.patient.name:", edtname.getText().toString());
-                                properties.put("android.patient.emailid", edtemail.getText().toString());
-                                properties.put("android.patient.App_Version", Model.App_ver);
-                                properties.put("android.patient.pwd", edtpassword.getText().toString());
-                                properties.put("android.patient.mobno", mobno);
-                                properties.put("android.patient.token", Model.token);
-                                properties.put("android.patient.country", country);
-                                Model.kiss.set(properties);
-                                //----------------------------------------------------------------------------
+
+                                //------------ Google firebase Analitics--------------------
+                                Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                                Bundle params = new Bundle();
+                                params.putString("name", edtname.getText().toString());
+                                params.putString("emailid", edtemail.getText().toString());
+                                params.putString("App_Version", Model.App_ver);
+                                params.putString("pwd", pwd);
+                                params.putString("mobno", mobno);
+                                params.putString("country", country);
+                                Model.mFirebaseAnalytics.logEvent("Signup_Success", params);
+                                //------------ Google firebase Analitics--------------------
 
                                 //----------- Flurry -------------------------------------------------
                                 FlurryAgent.setUserId(Model.kmid);
@@ -1397,7 +1461,7 @@ public class SignupActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(getApplicationContext(), "Registration Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Registration successful", Toast.LENGTH_SHORT).show();
 
                             //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
@@ -1466,41 +1530,6 @@ public class SignupActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void sumbit_signup() {
-        try {
-
-            String fname_text = edtname.getText().toString();
-            String pwd_text = edtpassword.getText().toString();
-
-            mobno = mobno.replace(" ", "");
-            mobno = mobno.trim();
-
-            json_validate = new JSONObject();
-            json_validate.put("email", emailid);
-            json_validate.put("ccode", country_code_val);
-            json_validate.put("mobile", mobno);
-            json_validate.put("fname", fname_text);
-            json_validate.put("pwd", pwd_text);
-
-            System.out.println("json_validate----" + json_validate.toString());
-
-            new Async_validateEmailMobno().execute(json_validate);
-
-            //--------------------------------------------------
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if ((Model.terms_isagree) != null && !(Model.terms_isagree).isEmpty() && !(Model.terms_isagree).equals("null") && !(Model.terms_isagree).equals("") && !(Model.terms_isagree).equals("false")) {
-            checkterms.setChecked(true);
         }
     }
 }

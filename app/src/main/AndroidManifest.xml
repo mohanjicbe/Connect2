@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.STORAGE" />
-
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS " />
 
     <application
         android:name=".MyApp"
@@ -22,10 +22,13 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
         <activity
             android:name=".SplashActivity"
@@ -39,8 +42,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/logo" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/app_color" />
@@ -69,6 +71,7 @@
 
         </provider>
 
+
         <meta-data
             android:name="applovin.sdk.key"
             android:value="Kdid-IfMS7M48LTEZCTgRKFIoaJPt-gCcOqbgUy8cIDlegzCuRuJn7bZiwzauenU1a4i40rgJ2PykN9bp1vZ8U" />
@@ -79,121 +82,162 @@
 
         <activity
             android:name=".Answeres_Activity"
-            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".chime.InMeetingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".chime.MeetingHomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".Voxeet"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".Voxeet_New"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+
+        <activity
+            android:name=".Invoice_Page_New"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Comments_ListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Ratting_activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Offers_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ExpandableActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Offers_List_activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".Referal_Activity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FeedbackActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Prescriptions_Activity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Prescription_Entry_Activity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SomeoneEdit_Dialog"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".WebViewActivity_Persona"
-            android:screenOrientation="portrait"
+
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Attachment_Screen_Activity"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".CenterFabActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Labtest_WebViewActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OTPActivity_PromoCode"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".FamilyProfileListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
 
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Prelogin_Activity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Doc_Consultation_Screen"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Attachment_WebViewActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
             android:name=".Image_Preview"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Labtest.Labtest_tabs_Activity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Video_WebViewActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Ask_FamilyProfile"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
+        <!--<activity
             android:name=".Invoice_Page_New"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
+            android:theme="@style/AppTheme.NoActionBar" />-->
 
         <activity
             android:name=".Labtest.TestListActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
             android:name=".Stripewebview_Activity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Attached_List_Activity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".InboxActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Inbox_view"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
 
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".TransactionsListActivity"
@@ -202,6 +246,11 @@
         <activity
             android:name=".Manage_Subscriptions"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Prescription_WebViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".Labtest.Labtest_Beneficiary"
@@ -215,11 +264,9 @@
             android:name=".Agencies_List_Activity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-
         <activity
             android:name=".IntroScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
 
         <activity
             android:name=".MyDoctorsActivity"
@@ -392,10 +439,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
+<!--        <activity
             android:name="com.razorpay.CheckoutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />-->
         <!--        <activity
                     android:name="com.paytm.pgsdk.PaytmPGActivity"
                     android:configChanges="keyboardHidden|orientation|keyboard"

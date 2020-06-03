@@ -9,10 +9,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
@@ -272,7 +272,7 @@ public class OTPSignupActivity extends AppCompatActivity {
                             System.out.println("json----" + json.toString());
                             //new Async_RequestOTP().execute(json);
                         } else {
-                            Toast.makeText(OTPSignupActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OTPSignupActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                         }
 
                     } else {
@@ -323,7 +323,7 @@ public class OTPSignupActivity extends AppCompatActivity {
                         new Async_CheckMobnoExist().execute(json);
 
                     } else {
-                        edt_phoneno.setError("Enter Mobile number");
+                        edt_phoneno.setError("Mobile number is mandatory");
                     }
 
                 } catch (Exception e) {
@@ -701,7 +701,7 @@ public class OTPSignupActivity extends AppCompatActivity {
 
                     } else {
 
-      /*                  Toast.makeText(getApplicationContext(), "OTP Login Failed. Try Again...", Toast.LENGTH_LONG).show();
+      /*                  Toast.makeText(getApplicationContext(), "OTP Login failed. Please try again.", Toast.LENGTH_LONG).show();
 
                         //=========================================================
                         System.out.println("IMEI No----------" + device_id());
@@ -1370,7 +1370,7 @@ public class OTPSignupActivity extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(OTPSignupActivity.this);
         //alert.setTitle("Mobile no not Exist..!");
-        alert.setMessage("This mobile number is already exist, Do you want to Login now?");
+        alert.setMessage("Provided mobile number already exists. Do you want to login now?");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Yes, Login", new View.OnClickListener() {
             @Override

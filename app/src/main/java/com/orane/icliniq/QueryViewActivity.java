@@ -1,7 +1,6 @@
 package com.orane.icliniq;
 
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -23,24 +21,24 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.sliders.SlideOutDownAnimator;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.BaseActivity;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.attachment_view.GridViewActivity;
@@ -64,13 +62,13 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
     Animation shake;
     private Menu menu;
-    public String qid_in_ans, has_prescription_val, strHtmlQus_text, strHtmlAns_text, spec_val, inf_for, fee_str_text, action, gender_val, age_val, age_gender_text, consulted_for_text, rating_text, pat_feedback_text, reply_text, arr_feedback_text, attach_file_text, file_url, str_response, is_hline, answer_created_at, doctor_str, answer_ext, query_str, doc_name, doc_photo_json, speciality_json, pqid, qtype, query_draft_text, serverResponseMessage, selectedPath, status_postquery, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
+    public String is_star_val, str_drug_dets,qid_in_ans, has_prescription_val, strHtmlQus_text, strHtmlAns_text, spec_val, inf_for, fee_str_text, action, gender_val, age_val, age_gender_text, consulted_for_text, rating_text, pat_feedback_text, reply_text, arr_feedback_text, attach_file_text, file_url, str_response, is_hline, answer_created_at, doctor_str, answer_ext, query_str, doc_name, doc_photo_json, speciality_json, pqid, qtype, query_draft_text, serverResponseMessage, selectedPath, status_postquery, sel_filename, last_upload_file, attach_status, attach_file_url, attach_filename, local_url, contentAsString, upLoadServerUri, attach_id, attach_qid, upload_response, image_path, selectedfilename;
     View addView;
     InputStream is = null;
     Typeface font_reg, font_bold;
     RelativeLayout parlayout;
-    TextView tv_ext_desc;
-    TextView btn_prescription, tv_ans_filename, tv_replytext, tv_fee11, tvqfee, tv_patfeedback, new_text, tvaskquery, edt_title;
+    android.widget.TextView tv_ext_desc;
+    android.widget.TextView  tv_ans_filename, tv_replytext, tv_fee11, tvqfee, tv_patfeedback, new_text, tvaskquery, edt_title;
     ProgressBar progressBar;
     LinearLayout query_display_layout, Submit_layout, like_layout_par, doc_layout, extra_layout;
     Bitmap bitmap;
@@ -83,17 +81,15 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
     LinearLayout feedback_section, nolayout, netcheck_layout, full_layout, files_layout, layout_attachfile, str_status_layout, edt_query_layout, note_layout, ftrack_layout, recc_layout, quest_layout, qns_layout, pay_layout;
     View vi_ans, vi, vi_files;
     JSONObject jsonobj_icq50, json_followup, jsonobj_files, json, feedback_json, feedback_jsonobj, jsonobj_prep_inv;
-    TextView ftrack_text, tv_cons_for, btn_paynow, qtitle;
+    android.widget.TextView ftrack_text, tv_cons_for, btn_paynow, qtitle;
     Button btn_icq50, btn_paytm;
     LinearLayout like_layout, dislike_layout, btn_pay;
     Button btn_askfollup;
     public String doctor_id, file_user_id, file_doctype, file_file, file_ext, q_files_text, ratting_val, cur_answer_id, answerval_id, pass, uname, str_status, unpaid_fee, unpaid_invid, unpaid_json_text, str_follow_fee, ftrack_str_status_val, ftrack_str_status, ftrack_fee, ftrack_str, qid, qastatus, more_comp, prev_hist, cur_medi, past_medi, lab_tests, prob_caus, inv_done, diff_diag, prob_diag, treat_plan, prev_measu, reg_folup;
     ScrollView scrollview;
-    ImageView img_search_hit;
-    EditText search_text;
     public String a_files_text, feedback_text, inv_id, inv_fee, inv_strfee, feedback_status, docname, query_txt, answer, answer_text, status, question_ext, created_at, question;
     HashMap<String, String> reccom_list = new HashMap<String, String>();
-    TextView tv_patq, tv_filename, tv_ext, tv_userid, TextView, ftrack_desc;
+    android.widget.TextView tv_patq, tv_qid_value, tv_filename, tv_ext, tv_userid, TextView, ftrack_desc;
     Button btn_ftrack;
     HashMap<String, String> docname_hash = new HashMap<String, String>();
 
@@ -102,7 +98,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
     public JSONObject jsononjsec, ansjsonobject, jsonobj, jsonobj1, jsonobj_followup;
     public JSONArray jsonarray, ansjsonarray;
-
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -137,14 +132,13 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.query_view_detail);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
         FlurryAgent.onPageView();
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -179,38 +173,36 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
         Model.kmid = sharedpreferences.getString(sp_km_id, "");
         //============================================================
 
-        file_list = (LinearLayout) findViewById(R.id.file_list);
-        edt_title = (TextView) findViewById(R.id.edt_title);
-        btn_cancel1 = (Button) findViewById(R.id.btn_cancel1);
-        btn_icq50 = (Button) findViewById(R.id.btn_icq50);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        edt_query_layout = (LinearLayout) findViewById(R.id.edt_query_layout);
-        full_layout = (LinearLayout) findViewById(R.id.full_layout);
-        ftrack_text = (TextView) findViewById(R.id.ftrack_text);
-        tvaskquery = (TextView) findViewById(R.id.tvaskquery);
-        btn_ftrack = (Button) findViewById(R.id.btn_ftrack);
-        parlayout = (RelativeLayout) findViewById(R.id.parlayout);
-        new_text = (TextView) findViewById(R.id.new_text);
-        btn_paynow = (TextView) findViewById(R.id.btn_paynow);
-        str_status_layout = (LinearLayout) findViewById(R.id.str_status_layout);
-        note_layout = (LinearLayout) findViewById(R.id.note_layout);
-        ftrack_layout = (LinearLayout) findViewById(R.id.ftrack_layout);
-        ftrack_desc = (TextView) findViewById(R.id.ftrack_desc);
-        btn_pay = (LinearLayout) findViewById(R.id.btn_pay);
-        btn_paytm = (Button) findViewById(R.id.btn_paytm);
-        edt_query = (EditText) findViewById(R.id.edt_query);
-        search_text = (EditText) findViewById(R.id.search_text);
-        img_search_hit = (ImageView) findViewById(R.id.img_search_hit);
-        scrollview = (ScrollView) findViewById(R.id.scrollview);
-        myLayout = (LinearLayout) findViewById(R.id.parent_qalayout);
-        recc_layout = (LinearLayout) findViewById(R.id.recc_layout);
-        qtitle = (TextView) findViewById(R.id.qtitle);
-        tvqfee = (TextView) findViewById(R.id.tvqfee);
-        tv_fee11 = (TextView) findViewById(R.id.tv_fee11);
-        btn_askfollup = (Button) findViewById(R.id.btn_askfollup);
-        pay_layout = (LinearLayout) findViewById(R.id.pay_layout);
-        Submit_layout = (LinearLayout) findViewById(R.id.Submit_layout);
+        file_list = findViewById(R.id.file_list);
+        edt_title = findViewById(R.id.edt_title);
+        btn_cancel1 = findViewById(R.id.btn_cancel1);
+        btn_icq50 = findViewById(R.id.btn_icq50);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        nolayout = findViewById(R.id.nolayout);
+        edt_query_layout = findViewById(R.id.edt_query_layout);
+        full_layout = findViewById(R.id.full_layout);
+        ftrack_text = findViewById(R.id.ftrack_text);
+        tvaskquery = findViewById(R.id.tvaskquery);
+        btn_ftrack = findViewById(R.id.btn_ftrack);
+        parlayout = findViewById(R.id.parlayout);
+        new_text = findViewById(R.id.new_text);
+        btn_paynow = findViewById(R.id.btn_paynow);
+        str_status_layout = findViewById(R.id.str_status_layout);
+        note_layout = findViewById(R.id.note_layout);
+        ftrack_layout = findViewById(R.id.ftrack_layout);
+        ftrack_desc = findViewById(R.id.ftrack_desc);
+        btn_pay = findViewById(R.id.btn_pay);
+        btn_paytm = findViewById(R.id.btn_paytm);
+        edt_query = findViewById(R.id.edt_query);
+        scrollview = findViewById(R.id.scrollview);
+        myLayout = findViewById(R.id.parent_qalayout);
+        recc_layout = findViewById(R.id.recc_layout);
+        qtitle = findViewById(R.id.qtitle);
+        tvqfee = findViewById(R.id.tvqfee);
+        tv_fee11 = findViewById(R.id.tv_fee11);
+        btn_askfollup = findViewById(R.id.btn_askfollup);
+        pay_layout = findViewById(R.id.pay_layout);
+        Submit_layout = findViewById(R.id.Submit_layout);
 
         font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
         font_bold = Typeface.createFromAsset(getAssets(), Model.font_name_bold);
@@ -218,9 +210,9 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
         tvaskquery.setTypeface(font_bold);
         ftrack_desc.setTypeface(font_reg);
 
-        ((TextView) findViewById(R.id.tv_cantwait)).setTypeface(font_bold);
-        ((TextView) findViewById(R.id.tv_nottext)).setTypeface(font_reg);
-        ((TextView) findViewById(R.id.edt_title)).setTypeface(font_bold);
+        ((android.widget.TextView) findViewById(R.id.tv_cantwait)).setTypeface(font_bold);
+        ((android.widget.TextView) findViewById(R.id.tv_nottext)).setTypeface(font_reg);
+        ((android.widget.TextView) findViewById(R.id.edt_title)).setTypeface(font_bold);
 
         btn_ftrack.setTypeface(font_bold);
 
@@ -250,8 +242,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                 String url = Model.BASE_URL + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=ftrack&item_id=" + (qid) + "&token=" + Model.token + "&enc=1";
                 System.out.println("Prep inv===========" + url);
                 new JSON_Prepare_inv().execute(url);
-                //----------------------------------------------------
-
+                //---------------------------------------------------
             }
         });
 
@@ -292,6 +283,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                             json.put("qid", qid);
 
                             inf_for = "icq50";
+
                             new JSONPostQuery().execute(json);
 
                             //------------ Google firebase Analitics-----------------------------------------------
@@ -302,14 +294,15 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                             //------------ Google firebase Analitics----------------------------------------------
 
                         } else
-                            edt_query.setError("Query cannot be empty");
+                            edt_query.setError("Please enter your query");
+                        edt_query.requestFocus();
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 } else {
-                    Toast.makeText(QueryViewActivity.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(QueryViewActivity.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -387,13 +380,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
                 try {
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Query_View");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("Query_id:", qid);
-                    Model.kiss.set(properties);
-
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("Query_id:", qid);
                     FlurryAgent.logEvent("android.patient.Query_View", articleParams);
@@ -414,6 +400,16 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                             System.out.println("Viewq url-------------" + full_url);
                             new Query_View_AsyncTask().execute(full_url);
                             //--------------------------
+
+                            //---------------- Auto Scroll Bottom -----------------------
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                                }
+                            };
+                            scrollview.post(runnable);
+                            //---------------- Auto Scroll Bottom -----------------------
 
                         } else {
                             Toast.makeText(getApplicationContext(), "Sorry. Something went wrong. Please Logout and Login again.", Toast.LENGTH_LONG).show();
@@ -498,7 +494,9 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                         System.out.println("Query2 Prepare Invoice url-------------" + url);
                         new JSON_Prepare_inv().execute(url);
                         //------------ Prepare Invoice------------------------------------
+
                     } else {
+
                         Intent intent = new Intent(QueryViewActivity.this, File_Upload_Screen.class);
                         intent.putExtra("qid", qid);
                         startActivity(intent);
@@ -593,10 +591,23 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        //getMenuInflater().inflate(R.menu.query_view, menu);
-        //hide_send();
+
+        // getMenuInflater().inflate(R.menu.ask_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -629,77 +640,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
         MenuItem item6 = menu.findItem(R.id.nav_newquery);
         item6.setVisible(true);
     }*/
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-
-            if ((Model.query_launch).equals("Pushnotification")) {
-                Intent intent = new Intent(QueryViewActivity.this, CenterFabActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                finish();
-            }
-            return true;
-        }
-
-        /*if (id == R.id.nav_send) {
-            submit_query();
-            return true;
-        }
-
-        if (id == R.id.nav_doctors) {
-
-            Intent intent = new Intent(QueryViewActivity.this, DoctorsListActivity.class);
-            startActivity(intent);
-            finish();
-
-            return true;
-        }
-        if (id == R.id.nav_hotline) {
-
-            Intent intent = new Intent(QueryViewActivity.this, Hotline_Doctors.class);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-
-        if (id == R.id.nav_mydocts) {
-
-            Intent intent = new Intent(QueryViewActivity.this, MyDoctorsActivity.class);
-            startActivity(intent);
-            finish();
-
-            return true;
-        }
-
-
-        if (id == R.id.nav_howworks) {
-
-            Intent intent = new Intent(QueryViewActivity.this, IntroScreenActivity.class);
-            intent.putExtra("screen_launch", "queryView");
-            startActivity(intent);
-            finish();
-
-            return true;
-        }
-
-        if (id == R.id.nav_newquery) {
-
-            Intent intent = new Intent(QueryViewActivity.this, AskQuery1.class);
-            startActivity(intent);
-            finish();
-
-            return true;
-        }
-*/
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private class Query_View_AsyncTask extends AsyncTask<String, Void, Boolean> {
@@ -758,6 +698,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                     }
 
                 } else {
+
                     jsonarray = new JSONArray();
                     jsonarray.put(jsonobj);
 
@@ -789,9 +730,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                     ftrack_str = jsononjsec.getString("ftrack");
                                 } else {
                                     ftrack_str = "";
-
                                 }
-
 
                                 qid = jsononjsec.getString("id");
                                 pqid = jsononjsec.getString("pqid");
@@ -952,24 +891,25 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                 //---------------------------------------------------------
                                 vi = getLayoutInflater().inflate(R.layout.thread_view_query, null);
 
-                                query_display_layout = (LinearLayout) vi.findViewById(R.id.query_display_layout);
-                                query_webview = (ObservableWebView) vi.findViewById(R.id.query_webview);
+                                query_display_layout = vi.findViewById(R.id.query_display_layout);
+                                query_webview = vi.findViewById(R.id.query_webview);
 
                                 query_webview.setVerticalScrollBarEnabled(false);
 
 
-                                files_layout = (LinearLayout) vi.findViewById(R.id.files_layout);
-                                layout_attachfile = (LinearLayout) vi.findViewById(R.id.layout_attachfile);
-                                quest_layout = (LinearLayout) vi.findViewById(R.id.quest_layout);
-                                qns_layout = (LinearLayout) vi.findViewById(R.id.qns_layout);
-                                extra_layout = (LinearLayout) vi.findViewById(R.id.extra_layout);
+                                files_layout = vi.findViewById(R.id.files_layout);
+                                layout_attachfile = vi.findViewById(R.id.layout_attachfile);
+                                quest_layout = vi.findViewById(R.id.quest_layout);
+                                qns_layout = vi.findViewById(R.id.qns_layout);
+                                extra_layout = vi.findViewById(R.id.extra_layout);
                                 //qns_layout = (LinearLayout) vi.findViewById(R.id.qns_layout);
-                                tv_patq = (TextView) vi.findViewById(R.id.pq);
-                                tv_cons_for = (TextView) vi.findViewById(R.id.tv_cons_for);
-                                tv_filename = (TextView) vi.findViewById(R.id.tv_filename);
+                                tv_patq = vi.findViewById(R.id.pq);
+                                tv_cons_for = vi.findViewById(R.id.tv_cons_for);
+                                tv_filename = vi.findViewById(R.id.tv_filename);
+                                tv_qid_value = vi.findViewById(R.id.tv_qid_value);
 
-                                TextView attachfile = (TextView) vi.findViewById(R.id.attachfile);
-                                TextView tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
+                                android.widget.TextView attachfile = vi.findViewById(R.id.attachfile);
+                                android.widget.TextView tv_datetime = vi.findViewById(R.id.tv_datetime);
 
                                 tv_patq.setTypeface(font_reg);
                                 tv_cons_for.setTypeface(font_reg);
@@ -1022,10 +962,16 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                     System.out.println("files_text------" + q_files_text);
                                     jarray_files = jsononjsec.getJSONArray("q_files");
 
+                                    JSONArray jarray_files_count = jsononjsec.getJSONArray("q_files");
+
                                     System.out.println("jsonobj_items------" + jarray_files.toString());
                                     System.out.println("jarray_files.length()------" + jarray_files.length());
 
-                                    attachfile.setText("Attached " + jarray_files.length() + " File(s)");
+                                    Integer cnt = jarray_files_count.length();
+                                    System.out.println("cnt---------" + cnt);
+
+                                    attachfile.setText("Attached  " + jarray_files_count.length() + " File(s)");
+                                    System.out.println("Count--------" + jarray_files_count.length());
 
                                     attach_file_text = "";
 
@@ -1058,10 +1004,10 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
 
                                         vi_files = getLayoutInflater().inflate(R.layout.attached_file_list, null);
-                                        ImageView file_image = (ImageView) vi_files.findViewById(R.id.file_image);
+                                        ImageView file_image = vi_files.findViewById(R.id.file_image);
                                         //tv_filename = (TextView) vi_files.findViewById(R.id.tv_filename);
-                                        tv_ext = (TextView) vi_files.findViewById(R.id.tv_ext);
-                                        tv_userid = (TextView) vi_files.findViewById(R.id.tv_userid);
+                                        tv_ext = vi_files.findViewById(R.id.tv_ext);
+                                        tv_userid = vi_files.findViewById(R.id.tv_userid);
 
                                         //tv_filename.setText(Html.fromHtml(file_url));
                                         //tv_filename.setText(attach_file_text);
@@ -1075,6 +1021,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                     }
 
                                     tv_filename.setText(q_files_text);
+                                    tv_qid_value.setText(qid);
 
                                     files_layout.setVisibility(View.GONE);
 
@@ -1293,8 +1240,8 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                         if (!value_of_key.equals("")) {
 
                                             vi_ext = getLayoutInflater().inflate(R.layout.extra_answer_row, null);
-                                            TextView tv_ext_title = (TextView) vi_ext.findViewById(R.id.tv_ext_title);
-                                            tv_ext_desc = (TextView) vi_ext.findViewById(R.id.tv_ext_desc);
+                                            android.widget.TextView tv_ext_title = vi_ext.findViewById(R.id.tv_ext_title);
+                                            tv_ext_desc = vi_ext.findViewById(R.id.tv_ext_desc);
 
 
                                             String GET_KEY = extra_query_map.get(key);
@@ -1351,35 +1298,57 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
                                         vi_ans = getLayoutInflater().inflate(R.layout.thread_view_answer, null);
 
-                                        webview_answer = (ObservableWebView) vi_ans.findViewById(R.id.webview_answer);
+                                        webview_answer = vi_ans.findViewById(R.id.webview_answer);
 
-                                        query_webview.setVerticalScrollBarEnabled(false);
+                                        webview_answer.setVerticalScrollBarEnabled(false);
 
-                                        answer_layout_attachfile = (LinearLayout) vi_ans.findViewById(R.id.answer_layout_attachfile);
-                                        answer_files_layout = (LinearLayout) vi_ans.findViewById(R.id.answer_files_layout);
+                                        answer_layout_attachfile = vi_ans.findViewById(R.id.answer_layout_attachfile);
+                                        answer_files_layout = vi_ans.findViewById(R.id.answer_files_layout);
 
-                                        doc_layout = (LinearLayout) vi_ans.findViewById(R.id.doc_layout);
-                                        ans_extra_layout = (LinearLayout) vi_ans.findViewById(R.id.ans_extra_layout);
-                                        TextView tvt_query_id = (TextView) vi_ans.findViewById(R.id.tvt_query_id);
-                                        TextView tvt_answer_id = (TextView) vi_ans.findViewById(R.id.tvt_answer_id);
-                                        TextView tvt_query_id2 = (TextView) vi_ans.findViewById(R.id.tvt_query_id2);
-                                        TextView tvt_answer_id2 = (TextView) vi_ans.findViewById(R.id.tvt_answer_id2);
-                                        TextView tv_docans = (TextView) vi_ans.findViewById(R.id.docans);
-                                        TextView tv_datetimeans = (TextView) vi_ans.findViewById(R.id.tv_datetime);
-                                        TextView tvdocspec = (TextView) vi_ans.findViewById(R.id.tvdocspec);
-                                        final TextView tvdocname = (TextView) vi_ans.findViewById(R.id.tvdocname);
-                                        TextView tvdocid = (TextView) vi_ans.findViewById(R.id.tvdocid);
-                                        doc_photo = (CircleImageView) vi_ans.findViewById(R.id.doc_photo);
-                                        Button btnaskquery = (Button) vi_ans.findViewById(R.id.btnaskquery);
-                                        like_layout = (LinearLayout) vi_ans.findViewById(R.id.like_layout);
-                                        dislike_layout = (LinearLayout) vi_ans.findViewById(R.id.dislike_layout);
-                                        feedback_section = (LinearLayout) vi_ans.findViewById(R.id.feedback_section);
-                                        tv_patfeedback = (TextView) vi_ans.findViewById(R.id.tv_patfeedback);
-                                        tv_replytext = (TextView) vi_ans.findViewById(R.id.tv_replytext);
-                                        doctor_reply_section = (LinearLayout) vi_ans.findViewById(R.id.doctor_reply_section);
-                                        like_layout_par = (LinearLayout) vi_ans.findViewById(R.id.like_layout_par);
-                                        tv_ans_filename = (TextView) vi_ans.findViewById(R.id.tv_filename);
-                                        btn_prescription = (TextView) vi_ans.findViewById(R.id.btn_prescription);
+                                        doc_layout = vi_ans.findViewById(R.id.doc_layout);
+                                        ans_extra_layout = vi_ans.findViewById(R.id.ans_extra_layout);
+                                        android.widget.TextView answer_attachfile = vi_ans.findViewById(R.id.answer_attachfile);
+                                        android.widget.TextView tvt_query_id = vi_ans.findViewById(R.id.tvt_query_id);
+                                        android.widget.TextView tvt_answer_id = vi_ans.findViewById(R.id.tvt_answer_id);
+                                        android.widget.TextView tvt_query_id2 = vi_ans.findViewById(R.id.tvt_query_id2);
+                                        android.widget.TextView tvt_answer_id2 = vi_ans.findViewById(R.id.tvt_answer_id2);
+                                        android.widget.TextView tv_docans = vi_ans.findViewById(R.id.docans);
+                                        android.widget.TextView tv_datetimeans = vi_ans.findViewById(R.id.tv_datetime);
+                                        android.widget.TextView tvdocspec = vi_ans.findViewById(R.id.tvdocspec);
+                                        final android.widget.TextView tvdocname = vi_ans.findViewById(R.id.tvdocname);
+                                        android.widget.TextView tvdocid = vi_ans.findViewById(R.id.tvdocid);
+                                        LinearLayout ratting_layout = vi_ans.findViewById(R.id.ratting_layout);
+
+                                        Button btn_prescription = vi_ans.findViewById(R.id.btn_prescription);
+                                        TextView tv_cuurent_query_id = (TextView) vi_ans.findViewById(R.id.tv_cuurent_query_id);
+                                        LinearLayout prescribe_view_layout = (LinearLayout) vi_ans.findViewById(R.id.prescribe_view_layout);
+
+
+
+
+                                        RatingBar ratingBar1 = vi_ans.findViewById(R.id.ratingBar1);
+                                        RatingBar ratingBar2 = vi_ans.findViewById(R.id.ratingBar2);
+                                        RatingBar ratingBar3 = vi_ans.findViewById(R.id.ratingBar3);
+                                        RatingBar ratingBar4 = vi_ans.findViewById(R.id.ratingBar4);
+
+                                        android.widget.TextView text_ratting1 = vi_ans.findViewById(R.id.text_ratting1);
+                                        android.widget.TextView text_ratting2 = vi_ans.findViewById(R.id.text_ratting2);
+                                        android.widget.TextView text_ratting3 = vi_ans.findViewById(R.id.text_ratting3);
+                                        android.widget.TextView text_ratting4 = vi_ans.findViewById(R.id.text_ratting4);
+
+
+                                        doc_photo = vi_ans.findViewById(R.id.doc_photo);
+                                        Button btnaskquery = vi_ans.findViewById(R.id.btnaskquery);
+                                        like_layout = vi_ans.findViewById(R.id.like_layout);
+                                        dislike_layout = vi_ans.findViewById(R.id.dislike_layout);
+                                        feedback_section = vi_ans.findViewById(R.id.feedback_section);
+                                        tv_patfeedback = vi_ans.findViewById(R.id.tv_patfeedback);
+                                        tv_replytext = vi_ans.findViewById(R.id.tv_replytext);
+                                        doctor_reply_section = vi_ans.findViewById(R.id.doctor_reply_section);
+                                        like_layout_par = vi_ans.findViewById(R.id.like_layout_par);
+                                        tv_ans_filename = vi_ans.findViewById(R.id.tv_filename);
+
+                                        tv_qid_value = vi_ans.findViewById(R.id.tv_qid_value);
 
                                         System.out.println("Answer_Section-----");
 
@@ -1391,41 +1360,45 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
                                         answer_text = ansjsonobject.getString("answer");
                                         answerval_id = ansjsonobject.getString("id");
-                                        qid_in_ans = ansjsonobject.getString("qid");
+                                        final String qid_in_ans = ansjsonobject.getString("qid");
                                         answer_created_at = ansjsonobject.getString("created_at");
                                         doctor_str = ansjsonobject.getString("doctor");
                                         answer_ext = ansjsonobject.getString("answer_ext");
-                                        a_files_text = ansjsonobject.getString("a_files");
+                                        String a_files_text = ansjsonobject.getString("a_files");
                                         has_prescription_val = ansjsonobject.getString("has_prescription");
 
+                                        tv_cuurent_query_id.setText(qid_in_ans);
 
+                                        //----------------prescription ---------------------------------------
                                         if (has_prescription_val.equals("1")) {
-                                            btn_prescription.setVisibility(View.VISIBLE);
+                                            prescribe_view_layout.setVisibility(View.VISIBLE);
                                         } else {
-                                            btn_prescription.setVisibility(View.GONE);
+                                            prescribe_view_layout.setVisibility(View.GONE);
                                         }
+                                        //----------------prescription ---------------------------------------
 
-                                        btn_prescription.setOnClickListener(new View.OnClickListener() {
+/*                                        btn_prescription.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 Intent i = new Intent(QueryViewActivity.this, Prescriptions_Activity.class);
                                                 i.putExtra("qid", qid_in_ans);
                                                 startActivity(i);
                                             }
-                                        });
+                                        });*/
 
                                         //---------------- Files ---------------------------------------
-                                        if ((a_files_text.length()) > 2) {
+                                        if ((a_files_text.length()) > 5) {
 
                                             answer_layout_attachfile.setVisibility(View.VISIBLE);
 
                                             System.out.println("files_text------" + a_files_text);
-                                            jarray_files = jsononjsec.getJSONArray("q_files");
+                                            //jarray_files = jsononjsec.getJSONArray(a_files_text);
+                                            jarray_files = new JSONArray(a_files_text);
 
                                             System.out.println("jsonobj_items------" + jarray_files.toString());
                                             System.out.println("jarray_files.length()------" + jarray_files.length());
 
-                                            attachfile.setText("Attached " + jarray_files.length() + " File(s)");
+                                            answer_attachfile.setText("Attached " + jarray_files.length() + " File(s)");
 
                                             attach_file_text = "";
 
@@ -1458,12 +1431,15 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
 
                                                 vi_files = getLayoutInflater().inflate(R.layout.attached_file_list, null);
-                                                ImageView file_image = (ImageView) vi_files.findViewById(R.id.file_image);
+                                                ImageView file_image = vi_files.findViewById(R.id.file_image);
                                                 //tv_ans_filename = (TextView) vi_files.findViewById(R.id.tv_ans_filename);
-                                                tv_ext = (TextView) vi_files.findViewById(R.id.tv_ext);
-                                                tv_userid = (TextView) vi_files.findViewById(R.id.tv_userid);
+                                                tv_ext = vi_files.findViewById(R.id.tv_ext);
+                                                tv_userid = vi_files.findViewById(R.id.tv_userid);
 
                                                 //tv_ans_filename.setText(Html.fromHtml(file_url));
+                                                /*
+
+                                                 * */
                                                 //tv_ans_filename.setText(attach_file_text);
 
                                                 System.out.println("Final attach_file_text-------" + attach_file_text);
@@ -1474,7 +1450,8 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 answer_files_layout.addView(vi_files);
                                             }
 
-                                            tv_ans_filename.setText(q_files_text);
+                                            tv_ans_filename.setText(a_files_text);
+                                            tv_qid_value.setText(qid_in_ans);
 
                                             answer_files_layout.setVisibility(View.GONE);
 
@@ -1496,7 +1473,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                             webview_answer.setBackgroundColor(Color.TRANSPARENT);
                                             webview_answer.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
                                             webview_answer.loadDataWithBaseURL("", strHtmlAns_text, "text/html", "UTF-8", "");
-                                            query_webview.setLongClickable(false);
+                                            webview_answer.setLongClickable(false);
 
                                         } else {
 
@@ -1521,6 +1498,103 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 pat_feedback_text = jobject.getString("feedback");
                                                 reply_text = jobject.getString("reply");
 
+                                                if (jobject.has("is_star")) {
+
+                                                    is_star_val = jobject.getString("is_star");
+
+                                                    if (is_star_val.equals("1")) {
+
+                                                        ratting_layout.setVisibility(View.VISIBLE);
+
+                                                        //---------- Ratting Star Text---------------------------
+                                                        String star1_text = jobject.getString("star1");
+
+                                                        if (star1_text != null && !star1_text.isEmpty() && !star1_text.equals("null") && !star1_text.equals("")) {
+
+                                                            text_ratting1.setVisibility(View.VISIBLE);
+                                                            ratingBar1.setVisibility(View.VISIBLE);
+
+                                                            JSONObject json_star1 = new JSONObject(star1_text);
+                                                            String star_title = json_star1.getString("title");
+                                                            String star_value = json_star1.getString("value");
+
+                                                            ratingBar1.setRating(Float.parseFloat(star_value));
+                                                            text_ratting1.setText(star_title);
+                                                        } else {
+                                                            text_ratting1.setVisibility(View.GONE);
+                                                            ratingBar1.setVisibility(View.GONE);
+                                                        }
+                                                        //---------------------------------------------------
+
+                                                        //---------- Ratting Star Text---------------------------
+                                                        String star2_text = jobject.getString("star2");
+
+                                                        if (star2_text != null && !star2_text.isEmpty() && !star2_text.equals("null") && !star2_text.equals("")) {
+
+                                                            text_ratting2.setVisibility(View.VISIBLE);
+                                                            ratingBar2.setVisibility(View.VISIBLE);
+
+                                                            JSONObject json_star2 = new JSONObject(star2_text);
+                                                            String star_title = json_star2.getString("title");
+                                                            String star_value = json_star2.getString("value");
+
+                                                            ratingBar2.setRating(Float.parseFloat(star_value));
+                                                            text_ratting2.setText(star_title);
+                                                        } else {
+                                                            text_ratting2.setVisibility(View.GONE);
+                                                            ratingBar2.setVisibility(View.GONE);
+                                                        }
+                                                        //---------------------------------------------------
+
+                                                        //---------- Ratting Star Text---------------------------
+                                                        String star3_text = jobject.getString("star3");
+
+                                                        if (star3_text != null && !star3_text.isEmpty() && !star3_text.equals("null") && !star3_text.equals("")) {
+
+                                                            text_ratting3.setVisibility(View.VISIBLE);
+                                                            ratingBar3.setVisibility(View.VISIBLE);
+
+                                                            JSONObject json_star3 = new JSONObject(star3_text);
+                                                            String star_title = json_star3.getString("title");
+                                                            String star_value = json_star3.getString("value");
+
+                                                            ratingBar3.setRating(Float.parseFloat(star_value));
+                                                            text_ratting3.setText(star_title);
+                                                        } else {
+                                                            text_ratting3.setVisibility(View.GONE);
+                                                            ratingBar3.setVisibility(View.GONE);
+                                                        }
+                                                        //---------------------------------------------------
+
+                                                        //---------- Ratting Star Text---------------------------
+                                                        String star4_text = jobject.getString("star4");
+
+                                                        if (star4_text != null && !star4_text.isEmpty() && !star4_text.equals("null") && !star4_text.equals("") && star4_text.length() > 2) {
+
+                                                            text_ratting4.setVisibility(View.VISIBLE);
+                                                            ratingBar4.setVisibility(View.VISIBLE);
+
+                                                            JSONObject json_star4 = new JSONObject(star4_text);
+                                                            String star_title = json_star4.getString("title");
+                                                            String star_value = json_star4.getString("value");
+
+                                                            ratingBar4.setRating(Float.parseFloat(star_value));
+                                                            text_ratting4.setText(star_title);
+                                                        } else {
+                                                            text_ratting4.setVisibility(View.GONE);
+                                                            ratingBar4.setVisibility(View.GONE);
+                                                        }
+                                                        //---------------------------------------------------
+
+
+                                                    } else {
+                                                        ratting_layout.setVisibility(View.GONE);
+                                                    }
+
+                                                } else {
+                                                    ratting_layout.setVisibility(View.GONE);
+                                                }
+
                                                 feedback_section.setVisibility(View.VISIBLE);
                                                 like_layout.setVisibility(View.GONE);
                                                 dislike_layout.setVisibility(View.GONE);
@@ -1538,6 +1612,19 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 like_layout_par.setVisibility(View.VISIBLE);
                                                 System.out.println("arr_feedback_text.length()----------------" + arr_feedback_text.length());
                                             }
+
+/*
+
+                                            //-------- Feedback Webview ---------------------------------------------------
+                                            if (ansjsonobject.has("strFeedback")) {
+                                                String strFeedback_text = ansjsonobject.getString("strFeedback");
+
+
+                                            } else {
+
+                                            }
+                                            //-------- Feedback Webview ---------------------------------------------------
+*/
 
 
                                         } else {
@@ -1574,7 +1661,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                             doc_photo_json = doctor_dets_json.getString("photo");
                                             speciality_json = doctor_dets_json.getString("speciality");
 
-
                                             System.out.println("doc_name-----" + doc_name);
                                             System.out.println("doctor_id-----" + doctor_id);
                                             System.out.println("doc_photo_json-----" + doc_photo_json);
@@ -1602,8 +1688,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                             tvdocname.setText(doc_name);
                                             //------------------------------------
 
-
-                                            doc_layout.setOnClickListener(new View.OnClickListener() {
+                                           /* doc_layout.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
 
@@ -1616,7 +1701,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                     startActivity(intent);
 
                                                 }
-                                            });
+                                            });*/
                                         }
                                         //--------------- Doctor END---------------------------------------------------------------------
 
@@ -1639,28 +1724,24 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 if (!value_of_key.equals("")) {
 
                                                     vi_ans_ext = getLayoutInflater().inflate(R.layout.extra_answer_row, null);
-                                                    TextView tv_ext_title = (TextView) vi_ans_ext.findViewById(R.id.tv_ext_title);
-                                                    tv_ext_desc = (TextView) vi_ans_ext.findViewById(R.id.tv_ext_desc);
+                                                    android.widget.TextView tv_ext_title = vi_ans_ext.findViewById(R.id.tv_ext_title);
+                                                    tv_ext_desc = vi_ans_ext.findViewById(R.id.tv_ext_desc);
 
                                                     tv_ext_title.setText(extra_ans_map.get(key));
                                                     tv_ext_desc.setText(Html.fromHtml(categoryJSONObj.optString(key)));
                                                     tv_ext_desc.setMovementMethod(LinkMovementMethod.getInstance());
 
-
                                                     ans_extra_layout.addView(vi_ans_ext);
                                                 }
-
                                             }
                                             //-------------- Dynamic Key -----------------------------
-
-
                                         }
 
                                         like_layout.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
 
-                                                TextView tvt_answer_id = (TextView) v.findViewById(R.id.tvt_answer_id);
+                                                android.widget.TextView tvt_answer_id = v.findViewById(R.id.tvt_answer_id);
                                                 String ans_id_val = tvt_answer_id.getText().toString();
                                                 cur_answer_id = tvt_answer_id.getText().toString();
 
@@ -1670,7 +1751,15 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 System.out.println("qid-----------" + qid);
                                                 System.out.println("Doctor ID-----------" + doctor_id);
 
-                                                showFeedbackDialog();
+                                                //showFeedbackDialog();
+
+                                                Intent intent = new Intent(QueryViewActivity.this, Ratting_activity.class);
+                                                intent.putExtra("qid", qid);
+                                                intent.putExtra("doctor_id", doctor_id);
+                                                intent.putExtra("ratting_val", ratting_val);
+                                                intent.putExtra("ans_id_val", ans_id_val);
+                                                startActivity(intent);
+
                                             }
                                         });
 
@@ -1679,7 +1768,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                             @Override
                                             public void onClick(View v) {
 
-                                                TextView tvt_answer_id2 = (TextView) v.findViewById(R.id.tvt_answer_id2);
+                                                android.widget.TextView tvt_answer_id2 = v.findViewById(R.id.tvt_answer_id2);
                                                 String ans_id_val = tvt_answer_id2.getText().toString();
                                                 cur_answer_id = tvt_answer_id2.getText().toString();
 
@@ -1689,7 +1778,13 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                                                 System.out.println("qid-----------" + qid);
                                                 System.out.println("Doctor ID-----------" + doctor_id);
 
-                                                showFeedbackDialog();
+                                                //showFeedbackDialog();
+                                                Intent intent = new Intent(QueryViewActivity.this, Ratting_activity.class);
+                                                intent.putExtra("qid", qid);
+                                                intent.putExtra("doctor_id", doctor_id);
+                                                intent.putExtra("ratting_val", ratting_val);
+                                                intent.putExtra("ans_id_val", ans_id_val);
+                                                startActivity(intent);
                                             }
                                         });
 
@@ -1773,13 +1868,17 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
     public void onClick(View v) {
 
         try {
-            TextView tv_filename = (TextView) v.findViewById(R.id.tv_filename);
+            android.widget.TextView tv_filename = v.findViewById(R.id.tv_filename);
+            android.widget.TextView tv_qid_value = v.findViewById(R.id.tv_qid_value);
+
             String file_name = tv_filename.getText().toString();
+            String qid_text = tv_qid_value.getText().toString();
 
             String file_ext = tv_ext.getText().toString();
             String file_userid = tv_userid.getText().toString();
 
             System.out.println("str_filename-------" + file_name);
+            System.out.println("qid_text-------" + qid_text);
 
 
 /*            String url = Model.BASE_URL + "tools/downloadFile/user_id/" + (file_userid) + "/doctype/query_attachment?file=" + file_name + "&ext=" + file_ext + "&isapp=1";
@@ -1788,8 +1887,14 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
             i.setData(Uri.parse(file_name));
             startActivity(i);*/
 
-            Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
+/*            Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
             i.putExtra("filetxt", file_name);
+            startActivity(i);524736
+            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);*/
+
+            Intent i = new Intent(QueryViewActivity.this, ExpandableActivity.class);
+            i.putExtra("item_id", qid_text);
+            i.putExtra("item_type", "query");
             startActivity(i);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
@@ -1802,14 +1907,14 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
     public void doc_prof(View v) {
 
         try {
-            TextView tvdocid = (TextView) v.findViewById(R.id.tvdocid);
+            android.widget.TextView tvdocid = v.findViewById(R.id.tvdocid);
             String tvdocid_val = tvdocid.getText().toString();
 
             System.out.println("tvdocid_val-------" + tvdocid_val);
 
-            Intent intent = new Intent(QueryViewActivity.this, DoctorProfileActivity.class);
+         /*   Intent intent = new Intent(QueryViewActivity.this, DoctorProfileActivity.class);
             intent.putExtra("tv_doc_id", tvdocid_val);
-            startActivity(intent);
+            startActivity(intent);*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1838,7 +1943,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
             alert.setTitle("Feedback");
 
-            final EditText edt_coupon = (EditText) view.findViewById(R.id.edt_coupon);
+            final EditText edt_coupon = view.findViewById(R.id.edt_coupon);
 
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
@@ -1867,7 +1972,8 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                             e.printStackTrace();
                         }
                     } else {
-                        edt_coupon.setError("Feedback cannot be empty");
+                        edt_coupon.setError("Please enter the feedback");
+                        edt_coupon.requestFocus();
                     }
                 }
             });
@@ -1878,6 +1984,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                     alert.dismiss();
                 }
             });
+
             alert.show();
 
         } catch (Exception e) {
@@ -1939,17 +2046,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                     tv_patfeedback.setText(pat_feedback_text);
 
 
-                    //------------------------------------------------
-                    Model.kiss.record("android.patient.Answer_Feedback");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.feedback", feedback_text);
-                    properties.put("android.patient.patient_id", (Model.id));
-                    properties.put("android.patient.qid", qid);
-                    properties.put("android.patient.answer_id", cur_answer_id);
-                    properties.put("android.patient.doctor_id", (doctor_id));
-                    properties.put("android.patient.ratting", ratting_val);
-                    Model.kiss.set(properties);
-                    //------------------------------------------------
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("android.patient.feedback", feedback_text);
@@ -2050,14 +2146,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
     public void force_logout() {
 
-        //----------------- Kissmetrics ----------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.identify(Model.kmid);
-        Model.kiss.record("android.patient.Force_Logout");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("android.patient.country:", (Model.browser_country));
-        Model.kiss.set(properties);
-        //----------------- Kissmetrics ----------------------------------
 
         //----------- Flurry -------------------------------------------------
         Map<String, String> articleParams = new HashMap<String, String>();
@@ -2067,7 +2155,7 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
         final MaterialDialog alert = new MaterialDialog(QueryViewActivity.this);
         alert.setTitle("Please Re-Login the App..!");
-        alert.setMessage("Something went wrong. Please Login again to continue");
+        alert.setMessage("Something went wrong. Please go back and try again..!e");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override
@@ -2122,7 +2210,8 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                 new JSONPostQuery().execute(json_followup);
 
             } else
-                edt_query.setError("Query cannot be empty");
+                edt_query.setError("Please enter your query");
+            edt_query.requestFocus();
 
         } catch (Exception e) {
             System.out.println("Exception Followup ---- " + e.toString());
@@ -2165,7 +2254,37 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
     public void onClickFile(View v) {
 
         try {
-            TextView tv_filename = (TextView) v.findViewById(R.id.tv_filename);
+            android.widget.TextView tv_filename = v.findViewById(R.id.tv_filename);
+            android.widget.TextView tv_qid_value = v.findViewById(R.id.tv_qid_value);
+
+            String file_name = tv_filename.getText().toString();
+            String qid_text = tv_qid_value.getText().toString();
+
+            String file_ext = tv_ext.getText().toString();
+            String file_userid = tv_userid.getText().toString();
+
+            System.out.println("str_filename-------" + file_name);
+            System.out.println("qid_text-------" + qid_text);
+
+            Intent i = new Intent(QueryViewActivity.this, ExpandableActivity.class);
+            i.putExtra("item_id", qid_text);
+            i.putExtra("item_type", "query");
+            startActivity(i);
+            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void onClickFile_answer(View v) {
+
+        try {
+
+            android.widget.TextView tv_filename = v.findViewById(R.id.tv_filename);
             String file_name = tv_filename.getText().toString();
             System.out.println("str_filename-------" + file_name);
 
@@ -2253,7 +2372,6 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
                     String icq50_fees = new JSONObject(icq50_text).getString("str_fee");
 
                     tv_fee11.setText("(" + icq50_fees + ")");
-
                 }
 
                 dialog.dismiss();
@@ -2264,6 +2382,99 @@ public class QueryViewActivity extends BaseActivity implements ObservableScrollV
 
         }
     }
+
+
+    public void onclick_viewpres(View v) {
+
+        try {
+            View parent = (View) v.getParent();
+
+            TextView cqid = (TextView) parent.findViewById(R.id.tv_cuurent_query_id);
+            String cqid_val = cqid.getText().toString();
+            System.out.println("cqid_val---------" + cqid_val);
+
+            String params = Model.BASE_URL + "sapp/previewPrescription?user_id=" + (Model.id) + "&token=" + Model.token + "&os_type=android&item_type=query&item_id=" + cqid_val;
+            System.out.println("Pressed Prescription-----------" + params);
+            new list_drugs().execute(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private class list_drugs extends AsyncTask<String, Void, Void> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(QueryViewActivity.this);
+            dialog.setMessage("Please wait..");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                str_drug_dets = new JSONParser().getJSONString(params[0]);
+                System.out.println("str_drug_dets--------------" + str_drug_dets);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            try {
+
+                if (str_drug_dets != null && !str_drug_dets.isEmpty() && !str_drug_dets.equals("null") && !str_drug_dets.equals("")) {
+
+                    JSONObject jobj = new JSONObject(str_drug_dets);
+
+                    String status_text = jobj.getString("status");
+
+                    if (status_text.equals("1")) {
+
+                        if (jobj.has("strHtmlData")) {
+
+                            String strHtmlData = jobj.getString("strHtmlData");
+                            String prescPdfUrl_text = jobj.getString("prescPdfUrl");
+
+                            System.out.println("Final_strHtmlData-----" + strHtmlData);
+
+                            try {
+                                Intent i = new Intent(getApplicationContext(), Prescription_WebViewActivity.class);
+                                i.putExtra("str_html", strHtmlData);
+                                i.putExtra("pdf_url", prescPdfUrl_text);
+                                startActivity(i);
+                                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                        } else {
+                            String msg_text = jobj.getString("msg");
+                            Toast.makeText(QueryViewActivity.this, msg_text, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    dialog.dismiss();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 
 
 }

@@ -3,7 +3,8 @@ package com.orane.icliniq.file_picking;
 
 import android.content.Context;
 import android.os.FileObserver;
-import android.support.v4.content.AsyncTaskLoader;
+
+import androidx.loader.content.AsyncTaskLoader;
 
 import com.orane.icliniq.file_picking.utils.FileUtils;
 

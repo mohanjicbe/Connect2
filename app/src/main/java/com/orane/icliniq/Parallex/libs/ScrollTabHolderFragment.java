@@ -1,8 +1,8 @@
 package com.orane.icliniq.Parallex.libs;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 

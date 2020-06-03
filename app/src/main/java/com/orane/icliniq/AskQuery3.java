@@ -9,20 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,29 +25,33 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.icliniq.Model.Model;
+import com.orane.icliniq.Model.MultipartEntity2;
 import com.orane.icliniq.file_picking.utils.FileUtils;
 import com.orane.icliniq.fileattach_library.DefaultCallback;
 import com.orane.icliniq.fileattach_library.EasyImage;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -65,6 +64,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,7 +83,6 @@ public class AskQuery3 extends AppCompatActivity {
     View addView;
     public StringBuilder total;
     String action;
-    ImageLoader imageLoader;
 
     InputStream is = null;
     int serverResponseCode = 0;
@@ -115,7 +114,6 @@ public class AskQuery3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.askquery2);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Typeface tf = Typeface.createFromAsset(getAssets(), Model.font_name);
@@ -124,7 +122,7 @@ public class AskQuery3 extends AppCompatActivity {
 
         try {
             //----------------- Toolbar ------------------------------
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,26 +138,26 @@ public class AskQuery3 extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        TextView tvattach = (TextView) findViewById(R.id.tvattach);
-        tvtit = (TextView) findViewById(R.id.tvtit);
-        tvmore = (TextView) findViewById(R.id.tvmore);
+        TextView tvattach = findViewById(R.id.tvattach);
+        tvtit = findViewById(R.id.tvtit);
+        tvmore = findViewById(R.id.tvmore);
 
         tvmore.setTypeface(tf);
         tvattach.setTypeface(tf);
         tvtit.setTypeface(tf);
 
-        scrollView1 = (ScrollView) findViewById(R.id.scrollView1);
-        btn_attach = (Button) findViewById(R.id.btn_attach);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        layout_attachfile = (LinearLayout) findViewById(R.id.layout_attachfile);
-        takephoto_layout = (LinearLayout) findViewById(R.id.takephoto_layout);
-        browse_layout = (LinearLayout) findViewById(R.id.browse_layout);
-        file_list = (LinearLayout) findViewById(R.id.file_list);
-        tv_compmore = (EditText) findViewById(R.id.tv_compmore);
-        tv_prevhist = (EditText) findViewById(R.id.tv_prevhist);
-        tv_curmedi = (EditText) findViewById(R.id.tv_curmedi);
-        tv_pastmedi = (EditText) findViewById(R.id.tv_pastmedi);
-        tv_labtest = (EditText) findViewById(R.id.tv_labtest);
+        scrollView1 = findViewById(R.id.scrollView1);
+        btn_attach = findViewById(R.id.btn_attach);
+        btn_submit = findViewById(R.id.btn_submit);
+        layout_attachfile = findViewById(R.id.layout_attachfile);
+        takephoto_layout = findViewById(R.id.takephoto_layout);
+        browse_layout = findViewById(R.id.browse_layout);
+        file_list = findViewById(R.id.file_list);
+        tv_compmore = findViewById(R.id.tv_compmore);
+        tv_prevhist = findViewById(R.id.tv_prevhist);
+        tv_curmedi = findViewById(R.id.tv_curmedi);
+        tv_pastmedi = findViewById(R.id.tv_pastmedi);
+        tv_labtest = findViewById(R.id.tv_labtest);
 
         tv_compmore.setTypeface(tf);
         tv_prevhist.setTypeface(tf);
@@ -192,12 +190,14 @@ public class AskQuery3 extends AppCompatActivity {
                 }
             });
         }
+
+        //---------------------------------------------------------------
         EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
                 .setAllowMultiplePickInGallery(true);
-        //------------------ Initialize File Attachment ---------------------------------
+        //------------------ Initialize File Attachment ------------------
 
 
         btn_attach.setOnClickListener(new View.OnClickListener() {
@@ -256,21 +256,13 @@ public class AskQuery3 extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    try {
-                        Model.kiss.record("android.Patient.Query_Submit_Crash");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.Patient.Crash_ID", e.toString());
-                        Model.kiss.set(properties);
-                    } catch (Exception ee) {
-                        ee.printStackTrace();
-                    }
                 }
             }
         });
     }
 
     private void initImageLoader() {
-
+/*
         try {
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
@@ -284,7 +276,7 @@ public class AskQuery3 extends AppCompatActivity {
             imageLoader.init(config);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
@@ -298,7 +290,6 @@ public class AskQuery3 extends AppCompatActivity {
             dialog.setMessage("Submitting, please wait");
             dialog.show();
             dialog.setCancelable(false);
-
         }
 
         @Override
@@ -322,16 +313,19 @@ public class AskQuery3 extends AppCompatActivity {
                 if (jsonobj_postquery.has("token_status")) {
                     String token_status = jsonobj_postquery.getString("token_status");
                     if (token_status.equals("0")) {
+
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString(Login_Status, "0");
                         editor.apply();
-                        //===================================sdfsd=gjhghhjmgh========================
+                        //===================================================
+
                         finishAffinity();
                         Intent intent = new Intent(AskQuery3.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     }
+
                 } else {
 
                     status_postquery = jsonobj_postquery.getString("status");
@@ -339,10 +333,11 @@ public class AskQuery3 extends AppCompatActivity {
 
                     if (status_postquery.equals("1")) {
 
+                        //------------------------------------------
                         String url = (Model.BASE_URL) + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=query&item_id=" + qid + "&token=" + Model.token + "&enc=1";
                         System.out.println("Query2 Prepare Invoice url-------------" + url);
-
                         new JSON_Prepare_inv().execute(url);
+                        //------------------------------------------
 
                     } else {
                         System.out.println("postquery Submit Failed---------------");
@@ -369,11 +364,11 @@ public class AskQuery3 extends AppCompatActivity {
             //------------------------------------
             LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View addView = layoutInflater.inflate(R.layout.upload_file_list, null);
-            TextView tv_quest = (TextView) addView.findViewById(R.id.tv_quest);
-            ImageView close_button = (ImageView) addView.findViewById(R.id.close_button);
-            thumb_img = (ImageView) addView.findViewById(R.id.imageView4);
-            tv_attach_url = (TextView) addView.findViewById(R.id.tv_attach_url);
-            tv_attach_id = (TextView) addView.findViewById(R.id.tv_attach_id);
+            TextView tv_quest = addView.findViewById(R.id.tv_quest);
+            ImageView close_button = addView.findViewById(R.id.close_button);
+            thumb_img = addView.findViewById(R.id.imageView4);
+            tv_attach_url = addView.findViewById(R.id.tv_attach_url);
+            tv_attach_id = addView.findViewById(R.id.tv_attach_id);
 
             tv_quest.setText(Model.upload_files);
             tv_attach_id.setText(Model.attach_id);
@@ -392,7 +387,7 @@ public class AskQuery3 extends AppCompatActivity {
                     View parent = (View) v.getParent();
                     //View grand_parent = (View)parent.getParent();
 
-                    tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                    tv_attach_id = parent.findViewById(R.id.tv_attach_id);
                     String attid = tv_attach_id.getText().toString();
 
                     //------------------------------------------------------------
@@ -447,11 +442,13 @@ public class AskQuery3 extends AppCompatActivity {
         if (id == android.R.id.home) {
 
             if ((Model.query_launch).equals("Doctorprofile")) {
+                //--------------------------------
                 Intent intent = new Intent(AskQuery3.this, DoctorProfileActivity.class);
                 startActivity(intent);
                 finish();
+                //--------------------------------
             } else {
-/*                Intent intent = new Intent(AskQuery2.this, AskQuery1.class);
+/*              Intent intent = new Intent(AskQuery2.this, AskQuery1.class);
                 startActivity(intent);*/
                 finish();
             }
@@ -459,7 +456,6 @@ public class AskQuery3 extends AppCompatActivity {
             return true;
 
         }
-
 
         return super.
 
@@ -534,15 +530,6 @@ public class AskQuery3 extends AppCompatActivity {
 
                         Model.have_free_credit = "0";
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Query_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
 
                         //----------- Flurry -------------------------------------------------
                         Map<String, String> articleParams = new HashMap<String, String>();
@@ -578,7 +565,7 @@ public class AskQuery3 extends AppCompatActivity {
 
                         Model.have_free_credit = "0";
 
-                        Toast.makeText(getApplicationContext(), "Your query has been posted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Your query has been successfully posted", Toast.LENGTH_SHORT).show();
 
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -586,15 +573,6 @@ public class AskQuery3 extends AppCompatActivity {
                         editor.apply();
                         //============================================================
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.Query_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
 
                         System.out.println("query_id--------------" + qid);
 
@@ -607,11 +585,11 @@ public class AskQuery3 extends AppCompatActivity {
                     }
                 }
 
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
 
@@ -772,7 +750,7 @@ public class AskQuery3 extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -818,11 +796,11 @@ public class AskQuery3 extends AppCompatActivity {
                     //------------------------------------
                     LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View addView = layoutInflater.inflate(R.layout.upload_file_list, null);
-                    TextView tv_quest = (TextView) addView.findViewById(R.id.tv_quest);
-                    ImageView close_button = (ImageView) addView.findViewById(R.id.close_button);
-                    thumb_img = (ImageView) addView.findViewById(R.id.imageView4);
-                    tv_attach_url = (TextView) addView.findViewById(R.id.tv_attach_url);
-                    tv_attach_id = (TextView) addView.findViewById(R.id.tv_attach_id);
+                    TextView tv_quest = addView.findViewById(R.id.tv_quest);
+                    ImageView close_button = addView.findViewById(R.id.close_button);
+                    thumb_img = addView.findViewById(R.id.imageView4);
+                    tv_attach_url = addView.findViewById(R.id.tv_attach_url);
+                    tv_attach_id = addView.findViewById(R.id.tv_attach_id);
 
                     tv_quest.setText(last_upload_file);
                     tv_attach_id.setText(attach_id);
@@ -841,7 +819,7 @@ public class AskQuery3 extends AppCompatActivity {
                             View parent = (View) v.getParent();
                             //View grand_parent = (View)parent.getParent();
 
-                            tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                            tv_attach_id = parent.findViewById(R.id.tv_attach_id);
                             String attid = tv_attach_id.getText().toString();
 
                             //---------------------------
@@ -877,7 +855,7 @@ public class AskQuery3 extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+   /* public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -971,12 +949,12 @@ public class AskQuery3 extends AppCompatActivity {
 
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -1198,16 +1176,6 @@ public class AskQuery3 extends AppCompatActivity {
             selectedPath = (returnedPhotos.get(i).toString());
             selectedfilename = (returnedPhotos.get(i)).getName();
 
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-            Model.kiss.record("android.patient.Attach_Take_Photo");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("android.patient.Qid", (attach_qid));
-            properties.put("android.patient.attach_file_path", selectedPath);
-            properties.put("android.patient.attach_filename", selectedfilename);
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
-
             //----------- Flurry -------------------------------------------------
             Map<String, String> articleParams = new HashMap<String, String>();
             articleParams.put("android.patient.Qid", (attach_qid));
@@ -1238,5 +1206,44 @@ public class AskQuery3 extends AppCompatActivity {
         super.onDestroy();
     }
 
+
+    private String upload_file(String file_path) {
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/upload?user_id=" + (Model.id) + "&qid=" + (qid) + "&token=" + Model.token + "&enc=1";
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
 
 }

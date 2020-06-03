@@ -7,9 +7,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -245,7 +247,7 @@ public class ConsultationListActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(ConsultationListActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ConsultationListActivity.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

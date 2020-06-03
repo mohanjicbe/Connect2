@@ -1,8 +1,8 @@
 package com.orane.icliniq.Parallex.libs;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
+import androidx.collection.SparseArrayCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 public abstract class ParallaxFragmentPagerAdapter extends FragmentPagerAdapter {

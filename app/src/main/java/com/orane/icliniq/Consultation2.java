@@ -10,8 +10,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,7 +81,7 @@ public class Consultation2 extends AppCompatActivity implements
     Button btn_date, btn_submit;
     Spinner spinner_timerange, spinner_timezone;
     Map<String, String> timerange_map = new HashMap<String, String>();
-    public String token_status, fee_cp, cons_select_date, fee_hp, fee_lp, cons_phone, cons_type_text, cons_type, ftrack_show, consult_id, cons_phno, Query, spec_val, lang_val, cccode, sel_timerange_code, sel_timerange, sel_timezone, content_str, timezone_str, times_values;
+    public String timerange_text, token_status, date_text, fee_cp, cons_select_date, fee_hp, fee_lp, cons_phone, cons_type_text, cons_type, ftrack_show, consult_id, cons_phno, Query, spec_val, lang_val, cccode, sel_timerange_code, sel_timerange, sel_timezone, content_str, timezone_str, times_values;
     JSONObject cons_booking_jsonobj, post_json, jsonobj, jsonobj1c;
     TextView tv_fee_cp, tv_changetimezone, tv_tz_present, tv_fee_hp, tv_fee_lp;
     public static Activity fa;
@@ -223,7 +223,6 @@ public class Consultation2 extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
-
                 if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
 
                     System.out.println("Model.id-----" + Model.id);
@@ -254,11 +253,18 @@ public class Consultation2 extends AppCompatActivity implements
 
                         System.out.println("post_json-------------" + post_json.toString());
 
-                        String date_text = btn_date.getText().toString();
-                        String timerange_text = spinner_timerange.getSelectedItem().toString();
+                        //----------------------------------------------------------
+                        if (sel_timerange_code.equals("1")) {
+                            date_text = btn_date.getText().toString();
+                            timerange_text = spinner_timerange.getSelectedItem().toString();
 
-                        System.out.println("date_text-----" + date_text);
-                        System.out.println("timerange_text-----" + timerange_text);
+                            System.out.println("date_text-----" + date_text);
+                            System.out.println("timerange_text-----" + timerange_text);
+                        } else {
+                            date_text = "";
+                            timerange_text = "";
+                        }
+                        //----------------------------------------------------------
 
                         if (time_band3.isChecked()) {
                             if (!date_text.equals("Select Date")) {
@@ -268,7 +274,7 @@ public class Consultation2 extends AppCompatActivity implements
                                         new JSONPostQuery().execute(post_json);
 
                                     } else {
-                                        Toast.makeText(Consultation2.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Consultation2.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                                     }
                                 } else
                                     Toast.makeText(getApplicationContext(), "Select Time Range", Toast.LENGTH_LONG).show();
@@ -404,8 +410,6 @@ public class Consultation2 extends AppCompatActivity implements
                 time_band3.setChecked(true);
 
 
-
-
                 Calendar calendar = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         Consultation2.this,
@@ -449,7 +453,7 @@ public class Consultation2 extends AppCompatActivity implements
                     dpd.setHighlightedDays(dates);
                 }
 
-               // calendar.add(Calendar.DATE, 2);
+                // calendar.add(Calendar.DATE, 2);
 
                 dpd.show(getFragmentManager(), "Datepickerdialog");
 
@@ -566,10 +570,11 @@ public class Consultation2 extends AppCompatActivity implements
 
             btn_date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
             System.out.println("cons_select_date---------" + cons_select_date);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -627,20 +632,6 @@ public class Consultation2 extends AppCompatActivity implements
                     consult_id = cons_booking_jsonobj.getString("id");
                     System.out.println("consult_id-----------" + consult_id);
 
-                    //-------------------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Consultation_Post");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.consult_type", cons_type);
-                    properties.put("android.patient.Query", Query);
-                    properties.put("android.patient.Time_Range", (Model.sel_timerange_code));
-                    properties.put("android.patient.Consult_date", (cons_select_date));
-                    properties.put("android.patient.Country_code", cccode);
-                    properties.put("android.patient.Ph_number", cons_phno);
-                    properties.put("android.patient.timezone", (Model.cons_timezone));
-                    properties.put("android.patient.speciality", spec_val);
-                    Model.kiss.set(properties);
-                    //-------------------------------------------
 
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
@@ -825,7 +816,7 @@ public class Consultation2 extends AppCompatActivity implements
 
             final MaterialDialog alert = new MaterialDialog(Consultation2.this);
             alert.setTitle("Oops..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override

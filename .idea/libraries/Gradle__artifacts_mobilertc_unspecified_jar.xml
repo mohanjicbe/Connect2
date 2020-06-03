@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: artifacts:mobilertc:unspecified@jar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/mobilertc.aar/f3d816e5c3045d38be62f8ad7b649ea3/annotations.zip!/" />
+      <root url="jar://$PROJECT_DIR$/mobilertc/build/.transforms/5fa97f21e1dd80c52c4551878b3ce812/jetified-mobilertc/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/mobilertc.aar/f3d816e5c3045d38be62f8ad7b649ea3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/mobilertc.aar/f3d816e5c3045d38be62f8ad7b649ea3/jars/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/mobilertc/build/.transforms/5fa97f21e1dd80c52c4551878b3ce812/jetified-mobilertc/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/mobilertc/build/.transforms/5fa97f21e1dd80c52c4551878b3ce812/jetified-mobilertc/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

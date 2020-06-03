@@ -17,18 +17,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class JSONParser {
 
     final String TAG = "JsonParser.java";
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
-    String contentAsString;
+    String contentAsString, new_sub_url;
     static JSONArray JArr = null;
     public String result;
     StringBuilder total;
     public String sub_url;
     long startTime;
+    URL url2;
 
 
     public JSONObject JSON_POST(JSONObject jsonobj, String post_flag) throws IOException {
@@ -96,12 +102,20 @@ public class JSONParser {
             sub_url = "app/verifyMobileOTP";
         } else if (post_flag.equals("logout")) {
             sub_url = "sapp/appLogout";
+        } else if (post_flag.equals("new_file_desc_upload")) {
+            sub_url = "sapp/addHReportsData?user_id=" + Model.id + "&token=" + Model.token;
+        } else if (post_flag.equals("extraCons")) {
+            sub_url = "sapp/saveBookExt?user_id=" + Model.id + "&token=" + Model.token;
+        } else if (post_flag.equals("post_ratting")) {
+            sub_url = "sapp/doStarRating?user_id=" + Model.id + "&token=" + Model.token;
         }
 
+
+        url2 = new URL(Model.BASE_URL + sub_url);
         InputStream is = null;
 
         try {
-            URL url2 = new URL(Model.BASE_URL + sub_url);
+
             System.out.println("url--------" + url2);
 
             HttpURLConnection conn = (HttpURLConnection) url2.openConnection();
@@ -253,7 +267,6 @@ public class JSONParser {
             if (is != null) {
                 is.close();
             }
-
         }
     }
 
@@ -286,6 +299,45 @@ public class JSONParser {
         return null;
     }
 
+/*
+    public String getJSONString2(String url) throws IOException {
+
+        InputStream is = null;
+
+        try {
+            HttpUrl mySearchUrl = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("www.google.com")
+                    .addPathSegment("search")
+                     .addQueryParameter("q", "polar bears")
+                    .build();
+
+
+            URL url2 = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) url2.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("x-rapidapi-host", "covid-19-data.p.rapidapi.com");
+            conn.setRequestProperty("x-rapidapi-key", "7aa728380dmshf6c31f3e0b09fbbp10f746jsne190aea0f62e");
+            conn.setDoInput(true);
+            conn.connect();
+            int response = conn.getResponseCode();
+            System.out.println("response-------" + response);
+
+            is = conn.getInputStream();
+            contentAsString = convertInputStreamToString(is);
+            System.out.println("contentAsString-------" + contentAsString);
+
+            return contentAsString;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+        return null;
+    }*/
 
     public JSONObject getJSONFromUrl(String url) throws IOException {
 
@@ -432,5 +484,29 @@ public class JSONParser {
         return null;
     }
 
+    private final OkHttpClient client = new OkHttpClient();
+
+    public void getJSONString2(String url) throws Exception {
+       /* RequestBody formBody = new FormEncodingBuilder()
+                .add("email", "Jurassic@Park.com")
+                .add("tel", "90301171XX")
+                .build();
+        Request request = new Request.Builder()
+                .url("https://en.wikipedia.org/w/index.php")
+                .post(formBody)
+                .build();*/
+
+        Request request = new Request.Builder()
+                .url("https://covid-19-data.p.rapidapi.com/totals?format=undefined")
+                .get()
+                .addHeader("x-rapidapi-host", "covid-19-data.p.rapidapi.com")
+                .addHeader("x-rapidapi-key", "7aa728380dmshf6c31f3e0b09fbbp10f746jsne190aea0f62e")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+        System.out.println("COVID-----------" + response.body().string());
+    }
 
 }

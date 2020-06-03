@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,7 +67,7 @@ public class FeedbackActivity extends AppCompatActivity {
                     feedback_val = URLEncoder.encode(s, "utf-8");
 
                     if (feedback_val.equals("")) {
-                        edt_feedback.setError("Entered text cannot be empty");
+                        edt_feedback.setError("Please enter the feedback");
                     } else {
 
                         try {

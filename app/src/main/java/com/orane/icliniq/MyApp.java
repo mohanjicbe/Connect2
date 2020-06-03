@@ -2,8 +2,9 @@ package com.orane.icliniq;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
 import android.util.Log;
+
+import androidx.multidex.MultiDex;
 
 import com.flurry.android.FlurryAgent;
 import com.orane.icliniq.Model.Model;

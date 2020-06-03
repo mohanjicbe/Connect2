@@ -10,8 +10,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -1223,10 +1223,10 @@ public class Doc_Consultation1 extends AppCompatActivity implements
                     if (new NetCheck().netcheck(Doc_Consultation1.this)) {
                         post_consultation();
                     } else {
-                        Toast.makeText(Doc_Consultation1.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Doc_Consultation1.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Enter Call back Number", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter your callback number ", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -1768,7 +1768,7 @@ public class Doc_Consultation1 extends AppCompatActivity implements
         try {
             final MaterialDialog alert = new MaterialDialog(Doc_Consultation1.this);
             alert.setTitle("Oops..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override

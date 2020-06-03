@@ -1,10 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.asyl.animation:arcanimator:1.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/arcanimator-1.0.0.aar/fe41d8642a73674fd19b139050e9341a/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/arcanimator-1.0.0.aar/fe41d8642a73674fd19b139050e9341a/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/50e5f63649ae9b2db50a01f0a12ce12c/jetified-arcanimator-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/50e5f63649ae9b2db50a01f0a12ce12c/jetified-arcanimator-1.0.0/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.asyl.animation/arcanimator/1.0.0/dd3e57f093206c7a356c52569df7e05304ed785/arcanimator-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.asyl.animation/arcanimator/1.0.0/4331f407c4b386bab89e827924b53233562bcb9b/arcanimator-1.0.0-sources.jar!/" />
     </SOURCES>

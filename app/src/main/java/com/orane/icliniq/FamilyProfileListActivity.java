@@ -12,11 +12,13 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -85,7 +87,7 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
     RadioButton radio_male, radio_thirdgender, radio_female;
     LinearLayout famidets_layout, someone_layout, parent_layout, select_layout, family_inner_layout;
     public String rel_name;
-    String fee_str_text, icq100_id_val, inf_for, Log_Status, mem_name, wt_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
+    String fee_str_text, icq100_id_val, inf_for, Log_Status, mem_name, wt_name, height_name, tit_id, dob_val,age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
     ProgressBar progressBar, progressBar_bottom;
     Toolbar toolbar;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -194,14 +196,29 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ask_someone("someone");
+                //ask_someone("someone");
+
+                Intent intent = new Intent(FamilyProfileListActivity.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "someone");
+                intent.putExtra("profile_id", "0");
+                startActivity(intent);
+
+
             }
         });
 
         fab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ask_someone("someone");
+                //ask_someone("someone");
+
+                Intent intent = new Intent(FamilyProfileListActivity.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "someone");
+                intent.putExtra("profile_id", "0");
+                startActivity(intent);
+
+
+
             }
         });
 
@@ -781,7 +798,7 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
         try {
             final MaterialDialog alert = new MaterialDialog(FamilyProfileListActivity.this);
             alert.setTitle("Oops..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override
@@ -904,7 +921,7 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
                             Doc_id = tvid.getText().toString();
 
                             //------------------------------------------
-                            fav_url = Model.BASE_URL + "/sapp/add2fav?user_id=" + (Model.id) + "&item_type_id=1&remove=1&item_id=" + Doc_id;
+                            fav_url = Model.BASE_URL + "/sapp/add2fav?user_id=" + (Model.id) + "&item_type_id=1&remove=1&item_id=" + Doc_id + "&token=" + Model.token;
                             System.out.println("Remove Favoueite url-------------" + fav_url);
                             is_fav = "0";
                             //------------------------------------------
@@ -917,7 +934,7 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
 
                             Doc_id = tvid.getText().toString();
                             img_fav.setImageResource(R.mipmap.love_grey_full);
-                            fav_url = Model.BASE_URL + "/sapp/add2fav?user_id=" + (Model.id) + "&item_type_id=1&item_id=" + Doc_id;
+                            fav_url = Model.BASE_URL + "/sapp/add2fav?user_id=" + (Model.id) + "&item_type_id=1&item_id=" + Doc_id + "&token=" + Model.token;
                             System.out.println("Favoueite url-------------" + fav_url);
                             is_fav = "1";
                         }
@@ -1035,6 +1052,7 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
                 tit_id = fam_obj.getString("title_id");
                 mem_name = fam_obj.getString("name");
                 age_val = fam_obj.getString("age");
+                dob_val = fam_obj.getString("dob");
                 gender_val = fam_obj.getString("gender");
                 height_val = fam_obj.getString("height");
                 weight_val = fam_obj.getString("weight");
@@ -1045,11 +1063,27 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
                 System.out.println("mem_name 1---------------" + mem_name);
                 System.out.println("rel_type 1---------------" + rel_val);
                 System.out.println("age_val 1---------------" + age_val);
+                System.out.println("dob_val 1---------------" + dob_val);
                 System.out.println("gender_val- 1--------------" + gender_val);
                 System.out.println("height_val-1--------------" + height_val);
                 System.out.println("weight_val---------------" + weight_val);
 
-                ask_someone("edit");
+
+                Intent intent = new Intent(FamilyProfileListActivity.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "edit");
+                intent.putExtra("profile_id", profile_id);
+                intent.putExtra("tit_id", tit_id);
+                intent.putExtra("mem_name", mem_name);
+                intent.putExtra("rel_val", rel_val);
+                intent.putExtra("dob_val", dob_val);
+                intent.putExtra("age_val", age_val);
+                intent.putExtra("gender_val", gender_val);
+                intent.putExtra("height_val", height_val);
+                intent.putExtra("weight_val", weight_val);
+                startActivity(intent);
+
+
+                //ask_someone("edit");
 
                 dialog.cancel();
 
@@ -1277,11 +1311,11 @@ public class FamilyProfileListActivity extends AppCompatActivity implements Obse
                             Toast.makeText(getApplicationContext(), "Select relation ship", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        edt_age.setError("Enter the Age");
+                        edt_age.setError("Please enter your age");
                         edt_age.requestFocus();
                     }
                 } else {
-                    edt_name.setError("Enter the name");
+                    edt_name.setError("Please enter the name");
                     edt_name.requestFocus();
                 }
 

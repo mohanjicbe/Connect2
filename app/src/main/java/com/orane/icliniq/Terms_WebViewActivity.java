@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -15,6 +15,8 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -39,7 +41,7 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
         Model.terms_isagree = "false";
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -48,8 +50,8 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
             getSupportActionBar().setTitle("");
         }
 
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        menu_title = (TextView) toolbar.findViewById(R.id.menu_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        menu_title = toolbar.findViewById(R.id.menu_title);
 
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         mTitle.setTypeface(khandBold);
@@ -63,11 +65,11 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
         //------------ Object Creations -------------------------------
 
 
-        bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
+        bottom_layout = findViewById(R.id.bottom_layout);
 
 
         Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+        final ProgressBar progress = findViewById(R.id.progress);
         FlurryAgent.onPageView();
 
         //------ getting Values ---------------------------
@@ -79,14 +81,15 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
 
         mTitle.setText(type);
 
-        ObservableWebView webView = (ObservableWebView) findViewById(R.id.webview);
+        ObservableWebView webView = findViewById(R.id.webview);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
-                return false;
+                return true;
             }
 
             @Override
@@ -102,6 +105,13 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
             }
         });
 
+/*        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });*/
+
 
  /*       bottom_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +120,7 @@ public class Terms_WebViewActivity extends BaseActivity implements ObservableScr
                 try {
                     Model.query_launch = "WebView";
                     Intent intent = new Intent(Terms_WebViewActivity.this, AskQuery1.class);
+
                     startActivity(intent);
                     //finish();
                 } catch (Exception e) {

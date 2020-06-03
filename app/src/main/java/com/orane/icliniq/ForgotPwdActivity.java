@@ -2,14 +2,14 @@ package com.orane.icliniq;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +22,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
@@ -29,23 +33,27 @@ import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class ForgotPwdActivity extends AppCompatActivity {
 
     Button btn_submit, btn_pwdsubmit, btn_code_submit;
-    MaterialEditText edtemail, edt_newpwd, edt_confirmpwd;
+    MaterialEditText edtemail, edt_confirmpwd;
+    ShowHidePasswordEditText edt_newpwd;
     public String userid, status_text, code_txt, name_txt, email_text, status_txt, err_txt, newpwd_text, confirmpwd_text, user_id_txt, isvalid, pin_txt, edt_otp_text;
     JSONObject post_json, login_json, login_jsonobj, jsonobj_forgotpwd, jsonobj_pwd_submit, jsonobj_pinsubmit;
     LinearLayout AskMail_Layout, verify_layout, enterpwd_Layout;
     EditText edt_otp;
-    TextView tv_mobno,tv_resend, tv_text;
+    TextView tv_mobno, tv_resend, tv_text;
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -86,7 +94,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
         }
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -103,20 +111,20 @@ public class ForgotPwdActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------
 
         //------- Initialize ------------------------------------------------------
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        btn_pwdsubmit = (Button) findViewById(R.id.btn_pwdsubmit);
-        btn_code_submit = (Button) findViewById(R.id.btn_otp_submit);
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_pwdsubmit = findViewById(R.id.btn_pwdsubmit);
+        btn_code_submit = findViewById(R.id.btn_otp_submit);
 
-        tv_mobno = (TextView) findViewById(R.id.tv_mobno);
-        tv_text = (TextView) findViewById(R.id.tv_text);
-        tv_resend = (TextView) findViewById(R.id.tv_resend);
-        edt_otp = (EditText) findViewById(R.id.edt_otp);
-        edtemail = (MaterialEditText) findViewById(R.id.edtemail);
-        edt_newpwd = (MaterialEditText) findViewById(R.id.edt_newpwd);
-        edt_confirmpwd = (MaterialEditText) findViewById(R.id.edt_confirmpwd);
-        AskMail_Layout = (LinearLayout) findViewById(R.id.AskMail_Layout);
-        enterpwd_Layout = (LinearLayout) findViewById(R.id.enterpwd_Layout);
-        verify_layout = (LinearLayout) findViewById(R.id.verify_layout);
+        tv_mobno = findViewById(R.id.tv_mobno);
+        tv_text = findViewById(R.id.tv_text);
+        tv_resend = findViewById(R.id.tv_resend);
+        edt_otp = findViewById(R.id.edt_otp);
+        edtemail = findViewById(R.id.edtemail);
+        edt_newpwd = findViewById(R.id.edt_newpwd);
+        edt_confirmpwd = findViewById(R.id.edt_confirmpwd);
+        AskMail_Layout = findViewById(R.id.AskMail_Layout);
+        enterpwd_Layout = findViewById(R.id.enterpwd_Layout);
+        verify_layout = findViewById(R.id.verify_layout);
 
 
         //-------------- Font --------------------
@@ -152,21 +160,8 @@ public class ForgotPwdActivity extends AppCompatActivity {
                 email_text = edtemail.getText().toString();
                 System.out.println("forgot_email_text----" + email_text);
 
-                if (!email_text.equals("")) {
-
+                if (Patterns.EMAIL_ADDRESS.matcher(email_text).matches()) {
                     try {
-                        //--------------------------------------------------------------------
-                        Model.kiss.record("android.patient.pwd_email_submit");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("android.patient.email", email_text);
-                        Model.kiss.set(properties);
-                        //--------------------------------------------------------------------
-                        //----------- Flurry -------------------------------------------------
-                        Map<String, String> articleParams = new HashMap<String, String>();
-                        properties.put("android.patient.email", email_text);
-                        properties.put("android.patient.user_id", user_id_txt);
-                        FlurryAgent.logEvent("android.patient.pwd_email_submit", articleParams);
-                        //----------- Flurry -------------------------------------------------
 
                         //------------ Google firebase Analitics-----------------------------------------------
                         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -182,20 +177,16 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                         System.out.println("Forgot pwd json------------" + post_json.toString());
 
-                        if (new NetCheck().netcheck(ForgotPwdActivity.this)) {
-                            new Async_requestCode().execute(post_json);
+                        new Async_requestCode().execute(post_json);
 
-                            Toast.makeText(getApplicationContext(), "Code has been sent to your mail...", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            Toast.makeText(ForgotPwdActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
-                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                 } else {
-                    edtemail.setError("Email cannot be empty");
+                    edtemail.setError("Please enter the valid email id");
+                    edtemail.requestFocus();
                 }
 
             }
@@ -205,19 +196,8 @@ public class ForgotPwdActivity extends AppCompatActivity {
         tv_resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
-                    //--------------------------------------------------------------------
-                    Model.kiss.record("android.patient.resend_code");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.email", email_text);
-                    Model.kiss.set(properties);
-                    //--------------------------------------------------------------------
-                    //----------- Flurry -------------------------------------------------
-                    Map<String, String> articleParams = new HashMap<String, String>();
-                    properties.put("android.patient.email", email_text);
-                    properties.put("android.patient.user_id", user_id_txt);
-                    FlurryAgent.logEvent("android.patient.resend_code", articleParams);
-                    //----------- Flurry -------------------------------------------------
 
                     //------------ Google firebase Analitics-----------------------------------------------
                     Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -227,19 +207,26 @@ public class ForgotPwdActivity extends AppCompatActivity {
                     Model.mFirebaseAnalytics.logEvent("resend_code", params);
                     //------------ Google firebase Analitics-----------------------------------------------
 
-                    post_json = new JSONObject();
-                    post_json.put("email", email_text);
-                    post_json.put("user_type", "1");
+                    email_text = edtemail.getText().toString();
+                    System.out.println("forgot_email_text----" + email_text);
 
-                    System.out.println("Forgot pwd json------------" + post_json.toString());
+                    if (Patterns.EMAIL_ADDRESS.matcher(email_text).matches()) {
 
-                    if (new NetCheck().netcheck(ForgotPwdActivity.this)) {
-                        new Async_requestCode().execute(post_json);
+                        try {
+                            post_json = new JSONObject();
+                            post_json.put("email", email_text);
+                            post_json.put("user_type", "1");
 
-                        Toast.makeText(getApplicationContext(), "Code has been sent again to your mail...", Toast.LENGTH_LONG).show();
+                            System.out.println("Forgot pwd json------------" + post_json.toString());
+
+                            new Async_requestCode().execute(post_json);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                     } else {
-                        Toast.makeText(ForgotPwdActivity.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please enter valid email id", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e) {
@@ -282,14 +269,6 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                         try {
 
-                            //---------------------------------------------------------------------
-                            Model.kiss.record("android.patient.pwd_code_submit");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("android.patient.enter_code", edt_otp_text);
-                            properties.put("android.patient.api_code", code_txt);
-                            properties.put("android.patient.status", "matched");
-                            Model.kiss.set(properties);
-                            //----------------------------------------------------------------------------
                             //----------- Flurry -------------------------------------------------
                             Map<String, String> articleParams = new HashMap<String, String>();
                             articleParams.put("android.patient.enter_code", edt_otp_text);
@@ -314,16 +293,9 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                     } else {
 
-                        Toast.makeText(ForgotPwdActivity.this, "Invalid Code", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPwdActivity.this, "Verification Code is incorrect", Toast.LENGTH_SHORT).show();
 
                         try {
-                            Model.kiss.record("android.patient.pwd_code_submit");
-                            HashMap<String, String> properties = new HashMap<String, String>();
-                            properties.put("android.patient.enter_code", edt_otp_text);
-                            properties.put("android.patient.api_code", code_txt);
-                            properties.put("android.patient.status", "Not-matched");
-                            Model.kiss.set(properties);
-                            //----------------------------------------------------------------------------
                             //----------- Flurry -------------------------------------------------
                             Map<String, String> articleParams = new HashMap<String, String>();
                             articleParams.put("android.patient.enter_code", edt_otp_text);
@@ -346,8 +318,8 @@ public class ForgotPwdActivity extends AppCompatActivity {
                             t.printStackTrace();
                         }
 
-                        System.out.println("Code is not matched-----------");
-                        System.out.println("edt_otp_text-----------" + edt_otp_text);
+                        System.out.println("The OTP you have entered is incorrect. Please enter a valid OTP.");
+                        System.out.println("The OTP you have entered is incorrect. Please enter a valid OTP." + edt_otp_text);
                         System.out.println("code_txt-----------" + code_txt);
 
                     }
@@ -380,27 +352,46 @@ public class ForgotPwdActivity extends AppCompatActivity {
                 System.out.println("newpwd_text----" + newpwd_text);
                 System.out.println("confirmpwd_text----" + confirmpwd_text);
 
-                try {
+                if (newpwd_text.length() < 8 || !isValidPassword(newpwd_text)) {
+                    System.out.println("Pwd is Not Valid");
+                    edt_newpwd.requestFocus();
+                    new AlertDialog.Builder(ForgotPwdActivity.this)
+                            //.setIcon(android.R.drawable.ic_dialog_alert)
+                            //.setTitle("InValid Password")
+                            .setMessage("Please enter your Valid Password.Minimum 8 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character(@#$%^&*)")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                    if (newpwd_text.equals(confirmpwd_text)) {
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                } else {
 
-                        post_json = new JSONObject();
-                        post_json.put("pwd", newpwd_text);
-                        post_json.put("user_id", user_id_txt);
+                    try {
 
-                        System.out.println("Submit_pwd_json------------" + post_json.toString());
+                        if (newpwd_text.equals(confirmpwd_text)) {
 
-                        new Async_Submitpwd().execute(post_json);
+                            post_json = new JSONObject();
+                            post_json.put("pwd", newpwd_text);
+                            post_json.put("user_id", user_id_txt);
 
-                    } else {
-                        System.out.println("Password is not matched------");
-                        Toast.makeText(ForgotPwdActivity.this, "Confirm password is not matched", Toast.LENGTH_SHORT).show();
-                        edt_confirmpwd.setError("Confirm password is not matched");
+                            System.out.println("Submit_pwd_json------------" + post_json.toString());
+
+                            new Async_Submitpwd().execute(post_json);
+
+                        } else {
+                            System.out.println("Password is Entered passwords do not match------");
+                            Toast.makeText(ForgotPwdActivity.this, "Those passwords don't match", Toast.LENGTH_SHORT).show();
+                            edt_confirmpwd.setError("Entered passwords do not match");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
             }
         });
 
@@ -469,23 +460,19 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                     if (!jsonobj_forgotpwd.has("err")) {
 
+                        Toast.makeText(getApplicationContext(), "Verification Code has been sent to your mail...", Toast.LENGTH_LONG).show();
+
                         name_txt = jsonobj_forgotpwd.getString("name");
                         user_id_txt = jsonobj_forgotpwd.getString("user_id");
                         code_txt = jsonobj_forgotpwd.getString("code");
 
-                        if (code_txt != null && !code_txt.isEmpty() && !code_txt.equals("null") && !code_txt.equals("")) {
+                        tv_mobno.setText(email_text);
 
-                            tv_mobno.setText(email_text);
+                        AskMail_Layout.setVisibility(View.GONE);
+                        verify_layout.setVisibility(View.VISIBLE);
+                        enterpwd_Layout.setVisibility(View.GONE);
 
-                            AskMail_Layout.setVisibility(View.GONE);
-                            verify_layout.setVisibility(View.VISIBLE);
-                            enterpwd_Layout.setVisibility(View.GONE);
-
-                            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Email id is not valid. Try Again...", Toast.LENGTH_LONG).show();
-                        }
+                        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
                     } else {
                         err_txt = jsonobj_forgotpwd.getString("err");
@@ -623,7 +610,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(ForgotPwdActivity.this);
         alert.setTitle("Success..!");
-        alert.setMessage("Your password has been changed.");
+        alert.setMessage("Password reset successful");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override
@@ -816,7 +803,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                 } else {
 
-                    Toast.makeText(getApplicationContext(), "Login Failed. Try Again...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Login failed. Please try again.", Toast.LENGTH_LONG).show();
 
                     //============================================================================
 
@@ -849,6 +836,18 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
             dialog.dismiss();
         }
+    }
+
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
     }
 
 

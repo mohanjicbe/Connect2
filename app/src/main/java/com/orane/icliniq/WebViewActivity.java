@@ -1,16 +1,12 @@
 package com.orane.icliniq;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,23 +18,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.BaseActivity;
 import com.orane.icliniq.Model.Model;
-import com.orane.icliniq.network.JSONParser;
-
-import org.json.JSONObject;
-
 
 public class WebViewActivity extends BaseActivity implements ObservableScrollViewCallbacks {
 
     public String url, type, token;
     LinearLayout bottom_layout;
-    ObservableWebView webView;
+    WebView webView;
     ImageView close_button;
     TextView mTitle;
     String labtest_response, code_val;
@@ -50,7 +44,8 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
         setContentView(R.layout.webview);
 
         Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+
+        final ProgressBar progress = findViewById(R.id.progress);
         FlurryAgent.onPageView();
 
         //------ getting Values ---------------------------
@@ -70,7 +65,7 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
         //------ getting Values ---------------------------
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -80,8 +75,8 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
         }
 
         //------------------ Title Bar ------------------------------------------------
-        mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        close_button = (ImageView) toolbar.findViewById(R.id.close_button);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
+        close_button = toolbar.findViewById(R.id.close_button);
 
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         mTitle.setTypeface(khandBold);
@@ -92,70 +87,85 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
         }
         //------------ Object Creations -------------------------------
 
-        webView = (ObservableWebView) findViewById(R.id.webview);
+        webView = findViewById(R.id.webview);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-
-        if (url != null && !url.isEmpty() && !url.equals("null") && !url.equals("")) {
-
-            try {
-
-                webView.setWebViewClient(new WebViewClient() {
-                    @Override
-                    public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
-                        progress.setVisibility(View.VISIBLE);
-                        super.onPageStarted(view, url, favicon);
-                    }
-
-                    public void onLoadResource(WebView view, String url) {
-
-                        try {
-                            String webUrl = webView.getUrl();
-
-                            Uri uri = Uri.parse(webUrl);
-                            token = uri.getLastPathSegment();
-
-                            if (token.equals(search_str)) {
-                                // pay_success();
-                                try {
-
-                                    search_str = "Changed";
-                                    ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
-
-                                    // Toast.makeText(getApplicationContext(), "Payment Success", Toast.LENGTH_SHORT).show();
-                                    Model.query_launch = "Invoice";
-                                    Intent intent = new Intent(WebViewActivity.this, ThankyouActivity.class);
-                                    intent.putExtra("type", type);
-                                    startActivity(intent);
-                                    finish();
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        } catch (Exception r) {
-                            r.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onPageFinished(final WebView view, final String url) {
-                        progress.setVisibility(View.GONE);
-                        super.onPageFinished(view, url);
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (type.equals("paytm")) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+            finish();
+        }
+        else if (type.equals("paypal")) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+            finish();
         }
 
+        else {
+
+            if (url != null && !url.isEmpty() && !url.equals("null") && !url.equals("")) {
+
+                try {
+
+                    webView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
+                            return false;
+                        }
+
+                        @Override
+                        public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
+                            progress.setVisibility(View.VISIBLE);
+                            super.onPageStarted(view, url, favicon);
+                        }
+
+                        public void onLoadResource(WebView view, String url) {
+
+                            try {
+                                String webUrl = webView.getUrl();
+
+                                Uri uri = Uri.parse(webUrl);
+                                token = uri.getLastPathSegment();
+
+                                if (token.equals(search_str)) {
+                                    // pay_success();
+                                    try {
+
+                                        search_str = "Changed";
+                                        ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
+
+                                        // Toast.makeText(getApplicationContext(), "Payment Success", Toast.LENGTH_SHORT).show();
+                                        Model.query_launch = "Invoice";
+                                        Intent intent = new Intent(WebViewActivity.this, ThankyouActivity.class);
+                                        intent.putExtra("type", type);
+                                        startActivity(intent);
+                                        finish();
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            } catch (Exception r) {
+                                r.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onPageFinished(final WebView view, final String url) {
+                            progress.setVisibility(View.GONE);
+                            super.onPageFinished(view, url);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         close_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +190,7 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
         });
 
         webView.loadUrl(url);
-        webView.setScrollViewCallbacks(this);
+        //   webView.setScrollViewCallbacks(this);
     }
 
 
@@ -224,7 +234,6 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
                             }
-
                         })
                         .setNegativeButton("No", null)
                         .show();
@@ -257,7 +266,6 @@ public class WebViewActivity extends BaseActivity implements ObservableScrollVie
                     .show();
         }
     }
-
 
 
 }

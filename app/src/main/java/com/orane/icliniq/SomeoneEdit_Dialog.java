@@ -2,71 +2,52 @@ package com.orane.icliniq;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-import com.github.ksoichiro.android.observablescrollview.ObservableListView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.kissmetrics.sdk.KISSmetricsAPI;
-import com.nineoldandroids.animation.ValueAnimator;
-import com.nineoldandroids.view.ViewHelper;
-import com.orane.icliniq.Model.Item;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.orane.icliniq.Model.Model;
-import com.orane.icliniq.adapter.AnswersListAdapter;
 import com.orane.icliniq.network.JSONParser;
-import com.orane.icliniq.network.NetCheck;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
-
-public class SomeoneEdit_Dialog extends AppCompatActivity {
+public class SomeoneEdit_Dialog extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener {
 
     RadioButton radio_male, radio_female, radio_thirdgender;
     TextView tv_tooltit, tv_fee11, tv_fee1, tv_name_title, relation_title, tv_spec_name;
     TextView tvdocname, weight_title, height_title, tvqfee, tvtit, tvfquery, tvprice;
     Spinner spinner_height, spinner_weight, spinner_relationship, spinner_title;
-    public String add_type, qfee_text, spec_val, rel_name, rel_val, soid_val;
-    String fee_str_text, icq100_id_val, inf_for, Log_Status, mem_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
+    public String add_type, qfee_text, spec_val, rel_name, dob_val, rel_val, soid_val;
+    String fee_str_text, cons_select_date, icq100_id_val, inf_for, Log_Status, mem_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
     JSONObject json_getfee, jsonobj_prepinv, jsonobj_icq100, jsonobj_icq50, json_family_new, docprof_jsonobj;
     public String family_list, wt_name, inv_id, inv_fee, inv_strfee, wt_val2, ht_name2, ht_val2, qid, draft_qid, query_txt;
 
@@ -77,7 +58,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
     Map<String, String> gen_map = new HashMap<String, String>();
     Map<String, String> family_map = new HashMap<String, String>();
 
-    Button btn_submit;
+    Button btn_date, btn_submit;
     Integer age_int;
 
     @Override
@@ -86,7 +67,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         setContentView(R.layout.someone_edit);
 
         //--------------------------------------------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -108,6 +89,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         tit_id = intent.getStringExtra("tit_id");
         mem_name = intent.getStringExtra("mem_name");
         rel_val = intent.getStringExtra("rel_val");
+        dob_val = intent.getStringExtra("dob");
         age_val = intent.getStringExtra("age_val");
         gender_val = intent.getStringExtra("gender_val");
         height_val = intent.getStringExtra("height_val");
@@ -117,6 +99,8 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         System.out.println("tit_id--------------" + tit_id);
         System.out.println("mem_name--------------" + mem_name);
         System.out.println("rel_name--------------" + rel_name);
+        System.out.println("rel_val--------------" + rel_val);
+        System.out.println("dob_val--------------" + dob_val);
         System.out.println("age_val--------------" + age_val);
         System.out.println("gender_val--------------" + gender_val);
         System.out.println("ht_name--------------" + height_val);
@@ -126,37 +110,36 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         //------ getting Values ---------------------------
 
 
-
         hash_map_title();
         hashmap_relation();
         hashmap_height();
         hashmap_weight();
 
-
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        final EditText edt_name = (EditText) findViewById(R.id.edt_name);
-        final MaterialEditText edt_age = (MaterialEditText) findViewById(R.id.edt_age);
+        btn_date = findViewById(R.id.btn_date);
+        btn_submit = findViewById(R.id.btn_submit);
+        final EditText edt_name = findViewById(R.id.edt_name);
+        final MaterialEditText edt_age = findViewById(R.id.edt_age);
         //final RadioGroup radgrp_gender = (RadioGroup) findViewById(R.id.radgrp_gender);
-        radio_male = (RadioButton) findViewById(R.id.radio_male);
-        radio_female = (RadioButton) findViewById(R.id.radio_female);
-        radio_thirdgender = (RadioButton) findViewById(R.id.radio_thirdgender);
+        radio_male = findViewById(R.id.radio_male);
+        radio_female = findViewById(R.id.radio_female);
+        radio_thirdgender = findViewById(R.id.radio_thirdgender);
 
-        final RelativeLayout name_title_layout = (RelativeLayout) findViewById(R.id.name_title_layout);
-        final RelativeLayout relation_layout = (RelativeLayout) findViewById(R.id.relation_layout);
-        final RelativeLayout height_layout = (RelativeLayout) findViewById(R.id.height_layout);
-        final RelativeLayout weight_layout = (RelativeLayout) findViewById(R.id.weight_layout);
+        final RelativeLayout name_title_layout = findViewById(R.id.name_title_layout);
+        final RelativeLayout relation_layout = findViewById(R.id.relation_layout);
+        final RelativeLayout height_layout = findViewById(R.id.height_layout);
+        final RelativeLayout weight_layout = findViewById(R.id.weight_layout);
 
         name_title_layout.setVisibility(View.GONE);
 
-        tv_name_title = (TextView) findViewById(R.id.tv_name_title);
-        height_title = (TextView) findViewById(R.id.height_title);
-        weight_title = (TextView) findViewById(R.id.weight_title);
-        relation_title = (TextView) findViewById(R.id.relation_title);
+        tv_name_title = findViewById(R.id.tv_name_title);
+        height_title = findViewById(R.id.height_title);
+        weight_title = findViewById(R.id.weight_title);
+        relation_title = findViewById(R.id.relation_title);
 
-        spinner_height = (Spinner) findViewById(R.id.spinner_height);
-        spinner_weight = (Spinner) findViewById(R.id.spinner_weight);
-        spinner_title = (Spinner) findViewById(R.id.spinner_title);
-        spinner_relationship = (Spinner) findViewById(R.id.spinner_relationship);
+        spinner_height = findViewById(R.id.spinner_height);
+        spinner_weight = findViewById(R.id.spinner_weight);
+        spinner_title = findViewById(R.id.spinner_title);
+        spinner_relationship = findViewById(R.id.spinner_relationship);
 
         //AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -168,6 +151,17 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         }
         //---------------------------------------
 
+        if (dob_val != null && !dob_val.isEmpty() && !dob_val.equals("null") && !dob_val.equals("")){
+            btn_date.setText(dob_val);
+            cons_select_date = dob_val;
+        }
+        else{
+            btn_date.setText("Please select your DOB");
+            cons_select_date = "";
+        }
+
+
+
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,20 +170,26 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                 //famidets_layout.setVisibility(View.GONE);
 
                 String name_val = edt_name.getText().toString();
-                String age_val = edt_age.getText().toString();
+                //String age_val = edt_age.getText().toString();
                 String rel_text = relation_title.getText().toString();
 
+                String height_text = height_title.getText().toString();
+                String weight_text = weight_title.getText().toString();
+
                 System.out.println("name_val ---------" + name_val);
-                System.out.println("age_val ---------" + age_val);
+                System.out.println("rel_val ---------" + rel_val);
                 System.out.println("rel_text ---------" + rel_text);
+                System.out.println("height_text ---------" + height_text);
+                System.out.println("weight_text ---------" + weight_text);
 
                 System.out.println("Name_Length----------" + name_val.length());
 
 
-                if (age_val != null && !age_val.isEmpty() && !age_val.equals("null") && !age_val.equals("")) {
+/*             if (age_val != null && !age_val.isEmpty() && !age_val.equals("null") && !age_val.equals("")) {
                     age_int = Integer.parseInt(age_val);
-                }
+                }*/
 
+                gender_val = "0";
 
                 if (rel_val.equals("2")) {
                     tit_val = "1";
@@ -256,12 +256,24 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                     radio_male.setSelected(true);
                     radio_female.setSelected(false);
                     gender_val = "1";
+                } else {
+
+                    tit_val = "1";
+                    if (radio_male.isChecked())
+                        gender_val = "1";
+
+                    if (radio_female.isChecked())
+                        gender_val = "0";
+
+                    if (radio_thirdgender.isChecked())
+                        gender_val = "2";
+
+
                 }
 
 
-                if (age_int <= 10) {
-                    tit_val = "5";
-                }
+                System.out.println("gender_val -----------" + gender_val);
+                System.out.println("age_int -----------" + age_int);
 
                 System.out.println("rel_val-------------" + rel_val);
                 System.out.println("tit_val-------------" + tit_val);
@@ -270,49 +282,88 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
 
                 if (gender_val != null && !gender_val.isEmpty() && !gender_val.equals("null") && !gender_val.equals("")) {
                     if (name_val != null && !name_val.isEmpty() && !name_val.equals("null") && !name_val.equals("") && name_val.length() > 2) {
-                        if (age_int >= 1) {
-                            if (!rel_text.equals("Select relationship")) {
-                                try {
-                                    json_family_new = new JSONObject();
+                        if (!rel_text.equals("Select relationship")) {
 
-                                    //---------------------------------------
-                                    if (radio_id != null && !radio_id.isEmpty() && !radio_id.equals("null") && !radio_id.equals("") && !radio_id.equals("0")) {
-                                        json_family_new.put("save_type", "edit");
+                            if (cons_select_date != null && !cons_select_date.isEmpty() && !cons_select_date.equals("null") && !cons_select_date.equals("")) {
+
+
+                                if (!height_text.equals("Select height")) {
+                                    if (!weight_text.equals("Select weight")) {
+                                        try {
+                                            json_family_new = new JSONObject();
+
+                                            //---------------------------------------
+                                            if (radio_id != null && !radio_id.isEmpty() && !radio_id.equals("null") && !radio_id.equals("") && !radio_id.equals("0")) {
+                                                json_family_new.put("save_type", "edit");
+                                            } else {
+                                                json_family_new.put("save_type", "new");
+                                            }
+                                            //---------------------------------------
+
+                                            json_family_new.put("fpId", radio_id);
+                                            json_family_new.put("dob", cons_select_date);
+                                            json_family_new.put("gender", gender_val);
+                                            json_family_new.put("title", tit_val);
+                                            json_family_new.put("name", name_val);
+                                            json_family_new.put("relationType", rel_val);
+                                            json_family_new.put("height", height_val);
+                                            json_family_new.put("weight", weight_val);
+
+                                            System.out.println("json_family_new---" + json_family_new.toString());
+
+                                            new JSON_NewFamily().execute(json_family_new);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     } else {
-                                        json_family_new.put("save_type", "new");
+                                        Toast.makeText(getApplicationContext(), "Please select weight", Toast.LENGTH_SHORT).show();
                                     }
-                                    //---------------------------------------
 
-                                    json_family_new.put("fpId", radio_id);
-                                    json_family_new.put("age", age_val);
-                                    json_family_new.put("gender", gender_val);
-                                    json_family_new.put("title", tit_val);
-                                    json_family_new.put("name", name_val);
-                                    json_family_new.put("relationType", rel_val);
-                                    json_family_new.put("height", height_val);
-                                    json_family_new.put("weight", weight_val);
-
-                                    System.out.println("json_family_new---" + json_family_new.toString());
-
-                                    new JSON_NewFamily().execute(json_family_new);
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Please select height", Toast.LENGTH_SHORT).show();
                                 }
+
                             } else {
-                                Toast.makeText(getApplicationContext(), "Select a relationship", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Please select DOB", Toast.LENGTH_SHORT).show();
                             }
+
                         } else {
-                            edt_age.setError("Enter the Age");
-                            edt_age.requestFocus();
+                            Toast.makeText(getApplicationContext(), "Please select Relationship type", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        edt_name.setError("Enter the name");
+                        edt_name.setError("Pleas enter the name");
                         edt_name.requestFocus();
                     }
                 } else {
-                    Toast.makeText(SomeoneEdit_Dialog.this, "Select a gender", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SomeoneEdit_Dialog.this, "Please select Gender", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+
+        btn_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        SomeoneEdit_Dialog.this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                );
+
+                dpd.setThemeDark(false);
+                dpd.vibrate(false);
+                dpd.dismissOnPause(false);
+                dpd.showYearPickerFirst(false);
+
+                dpd.setAccentColor(Color.parseColor("#9C27B0"));
+                dpd.setTitle("Please select your DOB");
+
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
             }
         });
 
@@ -329,7 +380,6 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                 edt_name.setText("");
             }
 
-
             rel_val = "1";
             spinner_relationship.setVisibility(View.GONE);
 
@@ -340,6 +390,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
             }
 
             rel_val = "";
+
         } else if (add_type.equals("edit")) {
             //alert.setTitle("Edit a member");
             if (getSupportActionBar() != null) {
@@ -355,6 +406,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
 
           /*  //--------- ------------------------------------------------
             String map_val = "" + getKeyFromValue(tit_map, tit_id);
+
             if (map_val != null && !map_val.isEmpty() && !map_val.equals("null") && !map_val.equals("")) {
                 tv_name_title.setText(map_val);
             } else {
@@ -379,6 +431,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                 height_title.setText("");
             }
             //--------- ------------------------------------------------
+
             //--------- ------------------------------------------------
             String wt_value = "" + getKeyFromValue(wt_map, weight_val);
             if (wt_value != null && !wt_value.isEmpty() && !wt_value.equals("null") && !wt_value.equals("")) {
@@ -387,7 +440,6 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                 weight_title.setText("");
             }
             //--------- ------------------------------------------------
-
 
             System.out.println("tit_name--------------" + tit_name);
             System.out.println("mem_name--------------" + mem_name);
@@ -412,7 +464,6 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
                 edt_age.setText("");
             }
             //------------------------------------------------------------------
-
 
             //-----------------------------------
             if (gender_val != null && !gender_val.isEmpty() && !gender_val.equals("null") && !gender_val.equals("")) {
@@ -487,7 +538,6 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
 
         System.out.println("gen_val------------" + gender_val);
         //----------------- get Gender ----------------------------------
-
 
     }
 
@@ -1461,7 +1511,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
 
 
     private boolean canScroll(HorizontalScrollView horizontalScrollView) {
-        View child = (View) horizontalScrollView.getChildAt(0);
+        View child = horizontalScrollView.getChildAt(0);
         if (child != null) {
             int childWidth = (child).getWidth();
             return horizontalScrollView.getWidth() < childWidth + horizontalScrollView.getPaddingLeft() + horizontalScrollView.getPaddingRight();
@@ -2615,5 +2665,29 @@ public class SomeoneEdit_Dialog extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+
+        try {
+            //String date = dayOfMonth + "/" + (++monthOfYear) + "/" + year;
+            cons_select_date = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+            System.out.println("Cal Date------" + cons_select_date);
+
+            //--------- for System -------------------
+            SimpleDateFormat curFormater = new SimpleDateFormat("yyyy/MM/dd");
+            Date dateObj = curFormater.parse(cons_select_date);
+            String newDateStr = curFormater.format(dateObj);
+            System.out.println("For System select_date---------" + newDateStr);
+            //--------------------------------
+
+            btn_date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            System.out.println("cons_select_date---------" + cons_select_date);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

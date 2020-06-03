@@ -8,10 +8,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.icliniq.Labtest_WebViewActivity;
 import com.orane.icliniq.Model.Model;
@@ -64,7 +66,7 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
         setContentView(R.layout.labtest_tabs_activity);
 
         //------- Object Creation ----------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -73,7 +75,7 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
             getSupportActionBar().setTitle("");
         }
 
-        mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         mTitle.setTypeface(khandBold);
         //------- Object Creation ----------------------------------
@@ -90,8 +92,8 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
 
         Setup_viewPager();
 
-        menu_backet = (FrameLayout) findViewById(R.id.menu_backet);
-        tv_cart_count = (TextView) findViewById(R.id.tv_cart_count);
+        menu_backet = findViewById(R.id.menu_backet);
+        tv_cart_count = findViewById(R.id.tv_cart_count);
 
         menu_backet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,15 +178,18 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
             finish();
             return true;
         }
+/*
         if (id == R.id.nav_basket) {
 
 
-          /*  Intent intent = new Intent(getApplicationContext(), Labtest_CartViewActivity.class);
+          */
+/*  Intent intent = new Intent(getApplicationContext(), Labtest_CartViewActivity.class);
             startActivity(intent);
-            finish();*/
+            finish();*//*
 
             return true;
         }
+*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -192,9 +197,9 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
     public void Setup_viewPager() {
 
         // --------------------- Initializing viewPager -----------------------------
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
-        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -250,8 +255,8 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
 
         //Button btn_addtocart = (Button) grand_parent.findViewById(R.id.btn_addtocart);
 
-        TextView tv_id = (TextView) grand_parent.findViewById(R.id.tv_id);
-        TextView tv_cartText = (TextView) grand_parent.findViewById(R.id.tv_cartText);
+        TextView tv_id = grand_parent.findViewById(R.id.tv_id);
+        TextView tv_cartText = grand_parent.findViewById(R.id.tv_cartText);
 
         tv_cartText.setVisibility(View.VISIBLE);
 
@@ -370,6 +375,7 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
             try {
                 System.out.println("str_response--------------" + str_response);
                 Model.mNotificationCounter = Integer.parseInt((new JSONObject(str_response)).getString("count"));
+
                 System.out.println("cart_size--------------" + Model.mNotificationCounter);
 
                 if (Model.mNotificationCounter > 0) {
@@ -397,8 +403,8 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
         View parent = (View) v.getParent();
         View grand_parent = (View) parent.getParent();
 
-        TextView btn_viewtests = (TextView) parent.findViewById(R.id.btn_viewtests);
-        TextView tv_id = (TextView) grand_parent.findViewById(R.id.tv_id);
+        TextView btn_viewtests = parent.findViewById(R.id.btn_viewtests);
+        TextView tv_id = grand_parent.findViewById(R.id.tv_id);
 
         String tv_id_val = tv_id.getText().toString();
 
@@ -423,9 +429,9 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
 
         System.out.println("Main Layout click----------------");
 
-        TextView tv_code = (TextView) v.findViewById(R.id.tv_code);
-        TextView tv_id = (TextView) v.findViewById(R.id.tv_id);
-        TextView tv_cartText = (TextView) v.findViewById(R.id.tv_cartText);
+        TextView tv_code = v.findViewById(R.id.tv_code);
+        TextView tv_id = v.findViewById(R.id.tv_id);
+        TextView tv_cartText = v.findViewById(R.id.tv_cartText);
 
         String tv_code_val = tv_code.getText().toString();
         String tv_id_val = tv_id.getText().toString();
@@ -447,6 +453,7 @@ public class Labtest_tabs_Activity extends AppCompatActivity {
         i.putExtra("test_id", tv_id_val);
         i.putExtra("is_cart_added", cart_val);
         startActivity(i);
+
         overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
     }

@@ -12,12 +12,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,7 +114,6 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
 
         FlurryAgent.onPageView();
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //--------------------------------------------------------------------
@@ -225,9 +224,9 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
 
                 } else {
                     //edt_otp.setError("Enter OTP");
-                    //Snackbar.make(v, "OTP mismatched", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                    Toast.makeText(OTPActivity_PromoCode.this, "OTP mismatched", Toast.LENGTH_SHORT).show();
-                    edt_otp.setError("OTP Mismatched");
+                    //Snackbar.make(v, "The OTP you have entered is incorrect. Please enter a valid OTP", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Toast.makeText(OTPActivity_PromoCode.this, "The OTP you have entered is incorrect. Please try again/Please enter a valid OTP", Toast.LENGTH_SHORT).show();
+                    edt_otp.setError("The OTP you have entered is incorrect. Please try again/Please enter a valid OTP");
                     edt_otp.requestFocus();
                 }
 
@@ -254,7 +253,7 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been sent again to your mobile number. Please enter the number below. to your mobile number. Please enter the number below.", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -289,7 +288,7 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
                         new Async_CheckMobnoExist().execute(json);
 
                     } else {
-                        edt_phoneno.setError("Enter Mobile number");
+                        edt_phoneno.setError("Mobile number is mandatory");
                     }
 
                 } catch (Exception e) {
@@ -325,12 +324,6 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
              if (hasStarted) {
 
                  try {
-                     Model.kiss.record("android.patient.OTP_Receive");
-                     HashMap<String, String> properties = new HashMap<String, String>();
-                     properties.put("android.patient.OTP", otp_value);
-                     properties.put("android.patient.Mobile_number", phoneno_text);
-                     Model.kiss.set(properties);
-                     //----------------------------------------------------------------------------
                      //----------- Flurry -------------------------------------------------
                      Map<String, String> articleParams = new HashMap<String, String>();
                      articleParams.put("android.patient.OTP", otp_value);
@@ -1070,7 +1063,7 @@ public class OTPActivity_PromoCode extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(OTPActivity_PromoCode.this);
         //alert.setTitle("Mobile no not Exist..!");
-        alert.setMessage("This mobile number is existing, Change another number");
+        alert.setMessage("Provided mobile number already exists.");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override

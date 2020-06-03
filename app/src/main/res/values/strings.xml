@@ -53,7 +53,7 @@
     <string name="google_maps_title">Messenger</string>
     <string name="google_messenger_title">Other</string>
 
-    <string name="termsprivacy">By Signing up, you agree to our <a href="https://www.icliniq.com/p/terms">Terms of Use </a> &amp; Privacy Policy</string>
+    <string name="termsprivacy">By Signing up, you agree to our <a href="https://www.icliniq.com/p/terms?nolayout=1">Terms of Use </a> &amp; Privacy Policy</string>
 
     <string name="attach_note"><![CDATA[Note : You can attach any lab reports & other relevant photos. It will be helpful for the consultation.]]></string>
     <string name="fileSize">File Size</string>

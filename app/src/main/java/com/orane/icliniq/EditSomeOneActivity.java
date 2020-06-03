@@ -1,32 +1,41 @@
 package com.orane.icliniq;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.orane.icliniq.Model.Model;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EditSomeOneActivity extends AppCompatActivity {
+public class EditSomeOneActivity extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener {
 
 
     Spinner spinner_gender;
     Map<String, String> gen_map = new HashMap<String, String>();
     MaterialEditText edt_name, edt_age;
     ImageView img_close;
+    String cons_select_date;
+    Button btn_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,7 @@ public class EditSomeOneActivity extends AppCompatActivity {
         spinner_gender = (Spinner) findViewById(R.id.spinner_gender);
         edt_name = (MaterialEditText) findViewById(R.id.edt_name);
         edt_age = (MaterialEditText) findViewById(R.id.edt_age);
+        btn_date = (Button) findViewById(R.id.btn_date);
 
         //------- Setting spinner_gender ----------------------
         final List<String> lang_categories = new ArrayList<String>();
@@ -86,6 +96,32 @@ public class EditSomeOneActivity extends AppCompatActivity {
 
             }
         });
+
+        btn_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        EditSomeOneActivity.this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                );
+
+                dpd.setThemeDark(false);
+                dpd.vibrate(false);
+                dpd.dismissOnPause(false);
+                dpd.showYearPickerFirst(false);
+
+                dpd.setAccentColor(Color.parseColor("#9C27B0"));
+                dpd.setTitle("Please select your DOB");
+
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+            }
+        });
+
     }
 
     @Override
@@ -106,5 +142,29 @@ public class EditSomeOneActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+
+        try {
+            //String date = dayOfMonth + "/" + (++monthOfYear) + "/" + year;
+            cons_select_date = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+            System.out.println("Cal Date------" + cons_select_date);
+
+            //--------- for System -------------------
+            SimpleDateFormat curFormater = new SimpleDateFormat("yyyy/MM/dd");
+            Date dateObj = curFormater.parse(cons_select_date);
+            String newDateStr = curFormater.format(dateObj);
+            System.out.println("For System select_date---------" + newDateStr);
+            //--------------------------------
+
+            btn_date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            System.out.println("cons_select_date---------" + cons_select_date);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

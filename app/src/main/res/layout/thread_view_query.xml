@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -124,8 +124,7 @@
                     <com.github.ksoichiro.android.observablescrollview.ObservableWebView xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/query_webview"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
+                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:id="@+id/layout_attachfile"
@@ -175,6 +174,16 @@
                                 android:visibility="gone" />
 
 
+                            <TextView
+                                android:id="@+id/tv_qid_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/attachfile"
+                                android:text="sample"
+                                android:textSize="10dp"
+                                android:visibility="gone" />
+
+
                             <ImageView
                                 android:id="@+id/img_arr"
                                 android:layout_width="25dp"
@@ -214,7 +223,7 @@
 
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:id="@+id/qns_layout"

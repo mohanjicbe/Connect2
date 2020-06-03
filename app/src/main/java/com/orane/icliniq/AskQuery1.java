@@ -5,16 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -39,6 +35,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
@@ -54,7 +54,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import me.drakeet.materialdialog.MaterialDialog;
@@ -62,41 +61,6 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 public class AskQuery1 extends AppCompatActivity implements View.OnClickListener {
 
-    EditText edt_query;
-    String persona_id_val, fee_str_text, icq100_id_val, inf_for, Log_Status, mem_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
-    JSONObject json_getfee, jsonobj_prepinv, jsonobj_icq100, jsonobj_icq50, json_family_new, docprof_jsonobj;
-    RelativeLayout name_title_layout, relationship_layout, first_layout;
-    Spinner spinner_height, spinner_weight, spinner_title;
-    RadioButton radio_male, radio_thirdgender, radio_female;
-    TextView tvdocname, weight_title, height_title, tvqfee, tvtit, tvfquery, tvprice;
-    TextView tv_tooltit, tv_fee11, tv_fee1, tv_name_title, relation_title, tv_spec_name;
-    Button btn_submit;
-    Integer per_id;
-    public String family_list, wt_name, inv_id, inv_fee, inv_strfee, wt_val2, ht_name2, ht_val2, qid, draft_qid, query_txt;
-    public JSONObject json, jsonobj;
-    Button btn_icq100, btn_icq50;
-    Integer age_int;
-
-    Map<String, String> spec_map = new HashMap<String, String>();
-    Map<String, String> ht_map = new HashMap<String, String>();
-    Map<String, String> wt_map = new HashMap<String, String>();
-    Map<String, String> tit_map = new HashMap<String, String>();
-    Map<String, String> gen_map = new HashMap<String, String>();
-    Map<String, String> family_map = new HashMap<String, String>();
-
-    public String qfee_text, spec_val, rel_name, rel_val, soid_val;
-    HorizontalScrollView someone_scrollview;
-    View someone_vi;
-    Map<String, String> cc_map = new HashMap<String, String>();
-    ImageView img_remove;
-    LinearLayout famidets_layout, someone_layout, parent_layout, select_layout, family_inner_layout;
-
-    TextView tvtips1, tvtips2, tvtips3, tvtips4, tv_fam_agedets, tv_fam_weight, tv_fam_height, tv_fam_name;
-    Spinner spinner_relationship;
-    ImageView img_edit_icon;
-    ImageView img_uparrow, profile_right_arrow, img_downarrow;
-
-    SharedPreferences sharedpreferences;
     public static final String first_query = "first_query_key";
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
@@ -121,14 +85,54 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
     public static final String sp_mnum = "sp_mnum_key";
     public static final String sp_qid = "sp_qid_key";
     public static final String sp_has_free_follow = "sp_has_free_follow_key";
+    public String family_list, wt_name, inv_id, inv_fee, inv_strfee, wt_val2, ht_name2, ht_val2, qid, draft_qid, query_txt;
+    public JSONObject json, jsonobj;
+    public String qfee_text, spec_val, rel_name, rel_val, soid_val;
+    EditText edt_query;
+    String persona_id_val, dob_val, fee_str_text, icq100_id_val, inf_for, Log_Status, mem_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
+    JSONObject json_getfee, jsonobj_prepinv, jsonobj_icq100, jsonobj_icq50, json_family_new, docprof_jsonobj;
+    RelativeLayout name_title_layout, relationship_layout, first_layout;
+    Spinner spinner_height, spinner_weight, spinner_title;
+    RadioButton radio_male, radio_thirdgender, radio_female;
+    TextView tvdocname, weight_title, height_title, tvqfee, tvtit, tvfquery, tvprice;
+    TextView tv_tooltit, tv_fee11, tv_fee1, tv_name_title, relation_title, tv_spec_name;
+    Button btn_submit;
+    Integer per_id;
+    Button btn_icq100, btn_icq50;
+    Integer age_int;
+    Map<String, String> spec_map = new HashMap<String, String>();
+    Map<String, String> ht_map = new HashMap<String, String>();
+    Map<String, String> wt_map = new HashMap<String, String>();
+    Map<String, String> tit_map = new HashMap<String, String>();
+    Map<String, String> gen_map = new HashMap<String, String>();
+    Map<String, String> family_map = new HashMap<String, String>();
+    HorizontalScrollView someone_scrollview;
+    View someone_vi;
+    Map<String, String> cc_map = new HashMap<String, String>();
+    ImageView img_remove;
+    LinearLayout famidets_layout, someone_layout, parent_layout, select_layout, family_inner_layout;
+    TextView tvtips1, tvtips2, tvtips3, tvtips4, tv_fam_agedets, tv_fam_weight, tv_fam_height, tv_fam_name;
+    Spinner spinner_relationship;
+    ImageView img_edit_icon;
+    ImageView img_uparrow, profile_right_arrow, img_downarrow;
+    SharedPreferences sharedpreferences;
+
+    public static Object getKeyFromValue(Map hm, Object value) {
+        for (Object o : hm.keySet()) {
+            if (hm.get(o).equals(value)) {
+                return o;
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.askquery1);
 
-        //----------------Mohan----------------------------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //--------------------------------------------------------------------
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -167,36 +171,36 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
         //------------ Object Creations -------------------------------
         //tv_name_title = (TextView) findViewById(R.id.tv_name_title);
-        tv_fee1 = (TextView) findViewById(R.id.tv_fee1);
-        tv_fee11 = (TextView) findViewById(R.id.tv_fee11);
-        tv_spec_name = (TextView) findViewById(R.id.tv_spec_name);
-        select_layout = (LinearLayout) findViewById(R.id.select_layout);
-        parent_layout = (LinearLayout) findViewById(R.id.parent_layout);
-        someone_layout = (LinearLayout) findViewById(R.id.someone_layout);
-        someone_scrollview = (HorizontalScrollView) findViewById(R.id.someone_scrollview);
-        tvqfee = (TextView) findViewById(R.id.tvqfee);
-        edt_query = (EditText) findViewById(R.id.edt_query);
+        tv_fee1 = findViewById(R.id.tv_fee1);
+        tv_fee11 = findViewById(R.id.tv_fee11);
+        tv_spec_name = findViewById(R.id.tv_spec_name);
+        select_layout = findViewById(R.id.select_layout);
+        parent_layout = findViewById(R.id.parent_layout);
+        someone_layout = findViewById(R.id.someone_layout);
+        someone_scrollview = findViewById(R.id.someone_scrollview);
+        tvqfee = findViewById(R.id.tvqfee);
+        edt_query = findViewById(R.id.edt_query);
         //spinner_speciality = (Spinner) findViewById(R.id.spinner_speciality);
-        tvprice = (TextView) findViewById(R.id.tvprice);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        tvtit = (TextView) findViewById(R.id.tvtit);
-        tvfquery = (TextView) findViewById(R.id.tvfquery);
-        img_remove = (ImageView) findViewById(R.id.img_remove);
-        img_uparrow = (ImageView) findViewById(R.id.img_uparrow);
-        img_downarrow = (ImageView) findViewById(R.id.img_downarrow);
-        famidets_layout = (LinearLayout) findViewById(R.id.famidets_layout);
-        family_inner_layout = (LinearLayout) findViewById(R.id.family_inner_layout);
+        tvprice = findViewById(R.id.tvprice);
+        btn_submit = findViewById(R.id.btn_submit);
+        tvtit = findViewById(R.id.tvtit);
+        tvfquery = findViewById(R.id.tvfquery);
+        img_remove = findViewById(R.id.img_remove);
+        img_uparrow = findViewById(R.id.img_uparrow);
+        img_downarrow = findViewById(R.id.img_downarrow);
+        famidets_layout = findViewById(R.id.famidets_layout);
+        family_inner_layout = findViewById(R.id.family_inner_layout);
         //name_title_layout = (RelativeLayout) findViewById(R.id.name_title_layout);
 
-        tv_fam_name = (TextView) findViewById(R.id.tv_fam_name);
-        tv_fam_agedets = (TextView) findViewById(R.id.tv_fam_agedets);
-        tv_fam_height = (TextView) findViewById(R.id.tv_fam_height);
-        tv_fam_weight = (TextView) findViewById(R.id.tv_fam_weight);
-        img_edit_icon = (ImageView) findViewById(R.id.img_edit_icon);
+        tv_fam_name = findViewById(R.id.tv_fam_name);
+        tv_fam_agedets = findViewById(R.id.tv_fam_agedets);
+        tv_fam_height = findViewById(R.id.tv_fam_height);
+        tv_fam_weight = findViewById(R.id.tv_fam_weight);
+        img_edit_icon = findViewById(R.id.img_edit_icon);
 
-        btn_icq100 = (Button) findViewById(R.id.btn_icq100);
-        btn_icq50 = (Button) findViewById(R.id.btn_icq50);
-        profile_right_arrow = (ImageView) findViewById(R.id.profile_right_arrow);
+        btn_icq100 = findViewById(R.id.btn_icq100);
+        btn_icq50 = findViewById(R.id.btn_icq50);
+        profile_right_arrow = findViewById(R.id.profile_right_arrow);
 
         someone_scrollview.setHorizontalScrollBarEnabled(true);
 
@@ -205,7 +209,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         Typeface font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
         Typeface font_bold = Typeface.createFromAsset(getAssets(), Model.font_name_bold);
 
-        tv_tooltit = (TextView) toolbar.findViewById(R.id.tv_tooltit);
+        tv_tooltit = toolbar.findViewById(R.id.tv_tooltit);
         tv_tooltit.setTypeface(font_reg);
 
         ((TextView) findViewById(R.id.tv_ask_tit)).setTypeface(font_bold);
@@ -240,7 +244,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             new JSON_getFamily().execute(get_family_url);
             //-------------------------------------------------------------------
 
-            //------------- Get ICQ100 Fees ---------------------------------------------
+            //------------- Get ICQ100 Fees --------------------------------------
             try {
                 JSONObject json_get_icq100_fee = new JSONObject();
                 json_get_icq100_fee.put("user_id", (Model.id));
@@ -288,7 +292,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         }
         //-------------------------------------------------------
 */
-
         profile_right_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -350,7 +353,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                     //------------ Google firebase Analitics----------------------------------------------
 
                                 } else
-                                    edt_query.setError("Query cannot be empty");
+                                    edt_query.setError("Please enter your query");
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -366,7 +369,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                         // ask_login();
                     }
                 } else {
-                    Toast.makeText(AskQuery1.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AskQuery1.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -425,7 +428,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                         //------------ Google firebase Analitics----------------------------------------------
 
                                     } else
-                                        edt_query.setError("Query cannot be empty");
+                                        edt_query.setError("Please enter your query");
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -440,8 +443,9 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                     } else {
                         // ask_login();
                     }
+
                 } else {
-                    Toast.makeText(AskQuery1.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AskQuery1.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -602,9 +606,13 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         select_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Model.query_launch = "ask_query";
-                Intent intent = new Intent(AskQuery1.this, SpecialityListActivity.class);
-                startActivity(intent);
+                try {
+                    Model.query_launch = "ask_query";
+                    Intent intent = new Intent(AskQuery1.this, SpecialityListActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -626,13 +634,15 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
 
                                 try {
+
                                     String query_str = edt_query.getText().toString();
                                     System.out.println("query_str-----" + query_str);
 
                                     if ((query_str.length()) > 0) {
 
-/*                              String spintext = spinner_speciality.getSelectedItem().toString();
-                                spec_val = spec_map.get(spintext);*/
+    /*                              String spintext = spinner_speciality.getSelectedItem().toString();
+                                    spec_val = spec_map.get(spintext);*/
+
 
                                         spec_val = Model.select_spec_val;
 
@@ -658,16 +668,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
                                         new JSONPostQuery().execute(json);
 
-                                        //----------------- Kissmetrics ----------------------------------
-                                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                                        Model.kiss.record("android.patient.AskQuery1_Post_Query");
-                                        HashMap<String, String> properties = new HashMap<String, String>();
-                                        properties.put("android.patient.qid", draft_qid);
-                                        properties.put("android.patient.speciality", spec_val);
-                                        properties.put("android.patient.user_id", Model.id);
-                                        Model.kiss.set(properties);
-                                        //----------------- Kissmetrics ----------------------------------
-
                                         //------------ Google firebase Analitics--------------------
                                         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
                                         Bundle params = new Bundle();
@@ -678,7 +678,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                         //------------ Google firebase Analitics--------------------
 
                                     } else
-                                        edt_query.setError("Query cannot be empty");
+                                        edt_query.setError("Please enter your query");
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -689,78 +689,10 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                         }
                     }
                 } else {
-                    Toast.makeText(AskQuery1.this, "No Internet connection, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AskQuery1.this, "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
-    }
-
-
-    private class JSONAsyncTask extends AsyncTask<String, Void, Boolean> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = new ProgressDialog(AskQuery1.this);
-            dialog.setMessage("Please wait");
-            dialog.show();
-            dialog.setCancelable(false);
-        }
-
-        @Override
-        protected Boolean doInBackground(String... urls) {
-
-            try {
-
-                JSONParser jParser = new JSONParser();
-                jsonobj = jParser.getJSONFromUrl(urls[0]);
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            try {
-
-
-                if (jsonobj.has("token_status")) {
-                    String token_status = jsonobj.getString("token_status");
-                    if (token_status.equals("0")) {
-                        //============================================================
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putString(Login_Status, "0");
-                        editor.apply();
-                        //============================================================
-                        finishAffinity();
-                        Intent intent = new Intent(AskQuery1.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                } else {
-
-                    String dqidval = jsonobj.getString("query");
-                    System.out.println("dqidval-----------------" + dqidval);
-
-                    if (dqidval != null && !dqidval.isEmpty() && !dqidval.equals("") && !dqidval.equals("null")) {
-                        edt_query.setText(Html.fromHtml(dqidval));
-                    }
-                }
-
-            } catch (Exception e) {
-                edt_query.setText("");
-                e.printStackTrace();
-            }
-
-            dialog.cancel();
-        }
     }
 
     @Override
@@ -809,112 +741,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = new ProgressDialog(AskQuery1.this);
-            dialog.setMessage("Submitting, please wait");
-            dialog.show();
-            dialog.setCancelable(false);
-        }
-
-        @Override
-        protected Boolean doInBackground(JSONObject... urls) {
-            try {
-                JSONParser jParser = new JSONParser();
-                jsonobj = jParser.JSON_POST(urls[0], "PostQuery");
-
-                System.out.println("Parameters---------------" + urls[0]);
-                System.out.println("Response jsonobj---------------" + jsonobj.toString());
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            try {
-                if (jsonobj.has("token_status")) {
-                    String token_status = jsonobj.getString("token_status");
-                    if (token_status.equals("0")) {
-
-                        finishAffinity();
-                        Intent intent = new Intent(AskQuery1.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                } else {
-
-                    qid = jsonobj.getString("qid");
-
-                    //------------ persona_id---------------------
-                    if (jsonobj.has("persona_id")) {
-                        persona_id_val = jsonobj.getString("persona_id");
-                    } else {
-                        persona_id_val = "0";
-                    }
-                    //------------ persona_id---------------------
-
-
-                    System.out.println("Submitting Query id:--------" + qid);
-                    if (qid != null && !qid.isEmpty() && !qid.equals("null") && !qid.equals("")) {
-
-
-                        if (jsonobj.has("icq100_id")) {
-
-                            icq100_id_val = jsonobj.getString("icq100_id");
-
-                            //------------ Prepare Invoice---------------------
-                            String url = (Model.BASE_URL) + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=" + inf_for + "&item_id=" + icq100_id_val + "&token=" + Model.token + "&enc=1";
-                            System.out.println("Query2 Prepare Invoice url-------------" + url);
-                            new JSON_Prepare_inv().execute(url);
-                            //------------ Prepare Invoice----------------------
-
-                        } else {
-
-                            Intent i = new Intent(AskQuery1.this, AskQuery2.class);
-                            i.putExtra("qid", qid);
-                            i.putExtra("persona_id", persona_id_val);
-                            startActivity(i);
-                            finish();
-
-                            /*i.putExtra("finisher", new android.os.ResultReceiver(null) {
-                                @Override
-                                protected void onReceiveResult(int resultCode, Bundle resultData) {
-                                    AskQuery1.this.finish();
-                                }
-                            });
-                            startActivityForResult(i, 1);*/
-                            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-                        }
-
-
-                    } else {
-                        Toast.makeText(AskQuery1.this, "Something went wrong. Please back and try again..!", Toast.LENGTH_LONG).show();
-
-                        Intent intent = new Intent(AskQuery1.this, CenterFabActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-
-                dialog.cancel();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -937,7 +763,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             return true;
         }
 
-        if (id == R.id.nav_doctors) {
+       /* if (id == R.id.nav_doctors) {
 
             Intent intent = new Intent(AskQuery1.this, DoctorsListActivity.class);
             startActivity(intent);
@@ -952,9 +778,9 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             intent.putExtra("doctor_id", "0");
             intent.putExtra("plan_id", "");
             startActivity(intent);
-/*
+*//*
             Intent intent = new Intent(AskQuery1.this, HotlineHome.class);
-            startActivity(intent);*/
+            startActivity(intent);*//*
 
             return true;
         }
@@ -965,7 +791,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             startActivity(intent);
             return true;
         }
-
+*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -1008,6 +834,42 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         } catch (Exception e) {
             System.out.println("Click Exception-------- " + e.toString());
         }*/
+    }
+
+    public void show_tips() {
+
+        try {
+
+            final MaterialDialog alert = new MaterialDialog(AskQuery1.this);
+            View view = LayoutInflater.from(AskQuery1.this).inflate(R.layout.tipstoearning, null);
+            alert.setView(view);
+            alert.setTitle("How it works?");
+            alert.setCanceledOnTouchOutside(false);
+
+            Toolbar toolBar = view.findViewById(R.id.toolBar);
+            tvtips1 = view.findViewById(R.id.tvtips1);
+            tvtips2 = view.findViewById(R.id.tvtips2);
+            tvtips3 = view.findViewById(R.id.tvtips3);
+            tvtips4 = view.findViewById(R.id.tvtips4);
+
+            toolBar.setVisibility(View.GONE);
+
+            tvtips1.setText(Html.fromHtml(getString(R.string.tips1)));
+            tvtips2.setText(Html.fromHtml(getString(R.string.tips2)));
+            tvtips3.setText(Html.fromHtml(getString(R.string.tips3)));
+            tvtips4.setText(Html.fromHtml(getString(R.string.tips4)));
+
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -1080,7 +942,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         spec_map.put("Family Physician", "220");
 
         categories.add("Fetal Medicine");
-        spec_map.put("Fetal Medicine", "226");
+        spec_map.put("Fetal Medicine", "266");
 
         categories.add("Fitness Expert");
         spec_map.put("Fitness Expert", "224");
@@ -1305,158 +1167,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         return false;
     }*/
 
-
-    public void show_tips() {
-
-        try {
-
-            final MaterialDialog alert = new MaterialDialog(AskQuery1.this);
-            View view = LayoutInflater.from(AskQuery1.this).inflate(R.layout.tipstoearning, null);
-            alert.setView(view);
-            alert.setTitle("How it works?");
-            alert.setCanceledOnTouchOutside(false);
-
-            Toolbar toolBar = (Toolbar) view.findViewById(R.id.toolBar);
-            tvtips1 = (TextView) view.findViewById(R.id.tvtips1);
-            tvtips2 = (TextView) view.findViewById(R.id.tvtips2);
-            tvtips3 = (TextView) view.findViewById(R.id.tvtips3);
-            tvtips4 = (TextView) view.findViewById(R.id.tvtips4);
-
-            toolBar.setVisibility(View.GONE);
-
-            tvtips1.setText(Html.fromHtml(getString(R.string.tips1)));
-            tvtips2.setText(Html.fromHtml(getString(R.string.tips2)));
-            tvtips3.setText(Html.fromHtml(getString(R.string.tips3)));
-            tvtips4.setText(Html.fromHtml(getString(R.string.tips4)));
-
-            alert.setPositiveButton("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alert.dismiss();
-                }
-            });
-            alert.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private class JSON_getFee extends AsyncTask<JSONObject, Void, Boolean> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(JSONObject... urls) {
-            try {
-
-                JSONParser jParser = new JSONParser();
-                docprof_jsonobj = jParser.JSON_POST(urls[0], "getqFee");
-
-                System.out.println("Feedback URL---------------" + urls[0]);
-                System.out.println("json_response_obj-----------" + docprof_jsonobj.toString());
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            try {
-
-                if (docprof_jsonobj.has("token_status")) {
-                    String token_status = docprof_jsonobj.getString("token_status");
-                    if (token_status.equals("0")) {
-
-                        //============================================================
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putString(Login_Status, "0");
-                        editor.apply();
-                        //============================================================
-
-                        finishAffinity();
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                } else {
-                    Model.fee_q_inr = docprof_jsonobj.getString("fee_val");
-                    Model.fee_q = docprof_jsonobj.getString("str_fee");
-
-                    tvqfee.setText("(" + Model.fee_q + ")");
-
-                    //tvqfee.setText("Fee : " + Model.fee_q);
-                    //btn_submit.setText("Submit & Continue (" + Model.fee_q + ")");
-                    //btn_submit.setText("Submit Query");
-
-                    //------------ Google firebase Analitics--------------------
-                    Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                    Bundle params = new Bundle();
-                    params.putString("User", Model.id);
-                    params.putString("Fee", docprof_jsonobj.toString());
-                    Model.mFirebaseAnalytics.logEvent("AskQuery1_getFee", params);
-                    //------------ Google firebase Analitics--------------------
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-
-    private class JSON_getFamily extends AsyncTask<String, Void, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = new ProgressDialog(AskQuery1.this);
-            dialog.setMessage("Please wait");
-            dialog.show();
-            dialog.setCancelable(false);
-
-        }
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            try {
-
-                JSONParser jParser = new JSONParser();
-                family_list = jParser.getJSONString(urls[0]);
-                System.out.println("Family URL---------------" + urls[0]);
-
-                return family_list;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(String family_list) {
-
-            apply_relaships_radio(family_list);
-
-            dialog.cancel();
-        }
-    }
-
-
     public void dialog_ccode() {
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(AskQuery1.this);
@@ -1467,7 +1177,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         cc_map = new HashMap<String, String>();
         //---------------------------------------
 
-
         try {
 
             JSONArray jaaray = new JSONArray(family_list);
@@ -1475,7 +1184,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             System.out.println("family_list-----------" + family_list);
             System.out.println(" jaaray.length()-----------" + jaaray.length());
 
-/*            String myself_text = "Myself (" + Model.name + ")";
+/*          String myself_text = "Myself (" + Model.name + ")";
             categories.add(myself_text);
             cc_map.put(myself_text, "0");*/
 
@@ -2453,7 +2162,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         //------ Setting Height Spinner ----------------------------
     }
 
-
     public void setup_relation() {
 
         //------- Setting spinner_relationship----------------------
@@ -2511,239 +2219,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
 
     }
-
-
-    private class JSON_NewFamily extends AsyncTask<JSONObject, Void, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(AskQuery1.this);
-            dialog.setMessage("Submitting..., please wait..");
-            //dialog.setTitle("");
-            dialog.show();
-            dialog.setCancelable(false);
-        }
-
-        @Override
-        protected String doInBackground(JSONObject... urls) {
-
-            try {
-
-                JSONParser jParser = new JSONParser();
-                family_list = jParser.JSON_String_POST(urls[0], "newFamily");
-
-                System.out.println("newFamily URL---------------" + urls[0]);
-
-
-                return family_list;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(String family_list) {
-
-            try {
-
-                System.out.println("family_list----------" + family_list);
-
-                apply_relaships_radio(family_list);
-
-                dialog.cancel();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-/*
-    public void showFamDialog(Activity activity, String msg){
-        final Dialog dialog = new Dialog(activity);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setContentView(R.layout.family_row);
-
-        TextView tv_famname = (TextView) dialog.findViewById(R.id.tv_famname);
-        tv_famname.setText(msg);
-
-        final ArrayAdapter<String> categories = new ArrayAdapter<String>(AskQuery1.this, R.layout.dialog_list_textview);
-        cc_map = new HashMap<String, String>();
-        //---------------------------------------
-        try {
-
-            JSONArray jaaray = new JSONArray(family_list);
-
-            System.out.println("family_list-----------" + family_list);
-            System.out.println(" jaaray.length()-----------" + jaaray.length());
-
-
-            if (family_list.length() > 2) {
-
-                for (int i = 0; i < jaaray.length(); i++) {
-
-                    JSONObject jsonobj1 = jaaray.getJSONObject(i);
-
-                    String id_val = jsonobj1.getString("id");
-                    String name_val = jsonobj1.getString("name");
-                    String gender_val = jsonobj1.getString("gender");
-                    String relation_val = jsonobj1.getString("relation_type");
-
-                    String display_text = name_val + "(" + relation_val + ")";
-                    categories.add(display_text);
-                    cc_map.put(display_text, id_val);
-                }
-            }
-
-            String so_text = "Select Someone else";
-            categories.add(so_text);
-            cc_map.put(so_text, "999");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-
-    }*/
-
-
-    /*public void ask_someone() {
-
-        final Dialog alert = new Dialog(AskQuery1.this);
-
-        alert.setContentView(R.layout.someone_edit);
-        alert.setCanceledOnTouchOutside(false);
-        //alert.setTitle("Please Re-Login the App..!");
-        //alert.setMessage("Something went wrong. Please Logout and Login again to continue");
-
-        RelativeLayout title_layout = (RelativeLayout) alert.findViewById(R.id.title_layout);
-        final TextView tv_title_code = (TextView) alert.findViewById(R.id.tv_title_code);
-        final TextView edt_name = (EditText) alert.findViewById(R.id.edt_name);
-        final MaterialEditText edt_age = (MaterialEditText) alert.findViewById(R.id.edt_age);
-        final RadioGroup radgrp_gender = (RadioGroup) alert.findViewById(R.id.radgrp_gender);
-        final RadioButton radio_male = (RadioButton) alert.findViewById(R.id.radio_male);
-        final RadioButton radio_female = (RadioButton) alert.findViewById(R.id.radio_female);
-
-        spinner_height = (Spinner) alert.findViewById(R.id.spinner_height);
-        spinner_weight = (Spinner) alert.findViewById(R.id.spinner_weight);
-        spinner_title = (Spinner) alert.findViewById(R.id.spinner_title);
-
-        spinner_relationship = (Spinner) alert.findViewById(R.id.spinner_relationship);
-
-        setup_title();
-        setup_relation();
-        setup_height();
-        setup_weight();
-
-        spinner_title.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                tit_name = spinner_title.getSelectedItem().toString();
-                tit_val = tit_map.get(tit_name);
-
-                System.out.println("tit_name----------" + tit_name);
-                System.out.println("tit_val----------" + tit_val);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        spinner_relationship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                rel_name = spinner_relationship.getSelectedItem().toString();
-                rel_val = gen_map.get(rel_name);
-
-                System.out.println("Relation name----------" + rel_name);
-                System.out.println("Relation Val----------" + rel_val);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
-        spinner_height.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                ht_name = spinner_height.getSelectedItem().toString();
-                ht_val = ht_map.get(ht_name);
-
-                System.out.println("ht_name----------" + ht_name);
-                System.out.println("ht_val----------" + ht_val);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        spinner_weight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                wt_name = spinner_weight.getSelectedItem().toString();
-                wt_val = wt_map.get(wt_name);
-
-                System.out.println("ht_name----------" + wt_name);
-                System.out.println("ht_val----------" + wt_val);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        radgrp_gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-
-                boolean isChecked = checkedRadioButton.isChecked();
-                if (isChecked) {
-
-                    String check_string = checkedRadioButton.getText().toString();
-                    System.out.println("check_string------------" + check_string);
-
-                    if (check_string.equals("Male")) {
-                        gen_val = "1";
-                    } else {
-                        gen_val = "2";
-                    }
-
-                    System.out.println("gen_val------------" + gen_val);
-                }
-            }
-        });
-        alert.show();
-    }*/
-
 
     public void apply_relaships_radio(String fam_string) {
 
@@ -2827,7 +2302,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                     rdbtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RadioButton r1 = (RadioButton) v.findViewById(v.getId());
+                            RadioButton r1 = v.findViewById(v.getId());
 
                             r1.setSelected(true);
 
@@ -2853,6 +2328,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                     break;
                                 }
                                 case "Myself": {
+
                                     if (myself_id != null && !myself_id.isEmpty() && !myself_id.equals("null") && !myself_id.equals("")) {
                                         radio_id = myself_id;
                                         System.out.println("radio_id-----" + radio_id);
@@ -2864,9 +2340,8 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                         intent.putExtra("add_type", "myself");
                                         intent.putExtra("profile_id", "0");
                                         startActivity(intent);
-
-
                                     }
+
                                     break;
                                 }
                             }
@@ -2937,7 +2412,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                     rdbtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RadioButton r1 = (RadioButton) v.findViewById(v.getId());
+                            RadioButton r1 = v.findViewById(v.getId());
 
                             String rad_name = r1.getText().toString();
                             System.out.println("rad_name--------------------" + rad_name);
@@ -2959,7 +2434,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                     Intent intent = new Intent(AskQuery1.this, SomeoneEdit_Dialog.class);
                                     intent.putExtra("add_type", "myself");
                                     startActivity(intent);
-
 
                                     break;
                                 }
@@ -2990,258 +2464,26 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
     }
 
-
-    private class JSON_getFamDetails extends AsyncTask<String, Void, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = new ProgressDialog(AskQuery1.this);
-            dialog.setMessage("Please wait..");
-            dialog.show();
-            dialog.setCancelable(false);
-        }
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            try {
-
-                JSONParser jParser = new JSONParser();
-                famDets_text = jParser.getJSONString(urls[0]);
-
-                System.out.println("Family URL- DEts--------------" + urls[0]);
-
-                return famDets_text;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(String family_list) {
-
-            try {
-                System.out.println("family_list---------------" + family_list);
-
-                JSONObject fam_obj = new JSONObject(family_list);
-
-                System.out.println("fam_obj--------------" + fam_obj.toString());
-
-                String name_text = fam_obj.getString("name");
-                String relation_type_text = fam_obj.getString("relation_type");
-                String age_text = fam_obj.getString("age");
-                String gender_text = fam_obj.getString("gender");
-                String height_text = fam_obj.getString("height");
-                String weight_text = fam_obj.getString("weight");
-
-                System.out.println("Get name_text----------------" + name_text);
-                System.out.println("Get relation_type_text----------------" + relation_type_text);
-                System.out.println("Get  age_text----------------" + age_text);
-                System.out.println("gender_text----------------" + gender_text);
-                System.out.println("height_text----------------" + height_text);
-                System.out.println("weight_text----------------" + weight_text);
-
-
-                if (relation_type_text != null && !relation_type_text.isEmpty() && !relation_type_text.equals("null") && !relation_type_text.equals("")) {
-                } else {
-                    relation_type_text = "";
-                }
-                if (age_text != null && !age_text.isEmpty() && !age_text.equals("null") && !age_text.equals("")) {
-                } else {
-                    age_text = "";
-                }
-                if (gender_text != null && !gender_text.isEmpty() && !gender_text.equals("null") && !gender_text.equals("")) {
-                } else {
-                    gender_text = "";
-                }
-                if (height_text != null && !height_text.isEmpty() && !height_text.equals("null") && !height_text.equals("")) {
-                } else {
-                    height_text = "";
-                }
-                if (weight_text != null && !weight_text.isEmpty() && !weight_text.equals("null") && !weight_text.equals("")) {
-                } else {
-                    weight_text = "";
-                }
-                if (name_text != null && !name_text.isEmpty() && !name_text.equals("null") && !name_text.equals("")) {
-                } else {
-                    name_text = "";
-                }
-
-
-                tv_fam_name.setText(name_text);
-                tv_fam_agedets.setText(relation_type_text + " - " + age_text + " - " + gender_text);
-                tv_fam_height.setText("Height : " + height_text);
-                tv_fam_weight.setText("Weight : " + weight_text);
-
-
-                try {
-                    if (age_text != null && !age_text.isEmpty() && !age_text.equals("null") && !age_text.equals("")) {
-                        Integer age_val = Integer.parseInt(age_text);
-                        if (age_val < 1) {
-                            //-------------------------------------------------------------------
-                            String get_family_profile = Model.BASE_URL + "sapp/getFamilyProfile?user_id=" + Model.id + "&id=" + radio_id + "&isView=0&token=" + Model.token;
-                            System.out.println("get_family_profile---------" + get_family_profile);
-                            new JSON_EditFamDetails().execute(get_family_profile);
-                            //---------------------------------------------------------------
-                        }
-
-                        //Toast.makeText(AskQuery1.this, "Please enter the Age", Toast.LENGTH_SHORT).show();
-
-                    } else if (gender_text != null && !gender_text.isEmpty() && !gender_text.equals("null") && !gender_text.equals("")) {
-                        Integer gender_val = Integer.parseInt(gender_text);
-                        if (gender_val < 1) {
-                            //-------------------------------------------------------------------
-                            String get_family_profile = Model.BASE_URL + "sapp/getFamilyProfile?user_id=" + Model.id + "&id=" + radio_id + "&isView=0&token=" + Model.token;
-                            System.out.println("get_family_profile---------" + get_family_profile);
-                            new JSON_EditFamDetails().execute(get_family_profile);
-                            //---------------------------------------------------------------
-                        }
-
-                        //Toast.makeText(AskQuery1.this, "Please select your gender", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                System.out.println("radio_id=============" + radio_id);
-
-                if (!radio_id.equals("0")) {
-                    //-------- View --------------------------------------
-                    famidets_layout.setVisibility(View.VISIBLE);
-                    img_downarrow.setVisibility(View.GONE);
-                    img_uparrow.setVisibility(View.VISIBLE);
-                    //-------- View --------------------------------------
-                } else {
-                    famidets_layout.setVisibility(View.GONE);
-                    img_downarrow.setVisibility(View.VISIBLE);
-                    img_uparrow.setVisibility(View.GONE);
-                    //-------- View --------------------------------------
-                }
-
-                dialog.dismiss();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-
-    private class JSON_EditFamDetails extends AsyncTask<String, Void, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            try {
-
-                JSONParser jParser = new JSONParser();
-                famDets_text = jParser.getJSONString(urls[0]);
-
-                System.out.println("Family URL- Dets--------------" + urls[0]);
-
-                return famDets_text;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(String family_list) {
-
-            try {
-
-                JSONObject fam_obj = new JSONObject(family_list);
-
-                System.out.println("fam_obj--------------" + fam_obj.toString());
-
-                rel_val = fam_obj.getString("relation_type");
-                tit_id = fam_obj.getString("title_id");
-                mem_name = fam_obj.getString("name");
-                age_val = fam_obj.getString("age");
-                gender_val = fam_obj.getString("gender");
-                height_val = fam_obj.getString("height");
-                weight_val = fam_obj.getString("weight");
-
-                tit_val = tit_id;
-
-                System.out.println("tit_id-1--------------" + tit_id);
-                System.out.println("mem_name 1---------------" + mem_name);
-                System.out.println("rel_type 1---------------" + rel_val);
-                System.out.println("age_val 1---------------" + age_val);
-                System.out.println("gender_val- 1--------------" + gender_val);
-                System.out.println("height_val-1--------------" + height_val);
-                System.out.println("weight_val---------------" + weight_val);
-
-                //ask_someone("edit");
-
-                Intent intent = new Intent(AskQuery1.this, SomeoneEdit_Dialog.class);
-                intent.putExtra("add_type", "edit");
-                intent.putExtra("profile_id", radio_id);
-                intent.putExtra("tit_id", tit_id);
-                intent.putExtra("mem_name", mem_name);
-                intent.putExtra("rel_val", rel_val);
-                intent.putExtra("age_val", age_val);
-                intent.putExtra("gender_val", gender_val);
-                intent.putExtra("height_val", height_val);
-                intent.putExtra("weight_val", weight_val);
-                startActivity(intent);
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
+    public void ask_someone(String add_type) {
 
 
 /*
-    public void save_family(){
+        Intent intent = new Intent(AskQuery1.this, SomeoneEdit_Dialog.class);
+        intent.putExtra("add_type", "edit");
+        intent.putExtra("profile_id", profile_id);
+        intent.putExtra("tit_id", tit_id);
+        intent.putExtra("mem_name", mem_name);
+        intent.putExtra("rel_val", rel_val);
+        intent.putExtra("dob_val", dob_val);
+        intent.putExtra("age_val", age_val);
+        intent.putExtra("gender_val", gender_val);
+        intent.putExtra("height_val", height_val);
+        intent.putExtra("weight_val", weight_val);
+        startActivity(intent);
 
-        String name_val = edt_name.getText().toString();
-        String age_val = edt_age.getText().toString();
 
-        if (!name_val.equals("")) {
-            try {
-                json_family_new = new JSONObject();
-                json_family_new.put("save_type", "new");
-                json_family_new.put("age", age_val);
-                json_family_new.put("gender", gen_val);
-                json_family_new.put("title", tit_val);
-                json_family_new.put("name", name_val);
-                json_family_new.put("relationType", rel_val);
-                json_family_new.put("height", ht_val);
-                json_family_new.put("weight", wt_val);
-
-                System.out.println("json_family_new---" + json_family_new.toString());
-
-                new JSON_NewFamily().execute(json_family_new);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            edt_name.setError("Enter the name");
-        }
-    }
 */
 
-    public void ask_someone(String add_type) {
 
         //gender_val = "1";
         LayoutInflater inflater = getLayoutInflater();
@@ -3250,29 +2492,29 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         /*RelativeLayout title_layout = (RelativeLayout) alertLayout.findViewById(R.id.title_layout);
         final TextView tv_title_code = (TextView) alertLayout.findViewById(R.id.tv_title_code);*/
 
-        final EditText edt_name = (EditText) alertLayout.findViewById(R.id.edt_name);
-        final MaterialEditText edt_age = (MaterialEditText) alertLayout.findViewById(R.id.edt_age);
+        final EditText edt_name = alertLayout.findViewById(R.id.edt_name);
+        final MaterialEditText edt_age = alertLayout.findViewById(R.id.edt_age);
         //final RadioGroup radgrp_gender = (RadioGroup) alertLayout.findViewById(R.id.radgrp_gender);
-        radio_male = (RadioButton) alertLayout.findViewById(R.id.radio_male);
-        radio_female = (RadioButton) alertLayout.findViewById(R.id.radio_female);
-        radio_thirdgender = (RadioButton) alertLayout.findViewById(R.id.radio_thirdgender);
+        radio_male = alertLayout.findViewById(R.id.radio_male);
+        radio_female = alertLayout.findViewById(R.id.radio_female);
+        radio_thirdgender = alertLayout.findViewById(R.id.radio_thirdgender);
 
-        final RelativeLayout name_title_layout = (RelativeLayout) alertLayout.findViewById(R.id.name_title_layout);
-        final RelativeLayout relation_layout = (RelativeLayout) alertLayout.findViewById(R.id.relation_layout);
-        final RelativeLayout height_layout = (RelativeLayout) alertLayout.findViewById(R.id.height_layout);
-        final RelativeLayout weight_layout = (RelativeLayout) alertLayout.findViewById(R.id.weight_layout);
+        final RelativeLayout name_title_layout = alertLayout.findViewById(R.id.name_title_layout);
+        final RelativeLayout relation_layout = alertLayout.findViewById(R.id.relation_layout);
+        final RelativeLayout height_layout = alertLayout.findViewById(R.id.height_layout);
+        final RelativeLayout weight_layout = alertLayout.findViewById(R.id.weight_layout);
 
         name_title_layout.setVisibility(View.GONE);
 
-        tv_name_title = (TextView) alertLayout.findViewById(R.id.tv_name_title);
-        height_title = (TextView) alertLayout.findViewById(R.id.height_title);
-        weight_title = (TextView) alertLayout.findViewById(R.id.weight_title);
-        relation_title = (TextView) alertLayout.findViewById(R.id.relation_title);
+        tv_name_title = alertLayout.findViewById(R.id.tv_name_title);
+        height_title = alertLayout.findViewById(R.id.height_title);
+        weight_title = alertLayout.findViewById(R.id.weight_title);
+        relation_title = alertLayout.findViewById(R.id.relation_title);
 
-        spinner_height = (Spinner) alertLayout.findViewById(R.id.spinner_height);
-        spinner_weight = (Spinner) alertLayout.findViewById(R.id.spinner_weight);
-        spinner_title = (Spinner) alertLayout.findViewById(R.id.spinner_title);
-        spinner_relationship = (Spinner) alertLayout.findViewById(R.id.spinner_relationship);
+        spinner_height = alertLayout.findViewById(R.id.spinner_height);
+        spinner_weight = alertLayout.findViewById(R.id.spinner_weight);
+        spinner_title = alertLayout.findViewById(R.id.spinner_title);
+        spinner_relationship = alertLayout.findViewById(R.id.spinner_relationship);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -3574,18 +2816,18 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                                     e.printStackTrace();
                                 }
                             } else {
-                                Toast.makeText(getApplicationContext(), "Select a relationship", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Please select Relationship type", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            edt_age.setError("Enter the Age");
+                            edt_age.setError("Please enter the age");
                             edt_age.requestFocus();
                         }
                     } else {
-                        edt_name.setError("Enter the name");
+                        edt_name.setError("Please enter the name");
                         edt_name.requestFocus();
                     }
                 } else {
-                    Toast.makeText(AskQuery1.this, "Select a gender", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AskQuery1.this, "Please select Gender", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -3593,7 +2835,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         AlertDialog dialog = alert.create();
         dialog.show();
     }
-
 
     public void apply_name_title() {
 
@@ -3644,7 +2885,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         builderSingle.show();
     }
 
-
     public void apply_blood_group() {
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(AskQuery1.this);
@@ -3694,6 +2934,186 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         builderSingle.show();
     }
 
+/*
+    public void showFamDialog(Activity activity, String msg){
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.family_row);
+
+        TextView tv_famname = (TextView) dialog.findViewById(R.id.tv_famname);
+        tv_famname.setText(msg);
+
+        final ArrayAdapter<String> categories = new ArrayAdapter<String>(AskQuery1.this, R.layout.dialog_list_textview);
+        cc_map = new HashMap<String, String>();
+        //---------------------------------------
+        try {
+
+            JSONArray jaaray = new JSONArray(family_list);
+
+            System.out.println("family_list-----------" + family_list);
+            System.out.println(" jaaray.length()-----------" + jaaray.length());
+
+
+            if (family_list.length() > 2) {
+
+                for (int i = 0; i < jaaray.length(); i++) {
+
+                    JSONObject jsonobj1 = jaaray.getJSONObject(i);
+
+                    String id_val = jsonobj1.getString("id");
+                    String name_val = jsonobj1.getString("name");
+                    String gender_val = jsonobj1.getString("gender");
+                    String relation_val = jsonobj1.getString("relation_type");
+
+                    String display_text = name_val + "(" + relation_val + ")";
+                    categories.add(display_text);
+                    cc_map.put(display_text, id_val);
+                }
+            }
+
+            String so_text = "Select Someone else";
+            categories.add(so_text);
+            cc_map.put(so_text, "999");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }*/
+
+
+    /*public void ask_someone() {
+
+        final Dialog alert = new Dialog(AskQuery1.this);
+
+        alert.setContentView(R.layout.someone_edit);
+        alert.setCanceledOnTouchOutside(false);
+        //alert.setTitle("Please Re-Login the App..!");
+        //alert.setMessage("Something went wrong. Please go back and try again..!e");
+
+        RelativeLayout title_layout = (RelativeLayout) alert.findViewById(R.id.title_layout);
+        final TextView tv_title_code = (TextView) alert.findViewById(R.id.tv_title_code);
+        final TextView edt_name = (EditText) alert.findViewById(R.id.edt_name);
+        final MaterialEditText edt_age = (MaterialEditText) alert.findViewById(R.id.edt_age);
+        final RadioGroup radgrp_gender = (RadioGroup) alert.findViewById(R.id.radgrp_gender);
+        final RadioButton radio_male = (RadioButton) alert.findViewById(R.id.radio_male);
+        final RadioButton radio_female = (RadioButton) alert.findViewById(R.id.radio_female);
+
+        spinner_height = (Spinner) alert.findViewById(R.id.spinner_height);
+        spinner_weight = (Spinner) alert.findViewById(R.id.spinner_weight);
+        spinner_title = (Spinner) alert.findViewById(R.id.spinner_title);
+
+        spinner_relationship = (Spinner) alert.findViewById(R.id.spinner_relationship);
+
+        setup_title();
+        setup_relation();
+        setup_height();
+        setup_weight();
+
+        spinner_title.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                tit_name = spinner_title.getSelectedItem().toString();
+                tit_val = tit_map.get(tit_name);
+
+                System.out.println("tit_name----------" + tit_name);
+                System.out.println("tit_val----------" + tit_val);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner_relationship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                rel_name = spinner_relationship.getSelectedItem().toString();
+                rel_val = gen_map.get(rel_name);
+
+                System.out.println("Relation name----------" + rel_name);
+                System.out.println("Relation Val----------" + rel_val);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        spinner_height.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                ht_name = spinner_height.getSelectedItem().toString();
+                ht_val = ht_map.get(ht_name);
+
+                System.out.println("ht_name----------" + ht_name);
+                System.out.println("ht_val----------" + ht_val);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner_weight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                wt_name = spinner_weight.getSelectedItem().toString();
+                wt_val = wt_map.get(wt_name);
+
+                System.out.println("ht_name----------" + wt_name);
+                System.out.println("ht_val----------" + wt_val);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        radgrp_gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked) {
+
+                    String check_string = checkedRadioButton.getText().toString();
+                    System.out.println("check_string------------" + check_string);
+
+                    if (check_string.equals("Male")) {
+                        gen_val = "1";
+                    } else {
+                        gen_val = "2";
+                    }
+
+                    System.out.println("gen_val------------" + gen_val);
+                }
+            }
+        });
+        alert.show();
+    }*/
 
     public void apply_relationship() {
 
@@ -4016,7 +3436,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         });
         builderSingle.show();
     }
-
 
     public void apply_weight() {
 
@@ -4716,14 +4135,36 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
     }
 
 
-    public static Object getKeyFromValue(Map hm, Object value) {
-        for (Object o : hm.keySet()) {
-            if (hm.get(o).equals(value)) {
-                return o;
+/*
+    public void save_family(){
+
+        String name_val = edt_name.getText().toString();
+        String age_val = edt_age.getText().toString();
+
+        if (!name_val.equals("")) {
+            try {
+                json_family_new = new JSONObject();
+                json_family_new.put("save_type", "new");
+                json_family_new.put("age", age_val);
+                json_family_new.put("gender", gen_val);
+                json_family_new.put("title", tit_val);
+                json_family_new.put("name", name_val);
+                json_family_new.put("relationType", rel_val);
+                json_family_new.put("height", ht_val);
+                json_family_new.put("weight", wt_val);
+
+                System.out.println("json_family_new---" + json_family_new.toString());
+
+                new JSON_NewFamily().execute(json_family_new);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        } else {
+            edt_name.setError("Enter the name");
         }
-        return null;
     }
+*/
 
     public void hash_map_title() {
         tit_map.put("Mr.", "1");
@@ -5619,8 +5060,600 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
         wt_map.put("330 lbs (149.69 kg)", "330");
     }
 
+    private boolean canScroll(HorizontalScrollView horizontalScrollView) {
+        View child = horizontalScrollView.getChildAt(0);
+        if (child != null) {
+            int childWidth = (child).getWidth();
+            return horizontalScrollView.getWidth() < childWidth + horizontalScrollView.getPaddingLeft() + horizontalScrollView.getPaddingRight();
+        }
+        return false;
+
+    }
+
+    private class JSONAsyncTask extends AsyncTask<String, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                jsonobj = jParser.getJSONFromUrl(urls[0]);
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+
+                if (jsonobj.has("token_status")) {
+                    String token_status = jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(AskQuery1.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+
+                } else {
+
+                    String dqidval = jsonobj.getString("query");
+
+                    System.out.println("dqidval-----------------" + dqidval);
+
+                    if (dqidval != null && !dqidval.isEmpty() && !dqidval.equals("") && !dqidval.equals("null")) {
+                        edt_query.setText(Html.fromHtml(dqidval));
+                    }
+                }
+
+            } catch (Exception e) {
+                edt_query.setText("");
+                e.printStackTrace();
+            }
+
+            dialog.cancel();
+        }
+    }
+
+    private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Submitting, please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                jsonobj = jParser.JSON_POST(urls[0], "PostQuery");
+
+                System.out.println("Parameters---------------" + urls[0]);
+                System.out.println("Response jsonobj---------------" + jsonobj.toString());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+                if (jsonobj.has("token_status")) {
+                    String token_status = jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        finishAffinity();
+                        Intent intent = new Intent(AskQuery1.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+
+                    qid = jsonobj.getString("qid");
+
+                    //------------ persona_id---------------------
+                    if (jsonobj.has("persona_id")) {
+                        persona_id_val = jsonobj.getString("persona_id");
+                    } else {
+                        persona_id_val = "0";
+                    }
+                    //------------ persona_id---------------------
+
+
+                    System.out.println("Submitting Query id:--------" + qid);
+                    if (qid != null && !qid.isEmpty() && !qid.equals("null") && !qid.equals("")) {
+
+
+                        if (jsonobj.has("icq100_id")) {
+
+                            icq100_id_val = jsonobj.getString("icq100_id");
+
+                            //------------ Prepare Invoice---------------------
+                            String url = (Model.BASE_URL) + "/sapp/prepareInv?user_id=" + (Model.id) + "&inv_for=" + inf_for + "&item_id=" + icq100_id_val + "&token=" + Model.token + "&enc=1";
+                            System.out.println("Query2 Prepare Invoice url-------------" + url);
+                            new JSON_Prepare_inv().execute(url);
+                            //------------ Prepare Invoice----------------------
+
+                        } else {
+
+                            Intent i = new Intent(AskQuery1.this, AskQuery2.class);
+                            i.putExtra("qid", qid);
+                            i.putExtra("persona_id", persona_id_val);
+                            startActivity(i);
+                            finish();
+
+                            /*i.putExtra("finisher", new android.os.ResultReceiver(null) {
+                                @Override
+                                protected void onReceiveResult(int resultCode, Bundle resultData) {
+                                    AskQuery1.this.finish();
+                                }
+                            });
+                            startActivityForResult(i, 1);*/
+
+                            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                        }
+
+
+                    } else {
+                        Toast.makeText(AskQuery1.this, "Something went wrong. Please go back and try again..!", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(AskQuery1.this, CenterFabActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                dialog.cancel();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class JSON_getFee extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                docprof_jsonobj = jParser.JSON_POST(urls[0], "getqFee");
+
+                System.out.println("Feedback URL---------------" + urls[0]);
+                System.out.println("json_response_obj-----------" + docprof_jsonobj.toString());
+
+                return true;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                if (docprof_jsonobj.has("token_status")) {
+                    String token_status = docprof_jsonobj.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                } else {
+                    Model.fee_q_inr = docprof_jsonobj.getString("fee_val");
+                    Model.fee_q = docprof_jsonobj.getString("str_fee");
+
+                    tvqfee.setText("(" + Model.fee_q + ")");
+
+                    //tvqfee.setText("Fee : " + Model.fee_q);
+                    //btn_submit.setText("Submit & Continue (" + Model.fee_q + ")");
+                    //btn_submit.setText("Submit Query");
+
+                    //------------ Google firebase Analitics--------------------
+                    Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                    Bundle params = new Bundle();
+                    params.putString("User", Model.id);
+                    params.putString("Fee", docprof_jsonobj.toString());
+                    Model.mFirebaseAnalytics.logEvent("AskQuery1_getFee", params);
+                    //------------ Google firebase Analitics--------------------
+
+                }
+
+                dialog.dismiss();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class JSON_getFamily extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                family_list = jParser.getJSONString(urls[0]);
+                System.out.println("Family URL---------------" + urls[0]);
+
+                return family_list;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            apply_relaships_radio(family_list);
+
+            dialog.cancel();
+        }
+    }
+
+    private class JSON_NewFamily extends AsyncTask<JSONObject, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Submitting..., please wait..");
+            //dialog.setTitle("");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected String doInBackground(JSONObject... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                family_list = jParser.JSON_String_POST(urls[0], "newFamily");
+
+                System.out.println("newFamily URL---------------" + urls[0]);
+
+
+                return family_list;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            try {
+
+                System.out.println("family_list----------" + family_list);
+
+                apply_relaships_radio(family_list);
+
+                dialog.cancel();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class JSON_getFamDetails extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait..");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                famDets_text = jParser.getJSONString(urls[0]);
+
+                System.out.println("Family URL- DEts--------------" + urls[0]);
+
+                return famDets_text;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            try {
+                System.out.println("family_list---------------" + family_list);
+
+                JSONObject fam_obj = new JSONObject(family_list);
+
+                System.out.println("fam_obj--------------" + fam_obj.toString());
+
+                String name_text = fam_obj.getString("name");
+                String relation_type_text = fam_obj.getString("relation_type");
+                String age_text = fam_obj.getString("age");
+                //String dob_text = fam_obj.getString("dob");
+                String gender_text = fam_obj.getString("gender");
+                String height_text = fam_obj.getString("height");
+                String weight_text = fam_obj.getString("weight");
+
+                System.out.println("Get name_text----------------" + name_text);
+                //System.out.println("Get dob_text----------------" + dob_text);
+                System.out.println("Get relation_type_text----------------" + relation_type_text);
+                System.out.println("Get  age_text----------------" + age_text);
+                System.out.println("gender_text----------------" + gender_text);
+                System.out.println("height_text----------------" + height_text);
+                System.out.println("weight_text----------------" + weight_text);
+
+
+                if (relation_type_text != null && !relation_type_text.isEmpty() && !relation_type_text.equals("null") && !relation_type_text.equals("")) {
+                } else {
+                    relation_type_text = "";
+                }
+                if (age_text != null && !age_text.isEmpty() && !age_text.equals("null") && !age_text.equals("")) {
+                } else {
+                    age_text = "";
+
+                }
+                if (gender_text != null && !gender_text.isEmpty() && !gender_text.equals("null") && !gender_text.equals("")) {
+                } else {
+                    gender_text = "";
+                }
+                if (height_text != null && !height_text.isEmpty() && !height_text.equals("null") && !height_text.equals("")) {
+                } else {
+                    height_text = "";
+                }
+                if (weight_text != null && !weight_text.isEmpty() && !weight_text.equals("null") && !weight_text.equals("")) {
+                } else {
+                    weight_text = "";
+                }
+                if (name_text != null && !name_text.isEmpty() && !name_text.equals("null") && !name_text.equals("")) {
+                } else {
+                    name_text = "";
+                }
+
+
+                tv_fam_name.setText(name_text);
+                tv_fam_agedets.setText(relation_type_text + " - " + gender_text);
+                tv_fam_height.setText("Height : " + height_text);
+                tv_fam_weight.setText("Weight : " + weight_text);
+
+
+                try {
+                    if (gender_text != null && !gender_text.isEmpty() && !gender_text.equals("null") && !gender_text.equals("")) {
+
+
+                    } else {
+                        //-------------------------------------------------------------------
+                        String get_family_profile = Model.BASE_URL + "sapp/getFamilyProfile?user_id=" + Model.id + "&id=" + radio_id + "&isView=0&token=" + Model.token;
+                        System.out.println("get_family_profile---------" + get_family_profile);
+                        new JSON_EditFamDetails().execute(get_family_profile);
+                        //---------------------------------------------------------------
+                        Toast.makeText(AskQuery1.this, "Please select your gender", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                System.out.println("radio_id=============" + radio_id);
+
+                if (!radio_id.equals("0")) {
+                    //-------- View --------------------------------------
+                    famidets_layout.setVisibility(View.VISIBLE);
+                    img_downarrow.setVisibility(View.GONE);
+                    img_uparrow.setVisibility(View.VISIBLE);
+                    //-------- View --------------------------------------
+                } else {
+                    famidets_layout.setVisibility(View.GONE);
+                    img_downarrow.setVisibility(View.VISIBLE);
+                    img_uparrow.setVisibility(View.GONE);
+                    //-------- View --------------------------------------
+                }
+
+                dialog.dismiss();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private class JSON_EditFamDetails extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                JSONParser jParser = new JSONParser();
+                famDets_text = jParser.getJSONString(urls[0]);
+
+                System.out.println("Family URL- Dets--------------" + urls[0]);
+
+                return famDets_text;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String family_list) {
+
+            try {
+
+                JSONObject fam_obj = new JSONObject(family_list);
+
+                System.out.println("fam_obj--------------" + fam_obj.toString());
+
+                rel_val = fam_obj.getString("relation_type");
+                tit_id = fam_obj.getString("title_id");
+                mem_name = fam_obj.getString("name");
+                age_val = fam_obj.getString("age");
+                dob_val = fam_obj.getString("dob");
+                gender_val = fam_obj.getString("gender");
+                height_val = fam_obj.getString("height");
+                weight_val = fam_obj.getString("weight");
+
+                tit_val = tit_id;
+
+                System.out.println("tit_id-1--------------" + tit_id);
+                System.out.println("mem_name 1---------------" + mem_name);
+                System.out.println("rel_type 1---------------" + rel_val);
+                System.out.println("age_val 1---------------" + age_val);
+                System.out.println("dob_val 1---------------" + dob_val);
+                System.out.println("gender_val- 1--------------" + gender_val);
+                System.out.println("height_val-1--------------" + height_val);
+                System.out.println("weight_val---------------" + weight_val);
+
+                //ask_someone("edit");
+
+                Intent intent = new Intent(AskQuery1.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "edit");
+                intent.putExtra("profile_id", radio_id);
+                intent.putExtra("tit_id", tit_id);
+                intent.putExtra("mem_name", mem_name);
+                intent.putExtra("rel_val", rel_val);
+                intent.putExtra("age_val", age_val);
+                intent.putExtra("dob_val", dob_val);
+                intent.putExtra("gender_val", gender_val);
+                intent.putExtra("height_val", height_val);
+                intent.putExtra("weight_val", weight_val);
+                startActivity(intent);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.cancel();
+        }
+    }
 
     private class JSON_getFee_100 extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
         @Override
         protected Boolean doInBackground(JSONObject... urls) {
             try {
@@ -5645,6 +5678,8 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                 } else {
                     tv_fee1.setText("");
                 }
+
+                dialog.cancel();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -5653,6 +5688,19 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
     }
 
     private class JSON_getFee_50 extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(AskQuery1.this);
+            dialog.setMessage("Please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
         @Override
         protected Boolean doInBackground(JSONObject... urls) {
             try {
@@ -5675,6 +5723,8 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                 } else {
                     tv_fee11.setText("");
                 }
+
+                dialog.cancel();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -5716,7 +5766,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
 
         protected void onPostExecute(Boolean result) {
 
-            dialog.cancel();
+
             Model.query_launch = "Askquery1";
 
             try {
@@ -5756,16 +5806,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                         Model.mFirebaseAnalytics.logEvent("icq100hrs_Prepare_Invoice", params);
                         //------------ Google firebase Analitics---------------------------------------------
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.icq100_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
-
                         //----------- Flurry -------------------------------------------------
                         Map<String, String> articleParams = new HashMap<String, String>();
                         articleParams.put("Query_id:", qid);
@@ -5796,16 +5836,6 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                         editor.apply();
                         //============================================================
 
-                        //----------------- Kissmetrics ----------------------------------
-                        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                        Model.kiss.record("android.patient.icq100_Submit_Success");
-                        HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("Query_id:", qid);
-                        properties.put("Invoice_id:", inv_id);
-                        properties.put("Invoice_fee:", inv_strfee);
-                        Model.kiss.set(properties);
-                        //----------------- Kissmetrics ----------------------------------
-
                         System.out.println("query_id--------------" + qid);
 
                         ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
@@ -5819,16 +5849,8 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
 
-    private boolean canScroll(HorizontalScrollView horizontalScrollView) {
-        View child = (View) horizontalScrollView.getChildAt(0);
-        if (child != null) {
-            int childWidth = (child).getWidth();
-            return horizontalScrollView.getWidth() < childWidth + horizontalScrollView.getPaddingLeft() + horizontalScrollView.getPaddingRight();
+            dialog.cancel();
         }
-        return false;
-
     }
 }

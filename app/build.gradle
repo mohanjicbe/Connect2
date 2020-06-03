@@ -1,21 +1,32 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion project.ext.chimeCompileSdkVersion
+    buildToolsVersion project.ext.chimeBuildToolsVersion
+
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.orane.icliniq"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 120227
-        versionName "19.9.60"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 29
+        versionCode 120243
+        versionName "19.9.76"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         ndk {
-            abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
+            abiFilters "armeabi", "armeabi-v7a", "x86", 'arm64-v8a', "x86_64", "mips"
         }
     }
     buildTypes {
@@ -29,21 +40,35 @@ android {
         enabled true
     }
 
+    repositories {
+        maven {
+            url "https://jitpack.io"
+        }
+    }
+
     lintOptions {
         disable 'MissingTranslation'
         checkReleaseBuilds false
         abortOnError false
     }
+    repositories {
+        mavenCentral()
+    }
+
+    useLibrary 'org.apache.http.legacy'
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
 
     //implementation 'com.google.android.gms:play-services:12.0.1'
@@ -62,28 +87,29 @@ dependencies {
     implementation 'com.github.ksoichiro:android-observablescrollview:1.5.2'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'de.hdodenhof:circleimageview:1.2.1'
+
     implementation 'com.kissmetrics.sdk:KISSmetricsSDK:2.2.2'
+
     implementation 'com.flurry.android:analytics:10.0.0'
     implementation 'me.drakeet.materialdialog:library:1.2.8'
 
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     implementation 'com.gordonwong:material-sheet-fab:1.2.1'
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.wdullaer:materialdatetimepicker:2.1.1'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support:palette-v7:28.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.palette:palette:1.0.0'
     implementation 'com.alexvasilkov:gesture-views:2.1.1'
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
     implementation 'com.pubnub:pubnub-android:3.7.5'
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.allattentionhere:fabulousfilter:0.0.2'
-
+    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'com.allattentionhere:fabulousfilter:0.0.2' //fabulas
 
 
     implementation 'com.github.armcha:AutoLinkTextView:0.3.0'
-    implementation 'com.opentok.android:opentok-android-sdk:2.12.1'
+    //implementation 'com.opentok.android:opentok-android-sdk:2.12.1'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.9.0'
-    implementation 'com.stripe:stripe-android:6.1.2'
+    implementation 'com.stripe:stripe-android:8.1.0'
     implementation 'ru.egslava:MaskedEditText:1.0.5'
     implementation 'com.github.tajchert:nammu:1.1.1'
 
@@ -102,5 +128,37 @@ dependencies {
 
     implementation 'com.github.armcha:AutoLinkTextView:0.3.0'
 
+    implementation 'com.razorpay:checkout:1.5.13'
 
+    implementation 'com.google.api-client:google-api-client:1.20.0'
+    implementation 'com.google.api-client:google-api-client-android:1.20.0'
+    implementation 'com.google.api-client:google-api-client-gson:1.20.0'
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev125-1.20.0'
+
+    implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
+    implementation("com.squareup.okhttp3:okhttp:4.4.0")
+
+
+    implementation ("com.voxeet.sdk:public-sdk:2.1") {
+        transitive = true
+    }
+    implementation 'com.jakewharton:butterknife:7.0.1'
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
+
+    implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.70'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    //implementation project(path: ':amazon-chime-sdk')
+    implementation(name: 'amazon-chime-sdk', ext: 'aar')
+    implementation(name: 'amazon-chime-sdk-media', ext: 'aar')
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
 }

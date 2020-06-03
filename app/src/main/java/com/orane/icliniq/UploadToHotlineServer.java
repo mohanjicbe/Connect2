@@ -12,7 +12,14 @@ import android.widget.Toast;
 
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
+import com.orane.icliniq.Model.MultipartEntity2;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
@@ -30,11 +37,11 @@ import java.util.HashMap;
 public class UploadToHotlineServer extends Activity {
 
     InputStream is = null;
-    String serverResponseMessage, contentAsString;
+    String serverResponseMessage, contentAsString,upload_response;
     TextView messageText;
     Button uploadButton;
     int serverResponseCode = 0;
-    ProgressDialog dialog = null;
+    //ProgressDialog dialog = null;
     public JSONObject json;
     String upLoadServerUri = null;
     public String fullpath, selqid;
@@ -46,7 +53,6 @@ public class UploadToHotlineServer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_to_server);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         uploadButton = (Button) findViewById(R.id.uploadButton);
         messageText = (TextView) findViewById(R.id.messageText);
@@ -57,20 +63,6 @@ public class UploadToHotlineServer extends Activity {
             fname = intent.getStringExtra("KEY_filename");
             selqid = intent.getStringExtra("selqid");
 
-            try {
-                //----------------- Kissmetrics ----------------------------------
-                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                Model.kiss.record("android.patient.Hotline_File_Attached");
-                HashMap<String, String> properties = new HashMap<String, String>();
-                properties.put("android.patient.push.File_path", fpath);
-                properties.put("android.patient.push.File_Name", fname);
-                properties.put("android.patient.push.Qid", selqid);
-                Model.kiss.set(properties);
-                //----------------- Kissmetrics ----------------------------------
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             messageText.setText("Uploading file path :" + fpath);
 
         } catch (Exception e) {
@@ -80,7 +72,9 @@ public class UploadToHotlineServer extends Activity {
         upLoadServerUri = Model.BASE_URL + "/sapp/upload?qid=" + selqid + "&hline=1&token=" + Model.token + "&enc=1";
         System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
 
-        dialog = ProgressDialog.show(UploadToHotlineServer.this, "", "Uploading file...", true);
+        new JSONAsyncTask().execute("");
+
+      /*  dialog = ProgressDialog.show(UploadToHotlineServer.this, "", "Uploading file...", true);
         new Thread(new Runnable() {
             public void run() {
                 runOnUiThread(new Runnable() {
@@ -89,9 +83,9 @@ public class UploadToHotlineServer extends Activity {
                     }
                 });
 
-                new JSONAsyncTask().execute("");
+
             }
-        }).start();
+        }).start();*/
     }
 
     private class JSONAsyncTask extends AsyncTask<String, Void, Boolean> {
@@ -108,7 +102,8 @@ public class UploadToHotlineServer extends Activity {
 
             try {
                 //uploadFile(fpath + "" + fname);
-                uploadFile();
+                //uploadFile(fpath);
+                upload_response = upload_file(fpath);
 
                 System.out.println("Upload File-------" + fpath + "" + fname);
 
@@ -120,11 +115,44 @@ public class UploadToHotlineServer extends Activity {
         }
 
         protected void onPostExecute(Boolean result) {
+
+            System.out.println("Upload File upload_response-----------------" + upload_response);
+            Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
+
+            if (serverResponseCode == 200) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        try {
+
+                            JSONObject jObj = new JSONObject(upload_response);
+                            System.out.println("jObj-------------" + jObj.toString());
+
+                            String attach_id = jObj.getString("attach_id");
+                            String status = jObj.getString("status");
+
+                            Model.attach_qid = attach_id;
+                            Model.attach_status = status;
+
+                            System.out.println("Uploading file Qid-------" + attach_id);
+                            System.out.println("status-------" + status);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Toast.makeText(UploadToHotlineServer.this, "File uploaded successfully", Toast.LENGTH_SHORT).show();
+                        System.out.println("Upload File Response-----------------" + serverResponseMessage);
+                    }
+                });
+            }
+
+
             finish();
         }
     }
 
-    public int uploadFile() {
+   /* public int uploadFile() {
 
 
         Model.local_file_url = fpath;
@@ -238,7 +266,7 @@ public class UploadToHotlineServer extends Activity {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(UploadToHotlineServer.this, "File Upload Complete.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadToHotlineServer.this, "File uploaded successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Upload File Response-----------------" + serverResponseMessage);
                         }
                     });
@@ -280,7 +308,7 @@ public class UploadToHotlineServer extends Activity {
         } // End else block
     }
 
-
+*/
     public String convertInputStreamToString(InputStream stream, int length) throws IOException {
         Reader reader = null;
         reader = new InputStreamReader(stream, "UTF-8");
@@ -288,4 +316,56 @@ public class UploadToHotlineServer extends Activity {
         reader.read(buffer);
         return new String(buffer);
     }
+
+
+    private String upload_file(String file_path) {
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/upload?qid=" + selqid + "&hline=1&token=" + Model.token + "&enc=1";
+        System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
+
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        if ((Model.upload_files).equals("")) {
+            Model.upload_files = file_path;
+        } else {
+            Model.upload_files = Model.upload_files + "," + file_path;
+        }
+
+        Model.upload_files = file_path;
+
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
+
 }

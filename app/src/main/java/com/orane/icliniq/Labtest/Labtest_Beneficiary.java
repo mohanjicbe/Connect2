@@ -7,9 +7,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -251,21 +251,21 @@ public class Labtest_Beneficiary extends AppCompatActivity implements
                                         new JSON_POST_BENEF().execute(json_benef);
 
                                     } else {
-                                        edt_mobno.setError("Mobile number cannot be empty");
-                                        Toast.makeText(getApplicationContext(), "Please enter mobile number", Toast.LENGTH_SHORT).show();
+                                        edt_mobno.setError("Please enter your mobile number");
+                                        Toast.makeText(getApplicationContext(), "Mobile number is mandatory", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Address should be atleast 20 letters", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Address must contain at least 20 letters", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Please select nearest agency", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please select Appointment Date", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Please select your appointment date", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Please select date of birth", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please select your Date of Birth", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e2) {
                     e2.printStackTrace();

@@ -3,28 +3,35 @@ package com.orane.icliniq.Parallex;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.flurry.android.FlurryAgent;
+import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
+import com.orane.icliniq.AskQuery1;
 import com.orane.icliniq.HotlinePackagesActivity;
 import com.orane.icliniq.LoginActivity;
 import com.orane.icliniq.Model.Model;
@@ -43,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
 
@@ -53,12 +61,12 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
     ImageView image;
     public File imageFile;
     CircleImageView imageview_poster;
-    TextView tv_tooltit, tv_tooldesc, tvdocname, tvedu, tvspec;
+    TextView tv_tooltit, tv_star_text, tv_tooldesc, tvdocname, tvedu, tvspec;
     EditText edt_query;
     Button btn_submit;
-    public String str_response, has_hline, clinics, treatment_skills, language, docurl, doc_photo_url, Doc_id, Docname, Docedu, Docspec, cfee, qfee;
+    public String strHtml_text, rating_lbl, is_star_val, avg_rating_val, str_response, has_hline, clinics, treatment_skills, language, docurl, doc_photo_url, Doc_id, Docname, Docedu, Docspec, cfee, qfee;
     public String query_txt, qid;
-    public LinearLayout netcheck_layout, full_layout;
+    public LinearLayout rating_layout,netcheck_layout, full_layout;
     public JSONObject jsonobj_postq, json, jsonobj_docprof;
     Toolbar toolbar;
     ScrollView scrollview, doc_layout;
@@ -68,6 +76,7 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
     SharedPreferences sharedpreferences;
     public String uname, pass, Log_Status;
     Button btn_hotlineplans, btn_hotline;
+    RatingBar ratingBar;
 
 
     @Override
@@ -76,7 +85,7 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
         setContentView(R.layout.parallex_activity_main);
 
         //--------------------------------------------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -84,8 +93,8 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("Doctor Profile");
 
-            tv_tooltit = (TextView) toolbar.findViewById(R.id.tv_tooltit);
-            tv_tooldesc = (TextView) toolbar.findViewById(R.id.tv_tooldesc);
+            tv_tooltit = toolbar.findViewById(R.id.tv_tooltit);
+            tv_tooldesc = toolbar.findViewById(R.id.tv_tooldesc);
 
         }
 
@@ -96,10 +105,13 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
 
         initValues();
 
-        bg_layout = (LinearLayout) findViewById(R.id.bg_layout);
-        mTopImage = (LinearLayout) findViewById(R.id.image);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mNavigBar = (SlidingTabLayout) findViewById(R.id.navig_tab);
+        bg_layout = findViewById(R.id.bg_layout);
+        mTopImage = findViewById(R.id.image);
+        mViewPager = findViewById(R.id.view_pager);
+        mNavigBar = findViewById(R.id.navig_tab);
+        ratingBar = findViewById(R.id.ratingBar);
+        tv_star_text = findViewById(R.id.tv_star_text);
+
         mHeader = findViewById(R.id.header);
 
         if (savedInstanceState != null) {
@@ -118,17 +130,16 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
             e.printStackTrace();
         }
 
-
-/*        GifImageView gifImageView = (GifImageView) findViewById(R.id.GifImageView);
-
+/*      GifImageView gifImageView = (GifImageView) findViewById(R.id.GifImageView);
         gifImageView.setGifImageResource(R.drawable.loading);*/
 
-        tvdocname = (TextView) findViewById(R.id.tvdocname);
+        tvdocname = findViewById(R.id.tvdocname);
 
-        tvedu = (TextView) findViewById(R.id.tvedu);
-        tvspec = (TextView) findViewById(R.id.tvspec);
-        btn_hotline = (Button) findViewById(R.id.btn_hotline);
-        imageview_poster = (CircleImageView) findViewById(R.id.imageview_poster);
+        tvedu = findViewById(R.id.tvedu);
+        tvspec = findViewById(R.id.tvspec);
+        btn_hotline = findViewById(R.id.btn_hotline);
+        imageview_poster = findViewById(R.id.imageview_poster);
+        rating_layout = findViewById(R.id.rating_layout);
 
         Typeface font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
         Typeface font_bold = Typeface.createFromAsset(getAssets(), Model.font_name_bold);
@@ -155,7 +166,7 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "No Internet connection, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
 
         btn_hotline.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +180,15 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
                 startActivity(intent);
             }
         });
+
+        rating_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                show_tips();
+            }
+        });
+
+
     }
 
 
@@ -241,6 +261,28 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
                     qfee = jsonobj_docprof.getString("qfee");
                     docurl = jsonobj_docprof.getString("url");
                     has_hline = jsonobj_docprof.getString("has_hline");
+
+                    is_star_val = jsonobj_docprof.getString("is_star");
+                    avg_rating_val = jsonobj_docprof.getString("avg_rating");
+                    rating_lbl = jsonobj_docprof.getString("rating_lbl");
+                    strHtml_text = jsonobj_docprof.getString("strHtmlContent");
+
+
+                    if (is_star_val != null && !is_star_val.isEmpty() && !is_star_val.equals("null") && !is_star_val.equals("")) {
+                        if (is_star_val.equals("1")) {
+                            ratingBar.setVisibility(View.VISIBLE);
+                            tv_star_text.setVisibility(View.VISIBLE);
+
+                            ratingBar.setRating(Float.parseFloat(avg_rating_val));
+                            tv_star_text.setText(rating_lbl);
+                        } else {
+                            ratingBar.setVisibility(View.GONE);
+                            tv_star_text.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ratingBar.setVisibility(View.GONE);
+                        tv_star_text.setVisibility(View.GONE);
+                    }
 
 
                     //------------ Google firebase Analitics--------------------
@@ -409,4 +451,37 @@ public class ParallexMainActivity extends ParallaxViewPagerBaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void show_tips() {
+
+        try {
+
+            final MaterialDialog alert = new MaterialDialog(ParallexMainActivity.this);
+            View view = LayoutInflater.from(ParallexMainActivity.this).inflate(R.layout.tipstoratting, null);
+            alert.setView(view);
+            alert.setTitle("How Rating works?");
+            alert.setCanceledOnTouchOutside(false);
+
+            ObservableWebView webview = view.findViewById(R.id.webview);
+
+            webview.getSettings().setJavaScriptEnabled(true);
+            webview.setBackgroundColor(Color.TRANSPARENT);
+            webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+            webview.loadDataWithBaseURL("", strHtml_text, "text/html", "UTF-8", "");
+            webview.setLongClickable(false);
+
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

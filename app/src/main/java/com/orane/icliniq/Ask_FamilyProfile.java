@@ -10,9 +10,9 @@ import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,7 +49,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class Ask_FamilyProfile extends AppCompatActivity {
 
     EditText edt_query;
-    String persona_id_val,fee_str_text, icq100_id_val, save_type, Log_Status, mem_name, height_name, tit_id, age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
+    String persona_id_val, fee_str_text, icq100_id_val, save_type, Log_Status, mem_name, height_name, tit_id, dob_val,age_val, gender_val, height_val, weight_val, relation_type_val, radio_id, myself_id, famDets_text, fam_response, relation_value, tit_name, tit_val;
     JSONObject jsonobj_postq, jsonobj_prepinv, jsonobj_icq100, jsonobj_icq50, json_family_new, docprof_jsonobj;
     RelativeLayout name_title_layout, relationship_layout, first_layout;
     Spinner spinner_height, spinner_weight, spinner_title;
@@ -367,11 +367,18 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                             switch (rad_name) {
                                 case "Someone else": {
 
-                                    ask_someone("someone");
+                                   // ask_someone("someone");
                                     save_type = "new";
                                     System.out.println("save_type--------- " + save_type);
 
                                     radio_id = "0";
+
+
+                                    Intent intent = new Intent(Ask_FamilyProfile.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "someone");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
+
 
                                     //buttonClicked();
                                     break;
@@ -381,9 +388,18 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                                         radio_id = myself_id;
                                         System.out.println("radio_id-----" + radio_id);
                                     } else {
-                                        ask_someone("myself");
+                                        //ask_someone("myself");
                                         save_type = "new";
                                         System.out.println("save_type--------- " + save_type);
+
+
+                                        Intent intent = new Intent(Ask_FamilyProfile.this, SomeoneEdit_Dialog.class);
+                                        intent.putExtra("add_type", "myself");
+                                        intent.putExtra("profile_id", "0");
+                                        startActivity(intent);
+
+
+
                                     }
                                     break;
                                 }
@@ -462,18 +478,30 @@ public class Ask_FamilyProfile extends AppCompatActivity {
 
                             switch (rad_name) {
                                 case "Someone else": {
-                                    ask_someone("someone");
+                                    //ask_someone("someone");
 
                                     save_type = "new";
                                     System.out.println("save_type--------- " + save_type);
+
+                                    Intent intent = new Intent(Ask_FamilyProfile.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "someone");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
+
+
 
                                     break;
                                 }
                                 case "Myself": {
-                                    ask_someone("myself");
+                                    //ask_someone("myself");
 
                                     save_type = "new";
                                     System.out.println("save_type--------- " + save_type);
+
+                                    Intent intent = new Intent(Ask_FamilyProfile.this, SomeoneEdit_Dialog.class);
+                                    intent.putExtra("add_type", "myself");
+                                    intent.putExtra("profile_id", "0");
+                                    startActivity(intent);
 
                                     break;
                                 }
@@ -1741,7 +1769,7 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                     }
 
                 } else
-                    edt_query.setError("Query cannot be empty");
+                    edt_query.setError("Please enter your query");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1795,8 +1823,8 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                     qid = jsonobj_postq.getString("qid");
 
                     //------------ persona_id---------------------
-                    if (jsonobj.has("persona_id")) {
-                        persona_id_val = jsonobj.getString("persona_id");
+                    if (jsonobj_postq.has("persona_id")) {
+                        persona_id_val = jsonobj_postq.getString("persona_id");
                     } else {
                         persona_id_val = "0";
                     }
@@ -1911,6 +1939,7 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                 tit_id = fam_obj.getString("title_id");
                 mem_name = fam_obj.getString("name");
                 age_val = fam_obj.getString("age");
+                dob_val = fam_obj.getString("dob");
                 gender_val = fam_obj.getString("gender");
                 height_val = fam_obj.getString("height");
                 weight_val = fam_obj.getString("weight");
@@ -1921,14 +1950,30 @@ public class Ask_FamilyProfile extends AppCompatActivity {
                 System.out.println("mem_name 1---------------" + mem_name);
                 System.out.println("rel_type 1---------------" + rel_val);
                 System.out.println("age_val 1---------------" + age_val);
-                System.out.println("gender_val- 1--------------" + gender_val);
+                System.out.println("age_val 1---------------" + age_val);
+                System.out.println("dob_val- 1--------------" + dob_val);
                 System.out.println("height_val-1--------------" + height_val);
                 System.out.println("weight_val---------------" + weight_val);
 
-                ask_someone("edit");
+                //ask_someone("edit");
 
                 save_type = "edit";
                 System.out.println("save_type--------- " + save_type);
+
+
+                Intent intent = new Intent(Ask_FamilyProfile.this, SomeoneEdit_Dialog.class);
+                intent.putExtra("add_type", "edit");
+                intent.putExtra("profile_id", radio_id);
+                intent.putExtra("tit_id", tit_id);
+                intent.putExtra("mem_name", mem_name);
+                intent.putExtra("rel_val", rel_val);
+                intent.putExtra("age_val", age_val);
+                intent.putExtra("dob_val", dob_val);
+                intent.putExtra("gender_val", gender_val);
+                intent.putExtra("height_val", height_val);
+                intent.putExtra("weight_val", weight_val);
+                startActivity(intent);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1992,7 +2037,6 @@ public class Ask_FamilyProfile extends AppCompatActivity {
             } else {
                 tv_name_title.setText("Mr.,");
             }
-
 
             relation_title.setText("" + getKeyFromValue(gen_map, rel_val));
             height_title.setText("" + getKeyFromValue(ht_map, height_val));
@@ -2196,14 +2240,14 @@ public class Ask_FamilyProfile extends AppCompatActivity {
 
                             new JSON_NewFamily().execute(json_family_new);
                         } else {
-                            Toast.makeText(getApplicationContext(), "Please enter name", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Please enter the name", Toast.LENGTH_SHORT).show();
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    edt_name.setError("Enter the name");
+                    edt_name.setError("Please enter the name");
                 }
             }
         });

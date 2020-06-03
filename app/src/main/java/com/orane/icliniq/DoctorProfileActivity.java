@@ -11,10 +11,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.palette.graphics.Palette;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
-import com.kissmetrics.sdk.KISSmetricsAPI;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
@@ -80,7 +80,6 @@ public class DoctorProfileActivity extends AppCompatActivity {
         setContentView(R.layout.doctor_profile_new);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
         //------------ Object Creations --------------------------------------------------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -158,7 +157,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
             doc_layout.setVisibility(View.GONE);
             netcheck_layout.setVisibility(View.VISIBLE);
 
-            Toast.makeText(getApplicationContext(), "No Internet connection, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
 
         cons_type = "1";
@@ -307,7 +306,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
                         } else
 
-                            edt_query.setError("Query cannot be empty");
+                            edt_query.setError("Please enter your query");
 
                     } else {
                         System.out.println("Log_Status---Zero---" + Log_Status);
@@ -491,15 +490,6 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
                     System.out.println("Reach----------------------");
 
-                    //----------------- Kissmetrics ------------- manprox, Supermarket App,
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Doctor_Profile");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("doctor_id", Doc_id);
-                    properties.put("doctor_name", Docname);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
-
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("doctor_id", Doc_id);
@@ -667,7 +657,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                         ask_login();
                     }
                 } else
-                    edt_query.setError("Query cannot be empty");
+                    edt_query.setError("Please enter your query");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -766,7 +756,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
         final MaterialDialog alert = new MaterialDialog(DoctorProfileActivity.this);
         alert.setTitle("Please re-login the App..!");
-        alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+        alert.setMessage("Something went wrong. Please go back and try again..!e");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Ok", new View.OnClickListener() {
             @Override

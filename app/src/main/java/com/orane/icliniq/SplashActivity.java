@@ -1,14 +1,19 @@
 package com.orane.icliniq;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.widget.LinearLayout;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
@@ -67,6 +72,31 @@ public class SplashActivity extends FragmentActivity {
 */
         getWindow().setBackgroundDrawable(null);
 
+/*
+
+        if (ContextCompat.checkSelfPermission(SplashActivity.this,
+                Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this,
+                    Manifest.permission.READ_SMS)) {
+
+                ActivityCompat.requestPermissions(SplashActivity.this,
+                        new String[]{Manifest.permission.READ_SMS}, 1);
+
+                System.out.println("granted-------------1" );
+
+            } else {
+                ActivityCompat.requestPermissions(SplashActivity.this,
+                        new String[]{Manifest.permission.READ_SMS}, 1);
+
+                System.out.println("granted-------------2" );
+            }
+
+        }
+*/
+
+
+
         //-------- Initialization -----------------------------------------------------
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         app_first_open_status = sharedpreferences.getString(app_first_open, "");
@@ -88,9 +118,9 @@ public class SplashActivity extends FragmentActivity {
         try {
 
             if (user_id_val != null && !user_id_val.isEmpty() && !user_id_val.equals("null") && !user_id_val.equals("")) {
-                country_url = Model.BASE_URL + "sapp/country?track=true&user_id=" + user_id_val;
+                country_url = Model.BASE_URL + "sapp/country?track=true&user_id=" + user_id_val + "&token=" + Model.token;
             } else {
-                country_url = Model.BASE_URL + "sapp/country?track=true&user_id=";
+                country_url = Model.BASE_URL + "sapp/country?track=true&token=" + Model.token + "&user_id=";
             }
 
             //---------------------------------------------------------
@@ -181,7 +211,7 @@ public class SplashActivity extends FragmentActivity {
 /*            if (new NetCheck().netcheck(SplashActivity.this))
                 process_code();
             else
-                Toast.makeText(getApplicationContext(), "Internet is not connected. please try again", Toast.LENGTH_SHORT).show();*/
+                Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();*/
 
 
         } catch (Exception e) {
@@ -283,7 +313,7 @@ public class SplashActivity extends FragmentActivity {
                     @Override
                     public void onClick(View v) {
 
-                        String url = "http://po.st/icliniqapp";
+                        String url = "https://play.google.com/store/apps/details?id=com.orane.icliniq&hl=en_US";
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         startActivity(i);

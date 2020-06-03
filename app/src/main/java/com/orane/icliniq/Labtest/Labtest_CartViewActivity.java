@@ -9,8 +9,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -329,7 +329,7 @@ public class Labtest_CartViewActivity extends AppCompatActivity {
                             new AlertDialog.Builder(Labtest_CartViewActivity.this)
                                     //.setIcon(android.R.drawable.ic_dialog_alert)
                                     .setTitle("Remove!")
-                                    .setMessage("Are you sure you want to remove this item?")
+                                    .setMessage("Are you sure you want to remove the item/test from this cart?")
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {

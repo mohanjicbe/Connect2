@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -36,7 +36,7 @@ public class Agencies_List_Activity extends AppCompatActivity {
 
     ArrayAdapter<String> dataAdapter = null;
     Map<String, String> tz_map = new HashMap<String, String>();
-    public String params, response_text, tz_name, tz_val;
+    public String params, tz_name, tz_val;
     Toolbar toolbar;
     String agency_type_obj;
     ListView listView;
@@ -52,15 +52,16 @@ public class Agencies_List_Activity extends AppCompatActivity {
         setContentView(R.layout.agencies_search);
 
         //------------------------------------------------
-
-        /* test comment*/
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            /*
+            * Video Editing, Drone Rent, Multi Camera Production, Live Streaming
+            * Channel ->
+            * */
             getSupportActionBar().setTitle("Select nearest agency");
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -70,12 +71,6 @@ public class Agencies_List_Activity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView1);
         myFilter = (EditText) findViewById(R.id.myFilter);
         categories = new ArrayList<String>();
-
-        /*tz_jsonstr = getString(R.string.time_zone_json);
-         *
-         * */
-
-        //tz_jsonstr = "{\"0\":\"$44.99\",\"-1\":\"$34.99\",\"1\":\"$29.99\",\"opt_ftrack\":1}";
 
         try {
             //------ getting Values ---------------------------
@@ -88,7 +83,6 @@ public class Agencies_List_Activity extends AppCompatActivity {
         //---------------------------------------
         new JSON_Timezone().execute("");
         //---------------------------------------
-
 
         dataAdapter = new ArrayAdapter<String>(this, R.layout.agencies_list_row, categories);
         listView.setAdapter(dataAdapter);

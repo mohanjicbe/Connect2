@@ -8,9 +8,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,13 +138,6 @@ public class QueryActivity extends AppCompatActivity implements ObservableScroll
         }
         //---------Tool bar-----------------------------------------
 
-        //----------------- Kissmetrics ----------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.record("android.patient.My_Queries");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("android.patient.user_id:", (Model.id));
-        Model.kiss.set(properties);
-        //----------------- Kissmetrics ----------------------------------
 
         imageview_poster = (CircleImageView) findViewById(R.id.imageview_poster);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -484,7 +479,7 @@ public class QueryActivity extends AppCompatActivity implements ObservableScroll
 
                     listArray = new ArrayList<Item>();
 
-                    for (int i = 0; i < jsonarr.length(); i++) { rajendrachozhankallanai1899
+                    for (int i = 0; i < jsonarr.length(); i++) {
                         JSONObject jsonobj1 = jsonarr.getJSONObject(i);
 
                         System.out.println("jsonobj1-----------" + jsonobj1.toString());
@@ -547,8 +542,11 @@ public class QueryActivity extends AppCompatActivity implements ObservableScroll
 
 
         try {
+            //Model.id = "246125";
+
             //----------------------------------------------------------------------------
             params = Model.BASE_URL + "sapp/myQueries?user_id=" + (Model.id) + "&format=json&page=1&token=" + Model.token + "&enc=1";
+            //params = "https://www.icliniq.com/sapp/uploadHReports?item_id=1243276&item_type=query&user_id=123092&token=51ae70519fa9b8b15b8df810fe2089de-d7afde3e7059cd0a0fe09eec4b0008cd&enc=1";
             System.out.println("params--full_process--" + params);
             new MyTask_server().execute(params);
             //----------------------------------------------------------------------------

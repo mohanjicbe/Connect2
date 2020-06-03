@@ -1,10 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.mindorks.android:prdownloader:0.4.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/prdownloader-0.4.0.aar/20b7873182a7c18baf4bcd687bb42bed/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/prdownloader-0.4.0.aar/20b7873182a7c18baf4bcd687bb42bed/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28213358e146e3943c7ec6be6bccceaa/jetified-prdownloader-0.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28213358e146e3943c7ec6be6bccceaa/jetified-prdownloader-0.4.0/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mindorks.android/prdownloader/0.4.0/4882343d3aaf4a4f3b4206bb6984b25705d540bf/prdownloader-0.4.0-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mindorks.android/prdownloader/0.4.0/b771342c1cb86a3019424f40265865000fb3db2/prdownloader-0.4.0-sources.jar!/" />
     </SOURCES>

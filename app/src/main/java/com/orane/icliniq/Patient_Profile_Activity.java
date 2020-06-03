@@ -5,15 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,20 +30,28 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.hbb20.CountryCodePicker;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.network.JSONParser;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
-public class Patient_Profile_Activity extends AppCompatActivity {
+public class Patient_Profile_Activity extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener {
 
     Button btn_cancel;
     ScrollView scrollview;
@@ -54,13 +60,13 @@ public class Patient_Profile_Activity extends AppCompatActivity {
     CheckBox checkterms;
     Spinner spinner_speciality;
     ProgressBar progressBar;
-    Button btn_submit;
+    Button btn_date, btn_submit;
 
     TextView weight_title, height_title, tv_name_title;
     LinearLayout signup_layout;
     EditText edt_phoneno, edt_email, edt_name, edt_age;
     EditText edtname, edtemail, edtpassword;
-    public String height_name, wt_name, blood_group_val, blood_group_name, pin_val, tit_val, tit_name, err_val, created_at_val, name_val, email_val, mobile_val, age_val, gender_val, height_id_val, weight_id_val, isValid_val, country_code_val, selected_cc_value, selected_cc_text, str_response, userId, mobno = "", fname, emailid, pwd, country;
+    public String height_name, cons_select_date, dob_val, wt_name, blood_group_val, blood_group_name, pin_val, tit_val, tit_name, err_val, created_at_val, name_val, email_val, mobile_val, age_val, gender_val, height_id_val, weight_id_val, isValid_val, country_code_val, selected_cc_value, selected_cc_text, str_response, userId, mobno = "", fname, emailid, pwd, country;
     LinearLayout mob_layout, otp_layout;
     TextView tv_mobno, tv_timertext;
     public String err_text, isvalid, userid;
@@ -116,26 +122,18 @@ public class Patient_Profile_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_profile);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         FlurryAgent.onPageView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
         }
 
-        //------------------------------------------------------------
-        Model.kiss.record("android.patient.Signup_Screen");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("android.patient.id", Model.id);
-        Model.kiss.set(properties);
-        //------------------------------------------------------------
-
         Model.terms_isagree = "false";
         Model.mobvalidate = "0";
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -145,26 +143,26 @@ public class Patient_Profile_Activity extends AppCompatActivity {
         }
         //------------ Object Creations -------------------------------
 
+        btn_date = findViewById(R.id.btn_date);
+        btn_submit = findViewById(R.id.btn_submit);
+        tv_name_title = findViewById(R.id.tv_name_title);
+        height_title = findViewById(R.id.height_title);
+        weight_title = findViewById(R.id.weight_title);
+        edt_name = findViewById(R.id.edt_name);
+        edt_email = findViewById(R.id.edt_email);
+        edt_age = findViewById(R.id.edt_age);
+        edt_phoneno = findViewById(R.id.edt_phoneno);
+        check_female = findViewById(R.id.check_female);
+        check_male = findViewById(R.id.check_male);
+        check_thirdgender = findViewById(R.id.check_thirdgender);
+        ccode_height_title = findViewById(R.id.ccode_height_title);
+        bg_height_title = findViewById(R.id.bg_height_title);
 
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        tv_name_title = (TextView) findViewById(R.id.tv_name_title);
-        height_title = (TextView) findViewById(R.id.height_title);
-        weight_title = (TextView) findViewById(R.id.weight_title);
-        edt_name = (EditText) findViewById(R.id.edt_name);
-        edt_email = (EditText) findViewById(R.id.edt_email);
-        edt_age = (EditText) findViewById(R.id.edt_age);
-        edt_phoneno = (EditText) findViewById(R.id.edt_phoneno);
-        check_female = (RadioButton) findViewById(R.id.check_female);
-        check_male = (RadioButton) findViewById(R.id.check_male);
-        check_thirdgender = (RadioButton) findViewById(R.id.check_thirdgender);
-        ccode_height_title = (TextView) findViewById(R.id.ccode_height_title);
-        bg_height_title = (TextView) findViewById(R.id.bg_height_title);
-
-        name_title_layout = (RelativeLayout) findViewById(R.id.name_title_layout);
-        bgroup_layout = (RelativeLayout) findViewById(R.id.bgroup_layout);
-        ccode_layout = (RelativeLayout) findViewById(R.id.ccode_layout);
-        height_layout = (RelativeLayout) findViewById(R.id.height_layout);
-        weight_layout = (RelativeLayout) findViewById(R.id.weight_layout);
+        name_title_layout = findViewById(R.id.name_title_layout);
+        bgroup_layout = findViewById(R.id.bgroup_layout);
+        ccode_layout = findViewById(R.id.ccode_layout);
+        height_layout = findViewById(R.id.height_layout);
+        weight_layout = findViewById(R.id.weight_layout);
 
 
         hash_map_title();
@@ -221,6 +219,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 String edt_name_text = edt_name.getText().toString();
                 String edt_email_text = edt_email.getText().toString();
                 String edt_phoneno_text = edt_phoneno.getText().toString();
@@ -265,7 +264,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                                 json_validate.put("mobile", edt_phoneno_text);
                                 json_validate.put("blood_group", blood_group_val);
                                 json_validate.put("gender", gender_val);
-                                json_validate.put("age", edt_age_text);
+                                json_validate.put("dob", cons_select_date);
                                 json_validate.put("height_id", height_id_val);
                                 json_validate.put("weight_id", weight_id_val);
 
@@ -279,17 +278,75 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                             }
 
                         } else {
-                            edt_phoneno.setError("Mobile no cannot be empty");
+                            edt_phoneno.setError("Mobile number is mandatory");
                         }
                     } else {
-                        edtemail.setError("Email cannot be empty");
+                        edtemail.setError("Please enter your valid Email address");
                     }
                 } else {
-                    edtname.setError("Name cannot be empty");
+                    edtname.setError("Please enter the name");
                 }
+
+
+                /*
+                 *
+                 * */
+
+             /*   String edt_phoneno_text = edt_phoneno.getText().toString();
+
+                try {
+                    edt_phoneno_text = edt_phoneno.getText().toString();
+
+                    if (!edt_phoneno_text.equals("")) {
+
+                        json = new JSONObject();
+                        json.put("mobile", edt_phoneno_text);
+                        json.put("ccode", selected_cc_value);
+                        ** Room Setup ->
+
+                        System.out.println("json----" + json.toString());
+
+                        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+                        new Async_CheckMobnoExist().execute(json);
+
+                    } else {
+                        edt_phoneno.setError("Enter Mobile number");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+*/
+
             }
         });
 
+
+        btn_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        Patient_Profile_Activity.this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                );
+
+                dpd.setThemeDark(false);
+                dpd.vibrate(false);
+                dpd.dismissOnPause(false);
+                dpd.showYearPickerFirst(false);
+
+                dpd.setAccentColor(Color.parseColor("#9C27B0"));
+                dpd.setTitle("Please select your DOB");
+
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+            }
+        });
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -357,6 +414,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                     blood_group_val = jsonobj.getString("blood_group");
                     gender_val = jsonobj.getString("gender");
                     age_val = jsonobj.getString("age");
+                    dob_val = jsonobj.getString("dob");
                     height_id_val = jsonobj.getString("height_id");
                     weight_id_val = jsonobj.getString("weight_id");
                     created_at_val = jsonobj.getString("created_at");
@@ -366,6 +424,14 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                     System.out.println("# rel_name----------" + getKeyFromValue(gen_map, gender_val));
                     System.out.println("# ht_name----------" + getKeyFromValue(ht_map, height_id_val));
                     System.out.println("# wt_name----------" + getKeyFromValue(wt_map, weight_id_val));
+
+                    //--------------------------------------
+                    if (dob_val != null && !dob_val.isEmpty() && !dob_val.equals("null") && !dob_val.equals("")) {
+                        btn_date.setText(dob_val);
+                    } else {
+                        btn_date.setText("Please select your DOB");
+                    }
+                    //--------------------------------------
 
 
                     //--------- ------------------------------------------------
@@ -424,8 +490,12 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                         check_male.setChecked(false);
                         check_female.setChecked(false);
                         check_thirdgender.setChecked(true);
-
+                    } else if (gender_val.equals("0")) {
+                        check_male.setChecked(false);
+                        check_female.setChecked(false);
+                        check_thirdgender.setChecked(false);
                     }
+
                     //-----------------------------------
 
                     //------------------------------------------------------------------
@@ -436,11 +506,38 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                     }
                     //------------------------------------------------------------------
 
+                    //------------------------------------------------------------------
+                    if (selected_cc_value != null && !selected_cc_value.isEmpty() && !selected_cc_value.equals("null") && !selected_cc_value.equals("")) {
+                        ccode_height_title.setText("+" + selected_cc_value);
+                    } else {
+                        ccode_height_title.setText("");
+                    }
+                    //------------------------------------------------------------------
 
-                    ccode_height_title.setText("+" + selected_cc_value);
-                    edt_phoneno.setText(mobile_val);
-                    height_title.setText(height_id_val);
-                    weight_title.setText(weight_id_val);
+                    //------------------------------------------------------------------
+                    if (mobile_val != null && !mobile_val.isEmpty() && !mobile_val.equals("null") && !mobile_val.equals("")) {
+                        edt_phoneno.setText(mobile_val);
+                    } else {
+                        edt_phoneno.setText("");
+                    }
+                    //------------------------------------------------------------------
+
+                    //------------------------------------------------------------------
+                    if (height_id_val != null && !height_id_val.isEmpty() && !height_id_val.equals("null") && !height_id_val.equals("")) {
+                        height_title.setText(height_id_val);
+                    } else {
+                        height_title.setText("");
+                    }
+                    //------------------------------------------------------------------
+
+                    //------------------------------------------------------------------
+                    if (weight_id_val != null && !weight_id_val.isEmpty() && !weight_id_val.equals("null") && !weight_id_val.equals("")) {
+                        weight_title.setText(weight_id_val);
+                    } else {
+                        weight_title.setText("");
+                    }
+                    //------------------------------------------------------------------
+
 
                     //--------- ------------------------------------------------
                     String height_value = "" + getKeyFromValue(ht_map, height_id_val);
@@ -518,7 +615,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
         try {
 
             //-----------------------------------------------------
-            String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id;
+            String url = Model.BASE_URL + "sapp/patientProfile?user_id=" + Model.id + "&token=" + Model.token;
             System.out.println("url-------------" + url);
             new JSON_get_Patient_Details().execute(url);
             //----------------------------------------
@@ -537,7 +634,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
 
             final MaterialDialog alert = new MaterialDialog(Patient_Profile_Activity.this);
             alert.setTitle("Internet is not available..!");
-            alert.setMessage("Seems Internet is not available. please re-connect and try again.");
+            alert.setMessage("Please check your Internet Connection and try again");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("TRY AGAIN", new View.OnClickListener() {
                 @Override
@@ -634,7 +731,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
             try {
-                System.out.println("Signup json---------------" + login_jsonobj.toString());
+                System.out.println("Patient_profile_json---------------" + login_jsonobj.toString());
 
 
                 if (login_jsonobj.has("status")) {
@@ -642,14 +739,19 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                     System.out.println("status_val----------------" + status_val);
 
                     if (status_val.equals("1")) {
-                        Toast.makeText(Patient_Profile_Activity.this, "Saved successfully..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Patient_Profile_Activity.this, "Profile saved successfully..", Toast.LENGTH_SHORT).show();
                         finish();
+                    } else {
+                        String msg_val = login_jsonobj.getString("msg");
+                        Toast.makeText(Patient_Profile_Activity.this, msg_val, Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(Patient_Profile_Activity.this, "Something went wrong. Please try after sometime.", Toast.LENGTH_SHORT).show();
                 }
 
                 //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-                Model.query_launch="profile_update";
+                Model.query_launch = "profile_update";
 
                 dialog.cancel();
 
@@ -793,21 +895,6 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                             //success();
 
                             try {
-                                //=========================================================
-                                Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                                Model.kiss.record("android.patient.Signup_Success");
-                                Model.kiss.identify(Model.kmid);
-                                HashMap<String, String> properties = new HashMap<String, String>();
-                                properties.put("android.patient.name:", edtname.getText().toString());
-                                properties.put("android.patient.emailid", edtemail.getText().toString());
-                                properties.put("android.patient.App_Version", Model.App_ver);
-                                properties.put("android.patient.pwd", edtpassword.getText().toString());
-                                properties.put("android.patient.mobno", mobno);
-                                properties.put("android.patient.token", Model.token);
-                                properties.put("android.patient.country", country);
-                                Model.kiss.set(properties);
-                                //----------------------------------------------------------------------------
-
                                 //----------- Flurry -------------------------------------------------
                                 FlurryAgent.setUserId(Model.kmid);
                                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -825,7 +912,7 @@ public class Patient_Profile_Activity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            Toast.makeText(getApplicationContext(), "Registration Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Registration successful", Toast.LENGTH_SHORT).show();
 
                             //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
@@ -904,6 +991,30 @@ public class Patient_Profile_Activity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+
+        try {
+            //String date = dayOfMonth + "/" + (++monthOfYear) + "/" + year;
+            cons_select_date = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+            System.out.println("Cal Date------" + cons_select_date);
+
+            //--------- for System -------------------
+            SimpleDateFormat curFormater = new SimpleDateFormat("yyyy/MM/dd");
+            Date dateObj = curFormater.parse(cons_select_date);
+            String newDateStr = curFormater.format(dateObj);
+            System.out.println("For System select_date---------" + newDateStr);
+            //--------------------------------
+
+            //dob_val = cons_select_date;
+            btn_date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+            System.out.println("cons_select_date---------" + cons_select_date);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void hash_map_title() {
         tit_map.put("Mr.", "1");
@@ -3356,5 +3467,147 @@ public class Patient_Profile_Activity extends AppCompatActivity {
         });
         builderSingle.show();
     }
+
+
+    class Async_CheckMobnoExist extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(Patient_Profile_Activity.this);
+            dialog.setMessage("Validating your mobile no. Please Wait...");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+                JSONParser jParser = new JSONParser();
+                login_jsonobj = jParser.JSON_POST(urls[0], "checkmobnoexists");
+
+                System.out.println("Parameters---------------" + urls[0]);
+                System.out.println("Response json---------------" + login_jsonobj.toString());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            try {
+
+
+                isValid_val = login_jsonobj.getString("isValid");
+                System.out.println("isValid_val ---" + isValid_val);
+
+                if (isValid_val.equals("true")) {
+
+                    ask_Login();
+
+                } else {
+
+                    String edt_name_text = edt_name.getText().toString();
+                    String edt_email_text = edt_email.getText().toString();
+                    String edt_phoneno_text = edt_phoneno.getText().toString();
+                    String edt_age_text = edt_age.getText().toString();
+
+                    //---------------------------------------
+                    if (check_male.isChecked()) {
+                        gender_val = "1";
+                    } else if (check_female.isChecked()) {
+                        gender_val = "2";
+                    } else if (check_thirdgender.isChecked()) {
+                        gender_val = "3";
+                    } else {
+                        gender_val = "0";
+                    }
+                    //---------------------------------------
+
+
+                    System.out.println("tit_val------------" + tit_val);
+                    System.out.println("edt_name_text------------" + edt_name_text);
+                    System.out.println("edt_email_text------------" + edt_email_text);
+                    System.out.println("selected_cc_value------------" + selected_cc_value);
+                    System.out.println("edt_phoneno_text------------" + edt_phoneno_text);
+                    System.out.println("blood_group_val------------" + blood_group_val);
+                    System.out.println("gender_val------------" + gender_val);
+                    System.out.println("edt_age_text------------" + edt_age_text);
+                    System.out.println("height_id_val------------" + height_id_val);
+                    System.out.println("weight_id_val------------" + weight_id_val);
+
+
+                    if ((edt_name_text.length() > 0)) {
+                        if ((edt_email_text.length() > 0)) {
+                            if ((edt_phoneno_text.length() > 0)) {
+
+                                try {
+
+                                    json_validate = new JSONObject();
+                                    json_validate.put("user_id", Model.id);
+                                    json_validate.put("token", Model.token);
+                                    json_validate.put("title", tit_val);
+                                    json_validate.put("name", edt_name_text);
+                                    json_validate.put("email", edt_email_text);
+                                    json_validate.put("country_code_mobile", selected_cc_value);
+                                    json_validate.put("mobile", edt_phoneno_text);
+                                    json_validate.put("blood_group", blood_group_val);
+                                    json_validate.put("gender", gender_val);
+                                    json_validate.put("dob", cons_select_date);
+                                    json_validate.put("height_id", height_id_val);
+                                    json_validate.put("weight_id", weight_id_val);
+
+                                    System.out.println("json_validate----" + json_validate.toString());
+
+                                    new Async_PostPatProfile().execute(json_validate);
+
+                                    //--------------------------------------------------
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                edt_phoneno.setError("Mobile number is mandatory");
+                            }
+                        } else {
+                            edtemail.setError("Please enter your valid Email address");
+                        }
+                    } else {
+                        edtname.setError("Please enter your name");
+                    }
+                }
+
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+                dialog.cancel();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public void ask_Login() {
+
+        final MaterialDialog alert = new MaterialDialog(Patient_Profile_Activity.this);
+        //alert.setTitle("Mobile no not Exist..!");
+        alert.setMessage("Provided mobile number already exists.");
+        alert.setCanceledOnTouchOutside(false);
+        alert.setPositiveButton("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.orane.icliniq.Parallex.libs;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class RecyclerViewFragment extends ScrollTabHolderFragment {
 

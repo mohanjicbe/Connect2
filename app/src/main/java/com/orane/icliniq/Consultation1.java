@@ -8,9 +8,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +25,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -81,37 +82,37 @@ public class Consultation1 extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
 
-        countryCodePicker = (CountryCodePicker) findViewById(R.id.ccp);
-        tv_title = (TextView) findViewById(R.id.tv_title);
-        tv_ccode = (TextView) findViewById(R.id.tv_ccode);
-        tv_spec_name = (TextView) findViewById(R.id.tv_spec_name);
-        img_remove = (ImageView) findViewById(R.id.img_remove);
+        countryCodePicker = findViewById(R.id.ccp);
+        tv_title = findViewById(R.id.tv_title);
+        tv_ccode = findViewById(R.id.tv_ccode);
+        tv_spec_name = findViewById(R.id.tv_spec_name);
+        img_remove = findViewById(R.id.img_remove);
 
-        rad_phone_cons = (RadioButton) findViewById(R.id.rad_phone_cons);
-        rad_video_cons = (RadioButton) findViewById(R.id.rad_video_cons);
+        rad_phone_cons = findViewById(R.id.rad_phone_cons);
+        rad_video_cons = findViewById(R.id.rad_video_cons);
 
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        spinner_speciality = (Spinner) findViewById(R.id.spinner_speciality);
-        spinner_lang = (Spinner) findViewById(R.id.spinner_lang);
-        check_phone = (RadioButton) findViewById(R.id.check_phone);
-        check_video = (RadioButton) findViewById(R.id.check_video);
-        edt_issue = (EditText) findViewById(R.id.edt_issue);
-        edt_phoneno = (EditText) findViewById(R.id.edt_phoneno);
-        phonecons_layout = (LinearLayout) findViewById(R.id.phonecons_layout);
-        vidoecons_layout = (LinearLayout) findViewById(R.id.vidoecons_layout);
-        select_layout = (LinearLayout) findViewById(R.id.select_layout);
-        radioGroup = (RadioGroup) findViewById(R.id.group1);
-        ccode_layout = (RelativeLayout) findViewById(R.id.ccode_layout);
+        btn_submit = findViewById(R.id.btn_submit);
+        spinner_speciality = findViewById(R.id.spinner_speciality);
+        spinner_lang = findViewById(R.id.spinner_lang);
+        check_phone = findViewById(R.id.check_phone);
+        check_video = findViewById(R.id.check_video);
+        edt_issue = findViewById(R.id.edt_issue);
+        edt_phoneno = findViewById(R.id.edt_phoneno);
+        phonecons_layout = findViewById(R.id.phonecons_layout);
+        vidoecons_layout = findViewById(R.id.vidoecons_layout);
+        select_layout = findViewById(R.id.select_layout);
+        radioGroup = findViewById(R.id.group1);
+        ccode_layout = findViewById(R.id.ccode_layout);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
-            mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            mTitle = toolbar.findViewById(R.id.toolbar_title);
 
             //-------------------Font Setting --------------------------------------
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
@@ -119,7 +120,7 @@ public class Consultation1 extends AppCompatActivity {
             mTitle.setTypeface(khandBold);
             //-------------------Font Setting --------------------------------------
 
-            TextView tvtit = (TextView) findViewById(R.id.tv_ask_tit);
+            TextView tvtit = findViewById(R.id.tv_ask_tit);
 
             tvtit.setTypeface(khandBold);
 
@@ -204,7 +205,7 @@ public class Consultation1 extends AppCompatActivity {
             new JSON_getting_fees().execute(url);
             //------------Getting Consultation Fees -------------------
         } else {
-            Toast.makeText(Consultation1.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Consultation1.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
 
         ccode_layout.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +255,7 @@ public class Consultation1 extends AppCompatActivity {
                     if (new NetCheck().netcheck(Consultation1.this)) {
                         submit_form();
                     } else {
-                        Toast.makeText(Consultation1.this, "Internet is not connected. please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Consultation1.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -390,7 +391,7 @@ public class Consultation1 extends AppCompatActivity {
         spec_map.put("Family Physician", "220");
 
         categories.add("Fetal Medicine");
-        spec_map.put("Fetal Medicine", "226");
+        spec_map.put("Fetal Medicine", "266");
 
         categories.add("Fitness Expert");
         spec_map.put("Fitness Expert", "224");
@@ -1772,12 +1773,18 @@ public class Consultation1 extends AppCompatActivity {
                 System.out.println("Resume Model.query_launch-----" + Model.select_spec_val);
                 System.out.println("Resume Model.select_specname-----" + Model.select_specname);
 
-                if ((Model.select_specname) != null && !(Model.select_specname).isEmpty() && !(Model.select_specname).equals("null") && !(Model.select_specname).equals("")){
-                    tv_spec_name.setText(Model.select_specname);
-                    img_remove.setVisibility(View.VISIBLE);
+                if ((Model.select_spec_val).equals("0")) {
+                    Model.select_specname = "";
+                    Model.select_spec_val = "0";
+                    tv_spec_name.setText("Select Speciality (optional)");
+                    img_remove.setVisibility(View.GONE);
                 }
-
-
+                else{
+                    if ((Model.select_specname) != null && !(Model.select_specname).isEmpty() && !(Model.select_specname).equals("null") && !(Model.select_specname).equals("")) {
+                        tv_spec_name.setText(Model.select_specname);
+                        img_remove.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1785,13 +1792,13 @@ public class Consultation1 extends AppCompatActivity {
     }
 
     public void submit_form() {
+
         try {
             text_query = edt_issue.getText().toString();
             phone_no = edt_phoneno.getText().toString();
 
             phone_no = phone_no.replace(" ", "");
             phone_no = phone_no.trim();
-
 
             System.out.println("text_query-------------------" + text_query);
             System.out.println("phone_no-------------------" + phone_no);
@@ -1832,23 +1839,6 @@ public class Consultation1 extends AppCompatActivity {
                     intent.putExtra("fee_lp", fee_lp);
                     intent.putExtra("fee_cp", fee_cp);
 
-                    //----------------- Kissmetrics ----------------------------------
-                    Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-                    Model.kiss.record("android.patient.Consultation1");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.patient.query:", text_query);
-                    properties.put("android.patient.spec_val:", spec_val);
-                    properties.put("android.patient.lang_val:", lang_val);
-                    properties.put("android.patient.cccode:", selected_cc_value);
-                    properties.put("android.patient.cons_phno:", phone_no);
-                    properties.put("android.patient.ftrack_show:", ftrack_show);
-                    properties.put("android.patient.cons_type:", cons_type);
-                    properties.put("android.patient.fee_hp:", fee_hp);
-                    properties.put("android.patient.fee_lp:", fee_lp);
-                    properties.put("android.patient.fee_cp:", fee_cp);
-                    Model.kiss.set(properties);
-                    //----------------- Kissmetrics ----------------------------------
-
                     //----------- Flurry -------------------------------------------------
                     Map<String, String> articleParams = new HashMap<String, String>();
                     articleParams.put("android.patient.query:", text_query);
@@ -1886,11 +1876,11 @@ public class Consultation1 extends AppCompatActivity {
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
                 } else {
-                    edt_phoneno.setError("Enter Phone number to Callback");
-                    Toast.makeText(getApplicationContext(), "Enter Phone number to Callback", Toast.LENGTH_LONG).show();
+                    edt_phoneno.setError("Mobile number is mandatory");
+                    Toast.makeText(getApplicationContext(), "Mobile number is mandatory", Toast.LENGTH_LONG).show();
                 }
             } else {
-                edt_issue.setError("Enter health issue.");
+                edt_issue.setError("Please enter your health issue.");
                 Toast.makeText(getApplicationContext(), "Enter health issue", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {

@@ -126,7 +126,7 @@ public class InviteDoctorFragment extends AAH_FabulousFragment {
                             new Async_InviteDoctor().execute(json);
 
                         } else {
-                            edt_mobno.setError("Mobile number cannot be empty");
+                            edt_mobno.setError("Mobile number is mandatory");
                         }
 
                     } catch (Exception e) {

@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
@@ -126,7 +127,7 @@
                 android:layout_below="@+id/img_title"
                 android:layout_centerInParent="true"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <RelativeLayout
@@ -270,7 +271,7 @@
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal"
                         android:padding="10dp"
-                        android:text="Don't receive code yet? Resend"
+                        android:text="Don't receive code yet? Resend again"
                         android:textColor="@color/mds_bluegrey_800"
                         android:textSize="15sp"
                         android:visibility="visible" />
@@ -286,7 +287,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="25dp"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_cpw1"
@@ -320,7 +321,25 @@
                     android:layout_marginTop="20dp"
                     android:orientation="vertical">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
+                    <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
+                        android:id="@+id/edt_newpwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:textSize="17dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        tools:ignore="HardcodedText" />
+
+
+                  <!--  <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_newpwd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -331,6 +350,19 @@
                         android:inputType="textPassword"
                         android:textSize="17dp"
                         app:met_floatingLabel="highlight" />
+-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:gravity="left"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="25dp"
+                        android:text="Password Should be at least Min 8 chars, 1 number, 1 symbol or special char. with combination of both upper case and lower case alphabets."
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="9sp"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
@@ -338,7 +370,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
                     <com.rengwuxian.materialedittext.MaterialEditText

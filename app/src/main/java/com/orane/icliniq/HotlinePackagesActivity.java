@@ -11,8 +11,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,7 +67,6 @@ public class HotlinePackagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hotline_packages);
 
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
         imageview_poster = (CircleImageView) findViewById(R.id.imageview_poster);
         tvdocname = (TextView) findViewById(R.id.tvdocname);
         offer_amt = (TextView) findViewById(R.id.offer_amt);
@@ -86,14 +85,6 @@ public class HotlinePackagesActivity extends AppCompatActivity {
         Log_Status = sharedpreferences.getString(Login_Status, "");
         icq100fee_val = sharedpreferences.getString(icq100fee, "");
         //============================================================
-
-        //----------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.record("android.patient.icq100Plans");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("android.patient.user_id:", Model.id);
-        Model.kiss.set(properties);
-        //----------------------------
 
         //------------ Google firebase Analitics-----------------------------------------------
         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -299,7 +290,7 @@ public class HotlinePackagesActivity extends AppCompatActivity {
         try {
             final MaterialDialog alert = new MaterialDialog(HotlinePackagesActivity.this);
             alert.setTitle("Please Re-Login the App..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override

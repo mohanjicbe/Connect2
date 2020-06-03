@@ -8,9 +8,11 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -407,6 +409,9 @@ public class DoctorsListActivity extends AppCompatActivity {
                         objItem.setCfee(jsonobj1.getString("cfee"));
                         objItem.setQfee(jsonobj1.getString("qfee"));
 
+
+                        System.out.println("Geetying Ratting Value----------" + jsonobj1.getString("avg_rating"));
+
                         listArray.add(objItem);
                     }
 
@@ -524,6 +529,8 @@ public class DoctorsListActivity extends AppCompatActivity {
                         objItem.setDocimage(jsonobj1.getString("photo_url"));
                         objItem.setCfee(jsonobj1.getString("cfee"));
                         objItem.setQfee(jsonobj1.getString("qfee"));
+                        objItem.setAmt(jsonobj1.getString("avg_rating"));
+                        objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
 
                         listArray.add(objItem);
 
@@ -641,6 +648,11 @@ public class DoctorsListActivity extends AppCompatActivity {
                         objItem.setDocimage(jsonobj1.getString("photo_url"));
                         objItem.setCfee(jsonobj1.getString("cfee"));
                         objItem.setQfee(jsonobj1.getString("qfee"));
+                        objItem.setAmt(jsonobj1.getString("avg_rating"));
+                        objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
+
+
+
 
                         listArray.add(objItem);
 
@@ -803,7 +815,7 @@ public class DoctorsListActivity extends AppCompatActivity {
         try {
             final MaterialDialog alert = new MaterialDialog(DoctorsListActivity.this);
             alert.setTitle("Oops..!");
-            alert.setMessage("Something went wrong. Please Logout and Login again to continue");
+            alert.setMessage("Something went wrong. Please go back and try again..!e");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("OK", new View.OnClickListener() {
                 @Override
