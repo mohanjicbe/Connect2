@@ -8,6 +8,7 @@
     android:background="@color/grey_200">
 
     <LinearLayout
+
         android:id="@+id/full_layout"
         android:layout_width="300dp"
         android:layout_height="130dp"

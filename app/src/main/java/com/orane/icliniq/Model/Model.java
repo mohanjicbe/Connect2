@@ -121,10 +121,8 @@ public class Model {
     public static String kissmetric_apikey = "1e5980757ab1f8f93ba4261e104cebcee3d8d07e";
     //public static String kissmetric_apikey = "";
 
-    //public static String stripe_apikey = "pk_test_t29LPMrLoeA28eXiuCu0myOG";
-    //public static String stripe_secret_key = "sk_test_fRrl3MPBtCZPSmNVJeXopKqo";
+
     public static String stripe_apikey = "pk_live_armHTlGI0IUJh8YhqKgUaKCs";
-    public static String stripe_secret_key = "sk_live_A2llUPsBwGIDixLnL0aystsf";
     //--------- KISSmetricsAPI----------------------------------------
 
     //--------- GCM---------------------------------------------------
