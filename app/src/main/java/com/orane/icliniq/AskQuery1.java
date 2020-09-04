@@ -5237,7 +5237,7 @@ public class AskQuery1 extends AppCompatActivity implements View.OnClickListener
                     } else {
                         Toast.makeText(AskQuery1.this, "Something went wrong. Please go back and try again..!", Toast.LENGTH_LONG).show();
 
-                        Intent intent = new Intent(AskQuery1.this, CenterFabActivity.class);
+                        Intent intent = new Intent(AskQuery1.this, Connect_Home_Actvity.class);
                         startActivity(intent);
                         finish();
                     }

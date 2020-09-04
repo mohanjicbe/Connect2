@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -54,16 +56,13 @@ public class Agencies_List_Activity extends AppCompatActivity {
         //------------------------------------------------
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            /*
-            * Video Editing, Drone Rent, Multi Camera Production, Live Streaming
-            * Channel ->
-            * */
+
             getSupportActionBar().setTitle("Select nearest agency");
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
         }
@@ -73,15 +72,19 @@ public class Agencies_List_Activity extends AppCompatActivity {
         categories = new ArrayList<String>();
 
         try {
-            //------ getting Values ---------------------------
+
+            //------ getting Values -------------------------------------
             Intent intent = getIntent();
             agency_type_obj = intent.getStringExtra("agency_type");
+            //------ getting Values --------------------------------------
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         //---------------------------------------
         new JSON_Timezone().execute("");
+
         //---------------------------------------
 
         dataAdapter = new ArrayAdapter<String>(this, R.layout.agencies_list_row, categories);
@@ -106,7 +109,6 @@ public class Agencies_List_Activity extends AppCompatActivity {
                 Model.query_launch = "agencies";
 
                 finish();
-
             }
         });
 
@@ -175,6 +177,7 @@ public class Agencies_List_Activity extends AppCompatActivity {
             return false;
         }
 
+
         protected void onPostExecute(Boolean result) {
 
             try {
@@ -186,6 +189,7 @@ public class Agencies_List_Activity extends AppCompatActivity {
 
                 System.out.println("tz.length()-----" + tz_jsonarray.length());
                 System.out.println("tz jsonarray-----" + tz_jsonarray.toString());
+
                 Iterator<String> iter = json_response.keys();
 
                 while (iter.hasNext()) {
@@ -200,7 +204,6 @@ public class Agencies_List_Activity extends AppCompatActivity {
 
                         categories.add(value.toString());
                         tz_map.put(value.toString(), key);
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Item;
 import com.orane.icliniq.Model.Model;
@@ -63,7 +65,7 @@ public class DoctorsListActivity extends AppCompatActivity {
     ListView listView;
     LinearLayout spec_layout, nolayout, netcheck_layout;
     String params, str_response;
-    ImageView leftback;
+    //ImageView leftback;
     DoctorsRowAdapter objAdapter;
     Map<String, String> spec_map = new HashMap<String, String>();
     public String is_fav, Doc_id, spec_val = "0", fav_url;
@@ -125,7 +127,7 @@ public class DoctorsListActivity extends AppCompatActivity {
 
         FlurryAgent.onPageView();
 
-        leftback = (ImageView) findViewById(R.id.leftback);
+        //leftback = (ImageView) findViewById(R.id.leftback);
 
         spec_text = (TextView) findViewById(R.id.spec_text);
         listView = (ListView) findViewById(R.id.listview);
@@ -133,7 +135,7 @@ public class DoctorsListActivity extends AppCompatActivity {
         progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
         netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
         nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        bg_layout    = (LinearLayout) findViewById(R.id.bg_layout);
+        bg_layout = (LinearLayout) findViewById(R.id.bg_layout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
 
         is_fav = "1";
@@ -161,12 +163,14 @@ public class DoctorsListActivity extends AppCompatActivity {
             }
         });
 
+/*
         leftback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+*/
 
         spec_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -652,8 +656,6 @@ public class DoctorsListActivity extends AppCompatActivity {
                         objItem.setArtTitle(jsonobj1.getString("rating_lbl"));
 
 
-
-
                         listArray.add(objItem);
 
                     }
@@ -799,8 +801,17 @@ public class DoctorsListActivity extends AppCompatActivity {
         if ((Model.query_launch).equals("SpecialityListActivity")) {
 
             Model.query_launch = "";
-            spec_text.setText(Model.select_specname);
-            tv_showall_text.setVisibility(View.VISIBLE);
+
+            if(Model.select_spec_val.equals("0")){
+                spec_layout.setVisibility(View.VISIBLE);
+                spec_text.setText("All Specialities");
+            }
+            else{
+                spec_layout.setVisibility(View.VISIBLE);
+                spec_text.setText(Model.select_specname);
+            }
+
+            tv_showall_text.setVisibility(View.GONE);
 
             //---------------------------------------------
             String url = Model.BASE_URL + sub_url + "?user_id=" + (Model.id) + "&page=1&sp_id=" + Model.select_spec_val + "&token=" + (Model.token);
@@ -1021,6 +1032,104 @@ public class DoctorsListActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+
+    public void onDoctorShare(View v) {
+
+        try {
+
+            switch (v.getId()) {
+
+                case R.id.sharedoc_layout:
+
+                    //View parent = (View) v.getParent();
+                    TextView tv_doclink = v.findViewById(R.id.tv_doclink);
+                    TextView tvdocname_new = v.findViewById(R.id.tvdocname_new);
+                    TextView tv_spec_new = v.findViewById(R.id.tv_spec_new);
+
+                    String doclink = tv_doclink.getText().toString();
+                    String docname_share_val = tvdocname_new.getText().toString();
+                    String spec_new_val = tv_spec_new.getText().toString();
+
+                    System.out.println("doclink-----------" + doclink);
+                    System.out.println("docname_share_val-----------" + docname_share_val);
+                    System.out.println("spec_new_val-----------" + spec_new_val);
+
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    //i.putExtra(Intent.EXTRA_SUBJECT, ); "\n\n
+                    String sAux = "I found " + docname_share_val + " " + spec_new_val + " on iCliniq. #1 Online consultation app. \n\n View profile here : \n\n " + doclink;
+                    i.putExtra(Intent.EXTRA_TEXT, sAux);
+                    startActivity(Intent.createChooser(i, "choose one"));
+
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void onClick_docs(View v) {
+
+        try {
+            View parent = (View) v.getParent();
+
+            TextView tvid = parent.findViewById(R.id.tvid);
+
+            String Doc_id = tvid.getText().toString();
+
+            //------------ Google firebase Analitics--------------------
+            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+            Bundle params = new Bundle();
+            params.putString("doctor_id", tvid.getText().toString());
+            Model.mFirebaseAnalytics.logEvent("doctor_select", params);
+            //------------ Google firebase Analitics--------------------
+
+            if (Doc_id != null && !Doc_id.isEmpty() && !Doc_id.equals("null") && !Doc_id.equals("")) {
+                Intent intent = new Intent(DoctorsListActivity.this, ParallexMainActivity.class);
+                intent.putExtra("tv_doc_id", Doc_id);
+                startActivity(intent);
+            } else {
+                Toast.makeText(DoctorsListActivity.this, "Sorry, Something went wrong. Go Back and Try again..!", Toast.LENGTH_LONG).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onClick_book(View v) {
+
+        try {
+
+            View parent = (View) v.getParent();
+            View grand_parent = (View) parent.getParent();
+
+            TextView tvid = grand_parent.findViewById(R.id.tvid);
+
+            String Doc_id = tvid.getText().toString();
+
+            //------------ Google firebase Analitics--------------------
+            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+            Bundle params = new Bundle();
+            params.putString("doctor_id", tvid.getText().toString());
+            Model.mFirebaseAnalytics.logEvent("doctor_select", params);
+            //------------ Google firebase Analitics--------------------
+
+            if (Doc_id != null && !Doc_id.isEmpty() && !Doc_id.equals("null") && !Doc_id.equals("")) {
+                Intent intent = new Intent(DoctorsListActivity.this, ParallexMainActivity.class);
+                intent.putExtra("tv_doc_id", Doc_id);
+                startActivity(intent);
+            } else {
+                Toast.makeText(DoctorsListActivity.this, "Sorry, Something went wrong. Go Back and Try again..!", Toast.LENGTH_LONG).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

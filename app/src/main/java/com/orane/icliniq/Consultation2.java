@@ -10,8 +10,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -225,7 +227,7 @@ public class Consultation2 extends AppCompatActivity implements
 
                 if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
 
-                    System.out.println("Model.id-----" + Model.id);
+                  /*  System.out.println("Model.id-----" + Model.id);
                     System.out.println("Model.const_type-----" + cons_type);
                     System.out.println("Model.cons_query-----" + Query);
                     System.out.println("Model.time_range-----" + Model.sel_timerange_code);
@@ -234,7 +236,7 @@ public class Consultation2 extends AppCompatActivity implements
                     System.out.println("Model.cons_ccode-----" + Model.sel_country_code);
                     System.out.println("Model.cons_number-----" + cons_phno);
                     System.out.println("Model.cons_timezone-----" + Model.cons_timezone);
-                    System.out.println("Model.spec_val-----" + spec_val);
+                    System.out.println("Model.spec_val-----" + spec_val);*/
 
                     try {
 
@@ -254,32 +256,36 @@ public class Consultation2 extends AppCompatActivity implements
                         System.out.println("post_json-------------" + post_json.toString());
 
                         //----------------------------------------------------------
-                        if (sel_timerange_code.equals("1")) {
+                        if ((sel_timerange_code) != null && !(sel_timerange_code).isEmpty() && !(sel_timerange_code).equals("null") && !(sel_timerange_code).equals("") && (sel_timerange_code).equals("1")) {
                             date_text = btn_date.getText().toString();
                             timerange_text = spinner_timerange.getSelectedItem().toString();
 
-                            System.out.println("date_text-----" + date_text);
-                            System.out.println("timerange_text-----" + timerange_text);
                         } else {
                             date_text = "";
                             timerange_text = "";
                         }
+
+                        System.out.println("sel_timerange_code-----" + sel_timerange_code);
+                        System.out.println("date_text-----" + date_text);
+                        System.out.println("timerange_text-----" + timerange_text);
+
                         //----------------------------------------------------------
 
                         if (time_band3.isChecked()) {
-                            if (!date_text.equals("Select Date")) {
-                                if (!timerange_text.equals("Select Time Range")) {
+
+                            if ((date_text) != null && !(date_text).isEmpty() && !(date_text).equals("null") && !(date_text).equals("Select Date") && !(date_text).equals("")) {
+                                if ((timerange_text) != null && !(timerange_text).isEmpty() && !(timerange_text).equals("null") && !(timerange_text).equals("Select Time Range") && !(timerange_text).equals("")) {
                                     if (new NetCheck().netcheck(Consultation2.this)) {
 
                                         new JSONPostQuery().execute(post_json);
 
                                     } else {
-                                        Toast.makeText(Consultation2.this, "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Consultation2.this, "Please check your internet connection and try again.", Toast.LENGTH_SHORT).show();
                                     }
                                 } else
-                                    Toast.makeText(getApplicationContext(), "Select Time Range", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Consultation2.this, "Select Time Range", Toast.LENGTH_LONG).show();
                             } else
-                                Toast.makeText(getApplicationContext(), "Select Consultation Date", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Consultation2.this, "Select Consultation Date", Toast.LENGTH_LONG).show();
                         } else {
                             new JSONPostQuery().execute(post_json);
                         }

@@ -695,7 +695,7 @@ public class OTPSignupActivity extends AppCompatActivity {
 
                         //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
-                        Intent i = new Intent(OTPSignupActivity.this, CenterFabActivity.class);
+                        Intent i = new Intent(OTPSignupActivity.this, Connect_Home_Actvity.class);
                         startActivity(i);
                         finish();
 
@@ -1351,7 +1351,7 @@ public class OTPSignupActivity extends AppCompatActivity {
                             System.out.println("Redirect to Home Success--------------------------------------------------------------");
 
                             finishAffinity();
-                            Intent i = new Intent(OTPSignupActivity.this, CenterFabActivity.class);
+                            Intent i = new Intent(OTPSignupActivity.this, Connect_Home_Actvity.class);
                             startActivity(i);
                             finish();
 

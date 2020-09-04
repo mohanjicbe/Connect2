@@ -281,7 +281,7 @@ public class CommonActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(CommonActivity.this, WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "p/terms");
+                i.putExtra("url", Model.BASE_URL + "p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -571,7 +571,7 @@ public class CommonActivity extends AppCompatActivity {
 
 
                 Intent i = new Intent(CommonActivity.this, WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/terms?nolayout=1");
+                i.putExtra("url", Model.Basic_server + "p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -587,7 +587,7 @@ public class CommonActivity extends AppCompatActivity {
 
 
                 Intent i = new Intent(CommonActivity.this, WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
+                i.putExtra("url", Model.Basic_server + "p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);

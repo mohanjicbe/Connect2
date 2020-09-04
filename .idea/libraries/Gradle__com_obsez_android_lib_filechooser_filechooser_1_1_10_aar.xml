@@ -1,8 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.obsez.android.lib.filechooser:filechooser:1.1.10@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b97eb5cc5a0f1ec6bc8f85ea7f2ed500/jetified-filechooser-1.1.10/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b97eb5cc5a0f1ec6bc8f85ea7f2ed500/jetified-filechooser-1.1.10/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85724278fd269e39a697b4291bf2d2ba/jetified-filechooser-1.1.10/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85724278fd269e39a697b4291bf2d2ba/jetified-filechooser-1.1.10/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85724278fd269e39a697b4291bf2d2ba/jetified-filechooser-1.1.10/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

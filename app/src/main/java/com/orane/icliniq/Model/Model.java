@@ -21,8 +21,17 @@ public class Model {
     public static String font_name_bold_200 = "fonts/OpenSans-Bold.ttf";
     public static String font_name_bold = "fonts/OpenSans-SemiBold.ttf";
 
+    public static String app_vendor_type = "SaaS";
+    public static String hosp_domain,hosp_logo, hosp_name;
+
+    public static String BASE_URL;
+    //public static String Basic_server = "https://www.icliniq.com/";
+    public static String Basic_server = "https://pentest.icliniq.com/";
+
+    //public static String BASE_URL = "http://192.168.0.114/icliniq-git/web/index.php/";
     //public static String BASE_URL = "https://www.icliniq.com/";
-    public static String BASE_URL = "https://pentest.icliniq.com/";
+    //public static String BASE_URL = "https://sriramakrishnahospital.icliniq.com/";
+    //public static String BASE_URL = "https://pentest.icliniq.com/";
     //public static String BASE_URL = "http://3.83.253.45/index.php/";
     //public static String BASE_URL = "http://192.168.0.128/projects/icliniq/web/index.php/";
     //public static String BASE_URL = "http://192.168.1.101/projects/icliniq/web/index.php";
@@ -52,12 +61,14 @@ public class Model {
     public static String sel_timerange_code, cons_query, time_range, cons_date, cons_lang, cons_ccode, cons_number, cons_timezone;
 
     public static String prep_inv_id, prep_inv_fee, prep_inv_strfee, txn_id, askdrafttext, doctor_id, compmore, prevhist, curmedi, pastmedi, labtest;
-    public static String attach_qid, chime_url,attach_status, attach_file_url, attach_filename, attach_id, inv_title, inv_desc, inv_fee, inv_walletfee, inv_btnconfirm, inv_browsercountry, invfeetot;
+    public static String attach_qid, chime_url, attach_status, attach_file_url, attach_filename, attach_id, inv_title, inv_desc, inv_fee, inv_walletfee, inv_btnconfirm, inv_browsercountry, invfeetot;
     public static JSONArray mydoctor, hotlinedocs, myconsultation, mybooking, myquery_aaray, doctor_aaray;
     public static JSONObject getTimeZone, prepaid_pack_json;
 
     public static String voxeet_cons_key = "OXEyM3VpZDZjYjVwdg==";
     public static String voxeet_cons_alias_name = "cGY2ZXM2M2ExaGZ1a3JkaWhzOGJzYmVybQ==";
+
+    public static String affiliated_id;
 
     public static int update_alert_days = 2;
 
@@ -78,7 +89,6 @@ public class Model {
 
     public static String Main_Activity_row_cons_tit = "Book for Phone/Video conversation";
     public static String Main_Activity_row_cons_desc = "Discuss with doctors Phone/Video conversation";
-
 
     public static String DoctorProfile_subtitle = "Select your preferences";
     public static String DoctorProfile_opttext1 = "Via Phone Talk";

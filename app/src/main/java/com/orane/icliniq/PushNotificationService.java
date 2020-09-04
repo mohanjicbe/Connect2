@@ -274,7 +274,7 @@ public class PushNotificationService extends GcmListenerService {
             Model.query_launch = "PushNotificationService";
 
         } else {
-            intent = new Intent(this, CenterFabActivity.class);
+            intent = new Intent(this, Connect_Home_Actvity.class);
         }
 
         try {

@@ -976,7 +976,7 @@ public class Invoice_Page_New extends AppCompatActivity {
         if (id == android.R.id.home) {
 
             finishAffinity();
-            Intent i = new Intent(Invoice_Page_New.this, CenterFabActivity.class);
+            Intent i = new Intent(Invoice_Page_New.this, Connect_Home_Actvity.class);
             startActivity(i);
             finish();
 
@@ -1005,7 +1005,7 @@ public class Invoice_Page_New extends AppCompatActivity {
                     doubleBackToExitPressedOnce = false;
 
                     finishAffinity();
-                    Intent i = new Intent(Invoice_Page_New.this, CenterFabActivity.class);
+                    Intent i = new Intent(Invoice_Page_New.this, Connect_Home_Actvity.class);
                     startActivity(i);
                     finish();
 

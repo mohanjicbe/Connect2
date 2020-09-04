@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.orane.icliniq.network.JSONParser;
 import com.orane.icliniq.network.NetCheck;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -69,7 +71,13 @@ public class LoginActivity extends Activity {
     JSONObject login_jsonobj, jsonobj;
     LinearLayout btn_loginmobno, TextView;
     TextView requestreg;
+    ImageView hosp_logo;
     SharedPreferences sharedpreferences;
+
+    public static final String hospital_name = "hospital_name_key";
+    public static final String hospital_domain = "hospital_domain_key";
+    public static final String hospital_logo = "hospital_domain_key";
+    public static final String base_url = "base_url_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +87,20 @@ public class LoginActivity extends Activity {
         FlurryAgent.onPageView();
         //------------ Initialization ---------------------------------------
 
+        //------------------------------------------------------------------------------------------
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String hospital_name_text = sharedpreferences.getString(hospital_name, "");
+        String hospital_domain_text = sharedpreferences.getString(hospital_domain, "");
+        String hospital_logo_text = sharedpreferences.getString(hospital_logo, "");
+        String base_url_text = sharedpreferences.getString(base_url, "");
 
+        Model.hosp_name = hospital_name_text;
+        Model.hosp_domain = hospital_domain_text;
+        Model.hosp_logo = hospital_logo_text;
+        Model.BASE_URL = base_url_text;
+        //------------------------------------------------------------------------------------------
+
+        hosp_logo = findViewById(R.id.hosp_logo);
         btnlogin = findViewById(R.id.btnlogin);
         edtemail = findViewById(R.id.edtemail);
         edtpassword = findViewById(R.id.edtpassword);
@@ -88,6 +108,13 @@ public class LoginActivity extends Activity {
         requestreg = findViewById(R.id.requestreg);
         btn_loginmobno = findViewById(R.id.btn_loginmobno);
         //------------ Initialization ---------------------------------------
+
+        try {
+            Picasso.with(LoginActivity.this).load(Model.hosp_logo).placeholder(R.mipmap.hospital_logo).error(R.mipmap.hospital_logo).into(hosp_logo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         Typeface font_bold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         Typeface font_normal = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name);
@@ -204,8 +231,10 @@ public class LoginActivity extends Activity {
                 String password = edtpassword.getText().toString();
 
                 try {
-                    if (uname.equals("")) edtemail.setError("Please enter your mail id or mobile number");
-                    else if (password.equals("")) edtpassword.setError("Please enter your password");
+                    if (uname.equals(""))
+                        edtemail.setError("Please enter your mail id or mobile number");
+                    else if (password.equals(""))
+                        edtpassword.setError("Please enter your password");
                     else {
 
                         login_json = new JSONObject();
@@ -349,7 +378,7 @@ public class LoginActivity extends Activity {
                         t.printStackTrace();
                     }
 
-                    Intent i = new Intent(LoginActivity.this, CenterFabActivity.class);
+                    Intent i = new Intent(LoginActivity.this, Connect_Home_Actvity.class);
                     startActivity(i);
                     finish();
 

@@ -100,7 +100,6 @@
                     android:layout_marginRight="25dp"
                     android:background="@color/grey_400" />
 
-
             </LinearLayout>
 
 

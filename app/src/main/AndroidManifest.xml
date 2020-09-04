@@ -28,7 +28,9 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".SplashActivity"
@@ -71,7 +73,6 @@
 
         </provider>
 
-
         <meta-data
             android:name="applovin.sdk.key"
             android:value="Kdid-IfMS7M48LTEZCTgRKFIoaJPt-gCcOqbgUy8cIDlegzCuRuJn7bZiwzauenU1a4i40rgJ2PykN9bp1vZ8U" />
@@ -82,6 +83,17 @@
 
         <activity
             android:name=".Answeres_Activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Connect_get_started"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Connect_Hosp_Select"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Connect_Home_Actvity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
@@ -97,11 +109,11 @@
         <activity
             android:name=".Voxeet"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".Voxeet_New"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
-
 
         <activity
             android:name=".Invoice_Page_New"
@@ -214,7 +226,6 @@
 
         <activity
             android:name=".Labtest.TestListActivity"
-
             android:theme="@style/AppTheme.NoActionBar" />
 
 
@@ -226,7 +237,6 @@
 
         <activity
             android:name=".Attached_List_Activity"
-
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
@@ -439,10 +449,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-<!--        <activity
-            android:name="com.razorpay.CheckoutActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />-->
+        <!--        <activity
+                    android:name="com.razorpay.CheckoutActivity"
+                    android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+                    android:theme="@style/AppTheme.NoActionBar" />-->
         <!--        <activity
                     android:name="com.paytm.pgsdk.PaytmPGActivity"
                     android:configChanges="keyboardHidden|orientation|keyboard"
@@ -469,6 +479,11 @@
 
         <activity
             android:name=".Terms_WebViewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Connect_hosp_list"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -606,23 +621,23 @@
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
 
-     <!--   <service
-            android:name=".PushNotificationService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
+        <!--   <service
+               android:name=".PushNotificationService"
+               android:exported="false">
+               <intent-filter>
+                   <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+               </intent-filter>
+           </service>
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.orane.docassist" />
-            </intent-filter>
-        </receiver>-->
+           <receiver
+               android:name="com.google.android.gms.gcm.GcmReceiver"
+               android:exported="true"
+               android:permission="com.google.android.c2dm.permission.SEND">
+               <intent-filter>
+                   <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                   <category android:name="com.orane.docassist" />
+               </intent-filter>
+           </receiver>-->
 
         <!--  <receiver
               android:name="com.google.android.gms.analytics.AnalyticsReceiver"

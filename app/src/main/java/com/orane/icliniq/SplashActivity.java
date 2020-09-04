@@ -52,6 +52,12 @@ public class SplashActivity extends FragmentActivity {
     public static final String sp_has_free_follow = "sp_has_free_follow_key";
     public static final String chat_tip = "chat_tip_key";
 
+    public static final String affiliated_id = "affiliated_id_key";
+    public static final String base_url = "base_url_key";
+    public static final String hospital_name = "hospital_name_key";
+    public static final String hospital_domain = "hospital_domain_key";
+    public static final String hospital_logo = "hospital_domain_key";
+
 
     public String uname, country_code_no, country, country_url, str_response, user_id_val, pass, Log_Status;
     Boolean isInternetPresent = false;
@@ -65,57 +71,47 @@ public class SplashActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
 
-        /*requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-*/
-        getWindow().setBackgroundDrawable(null);
-
-/*
-
-        if (ContextCompat.checkSelfPermission(SplashActivity.this,
-                Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this,
-                    Manifest.permission.READ_SMS)) {
-
-                ActivityCompat.requestPermissions(SplashActivity.this,
-                        new String[]{Manifest.permission.READ_SMS}, 1);
-
-                System.out.println("granted-------------1" );
-
-            } else {
-                ActivityCompat.requestPermissions(SplashActivity.this,
-                        new String[]{Manifest.permission.READ_SMS}, 1);
-
-                System.out.println("granted-------------2" );
-            }
-
+        if ((Model.app_vendor_type).equals("SaaS")) {
+            setContentView(R.layout.splash);
+        } else {
+            setContentView(R.layout.splash);
         }
-*/
 
+        getWindow().setBackgroundDrawable(null);
 
 
         //-------- Initialization -----------------------------------------------------
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         app_first_open_status = sharedpreferences.getString(app_first_open, "");
+        Model.id = sharedpreferences.getString(id, "");
         Model.token = sharedpreferences.getString(token, "");
         Model.browser_country = sharedpreferences.getString(browser_country, "");
         Model.email = sharedpreferences.getString(email, "");
         Model.name = sharedpreferences.getString(Name, "");
+        //------------------------------------------------------------------------------------------
 
+        String hospital_name_text = sharedpreferences.getString(hospital_name, "");
+        String hospital_logo_text = sharedpreferences.getString(hospital_logo, "");
+        String hospital_domain_text = sharedpreferences.getString(hospital_domain, "");
+        Model.affiliated_id = hospital_domain_text;
+        Model.BASE_URL = sharedpreferences.getString(base_url, "");
+
+
+
+        System.out.println("MModel.id---------------------" + Model.id);
         System.out.println("MModel.name---------------------" + Model.name);
         System.out.println("Model.email------------------" + Model.email);
         System.out.println("Model.token------------------" + Model.token);
+        System.out.println("Model.affiliated_id------------------" + Model.affiliated_id);
 
-        Model.first_time = "Yes";
+        //Model.first_time = "Yes";
         //-------- Initialization -----------------------------------------------------
 
         //FirebaseApp.initializeApp(getApplicationContext());
 
 
-        try {
+    /*    try {
 
             if (user_id_val != null && !user_id_val.isEmpty() && !user_id_val.equals("null") && !user_id_val.equals("")) {
                 country_url = Model.BASE_URL + "sapp/country?track=true&user_id=" + user_id_val + "&token=" + Model.token;
@@ -130,7 +126,7 @@ public class SplashActivity extends FragmentActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         full_process();
 
@@ -146,7 +142,7 @@ public class SplashActivity extends FragmentActivity {
 
                         //new GetVersionCode().execute();
 
-                        Intent i = new Intent(SplashActivity.this, CenterFabActivity.class);
+                        Intent i = new Intent(SplashActivity.this, Connect_Home_Actvity.class);
                         startActivity(i);
                         finish();
 
@@ -200,24 +196,79 @@ public class SplashActivity extends FragmentActivity {
             uname = sharedpreferences.getString(user_name, "");
             pass = sharedpreferences.getString(password, "");
             Model.browser_country = sharedpreferences.getString(browser_country, "");
+            //Model.affiliated_id = sharedpreferences.getString(affiliated_id, "");
 
             System.out.println("Log_Status-------------" + Log_Status);
             System.out.println("uname-------------" + uname);
             System.out.println("pass-------------" + pass);
             System.out.println(" Model.browser_country-------------" + Model.browser_country);
+            System.out.println(" Model.affiliated_id-------------" + Model.affiliated_id);
 
-            process_code();
 
-/*            if (new NetCheck().netcheck(SplashActivity.this))
+            System.out.println("Model.app_vendor_type------------" + Model.app_vendor_type);
+
+            if ((Model.app_vendor_type).equals("SaaS")) {
+                sass_process_code();
+            } else if ((Model.app_vendor_type).equals("icliniq")) {
                 process_code();
-            else
-                Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();*/
-
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    public void sass_process_code() {
+
+        System.out.println("affiliated_id-----" + Model.affiliated_id);
+        String aff_id = Model.affiliated_id;
+
+
+        System.out.println("Log_Status-----------" + Log_Status);
+
+        try {
+
+            if (Log_Status.equals("1")) {
+
+                if (aff_id != null && !aff_id.isEmpty() && !aff_id.equals("null") && !aff_id.equals("")) {
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent i = new Intent(SplashActivity.this, Connect_Home_Actvity.class);
+                            i.putExtra("aff_id", aff_id);
+                            i.putExtra("id", Model.id);
+                            i.putExtra("token", Model.token);
+                            startActivity(i);
+                            finish();
+
+                        }
+                    }, 3000);
+                } else {
+
+                    Intent i = new Intent(SplashActivity.this, Connect_Hosp_Select.class);
+                    i.putExtra("aff_id", "");
+                    i.putExtra("id", Model.id);
+                    i.putExtra("token", Model.token);
+                    startActivity(i);
+                    finish();
+                }
+
+            } else {
+
+                Intent i = new Intent(SplashActivity.this, Connect_get_started.class);
+                i.putExtra("screen_launch", "splash");
+                startActivity(i);
+                finish();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private class JSON_getCountry extends AsyncTask<String, Void, Boolean> {
 
@@ -326,7 +377,7 @@ public class SplashActivity extends FragmentActivity {
                     @Override
                     public void onClick(View v) {
 
-                        Intent i = new Intent(SplashActivity.this, CenterFabActivity.class);
+                        Intent i = new Intent(SplashActivity.this, Connect_Home_Actvity.class);
                         startActivity(i);
                         finish();
 
@@ -337,7 +388,7 @@ public class SplashActivity extends FragmentActivity {
                 alert.show();
             }
             else{
-                Intent i = new Intent(SplashActivity.this, CenterFabActivity.class);
+                Intent i = new Intent(SplashActivity.this, Connect_Home_Actvity.class);
                 startActivity(i);
                 finish();
             }

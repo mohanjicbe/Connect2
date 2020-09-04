@@ -108,8 +108,9 @@ public class JSONParser {
             sub_url = "sapp/saveBookExt?user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("post_ratting")) {
             sub_url = "sapp/doStarRating?user_id=" + Model.id + "&token=" + Model.token;
+        }else if (post_flag.equals("submit_hosp")) {
+            sub_url = "sapp/addMe2Hospital?user_id=" + Model.id + "&token=" + Model.token;
         }
-
 
         url2 = new URL(Model.BASE_URL + sub_url);
         InputStream is = null;

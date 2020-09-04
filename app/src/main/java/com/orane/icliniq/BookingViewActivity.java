@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.daimajia.easing.linear.Linear;
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
-import com.kissmetrics.sdk.KISSmetricsAPI;
 import com.orane.icliniq.Model.Model;
 import com.orane.icliniq.expand.ExpandableLayout;
 import com.orane.icliniq.network.JSONParser;
@@ -107,7 +106,6 @@ public class BookingViewActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_query_lab)).setTypeface(font_bold);
 
         try {
-            Model.kiss.record("android.Patient.BookingView");
             FlurryAgent.onPageView();
         } catch (Exception ee) {
             System.out.println("Exception-----------" + ee.toString());
@@ -124,10 +122,6 @@ public class BookingViewActivity extends AppCompatActivity {
 
         full_process();
 
-        //-------------------------------------------
-        Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-        Model.kiss.record("android.patient.Booking_View");
-        //-------------------------------------------
 
 
         btn_attach.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +132,6 @@ public class BookingViewActivity extends AppCompatActivity {
                 intent.putExtra("item_id", booking_id);
                 intent.putExtra("item_type", "booking");
                 startActivity(intent);
-
 
             }
         });

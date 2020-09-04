@@ -308,7 +308,7 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), Terms_WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/terms?nolayout=1");
+                i.putExtra("url", Model.Basic_server + "/p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -321,7 +321,7 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), Terms_WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
+                i.putExtra("url", Model.Basic_server + "p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);

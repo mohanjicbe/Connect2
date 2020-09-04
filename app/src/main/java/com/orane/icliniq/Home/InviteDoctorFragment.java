@@ -157,11 +157,6 @@ public class InviteDoctorFragment extends AAH_FabulousFragment {
         });
 
 
-
-
-
-
-
         //params to set
         setAnimationDuration(600); //optional; default 500ms
         setPeekHeight(400); // optional; default 400dp

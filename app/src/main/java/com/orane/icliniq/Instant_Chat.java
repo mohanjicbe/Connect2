@@ -64,7 +64,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
     TextView tv_fee1, tvdocname, tv_strprice, tv_soid, tvtit, tvfquery;
     TextView tv_fee11, tv_tooltit, tv_editbutton, tv_spec_name;
     Button btn_icq100, btn_continue, btn_icq50;
-    public String dob_val,rel_val, inf_for, doc_id, icq100_id_val, inv_id, inv_fee, inv_strfee, qid, draft_qid, query_txt, str_fees;
+    public String dob_val, rel_val, inf_for, doc_id, icq100_id_val, inv_id, inv_fee, inv_strfee, qid, draft_qid, query_txt, str_fees;
     public JSONObject json_family_new, jsonobj_icq100, jsonobj_icq50, docprof_jsonobj, json_getfee, jsonobj_prepinv, json, jsonobj;
     public String plan_id, Log_Status, fee_val_text, fee_str_text, spec_val, editbutton_txt, soid_val;
     Spinner spinner_height, spinner_weight, spinner_title;
@@ -303,7 +303,6 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-
         //------------- Get Fees ---------------------------
         edt_query.setHint(Html.fromHtml("Please Type your health query here..<br><br>Eg: I have hurt my leg as a cupboard fell on it, and I have a bruise that is around 20 cm in diameter. the hardness is still there. Why is the hardness not going away? Is it normal?"));
 
@@ -415,52 +414,60 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                         if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("") && !(Model.id).equals("null")) {
 
-                            try {
-                                String query_str = edt_query.getText().toString();
+                            if (radio_id != null && !radio_id.isEmpty() && !radio_id.equals("null") && !radio_id.equals("") && !radio_id.equals("0")) {
 
-                                if ((query_str.length()) > 0) {
+                                try {
+                                    String query_str = edt_query.getText().toString();
+
+                                    if ((query_str.length()) > 0) {
 
                                    /* String spintext = spinner_speciality.getSelectedItem().toString();
                                     spec_val = spec_map.get(spintext);*/
 
-                                    String spintext = tv_spec_name.getText().toString();
+                                        String spintext = tv_spec_name.getText().toString();
 
-                                    spec_val = Model.select_spec_val;
+                                        spec_val = Model.select_spec_val;
 
-                                    query_txt = URLEncoder.encode((edt_query.getText().toString()), "UTF-8");
-                                    json = new JSONObject();
-                                    json.put("query", (edt_query.getText().toString()));
+                                        query_txt = URLEncoder.encode((edt_query.getText().toString()), "UTF-8");
+                                        json = new JSONObject();
+                                        json.put("query", (edt_query.getText().toString()));
 
-                                    //---------------------------------------------------------
-                                    if (spintext.equals("Choose speciality (optional)"))
-                                        spec_val = "0";
-                                    if (spintext.length() <= 0)
-                                        spec_val = "0";
-                                    //---------------------------------------------------------
+                                        //---------------------------------------------------------
+                                        if (spintext.equals("Choose speciality (optional)"))
+                                            spec_val = "0";
+                                        if (spintext.length() <= 0)
+                                            spec_val = "0";
+                                        //---------------------------------------------------------
 
-                                    System.out.println("spec_val-------------------" + spec_val);
-                                    json.put("is_icq100", "1");
-                                    json.put("speciality", spec_val);
-                                    json.put("doctor_id", doc_id);
-                                    json.put("pqid", "0");
-                                    json.put("qid", "0");
+                                        System.out.println("spec_val-------------------" + spec_val);
+                                        json.put("is_icq100", "1");
+                                        json.put("speciality", spec_val);
+                                        json.put("doctor_id", doc_id);
+                                        json.put("pqid", "0");
+                                        json.put("qid", "0");
+                                        json.put("fp_id", radio_id);
 
-                                    inf_for = "icq100";
-                                    new JSONPostQuery().execute(json);
+                                        inf_for = "icq100";
+                                        new JSONPostQuery().execute(json);
 
-                                    //------------ Google firebase Analitics-----------------------------------------------
-                                    Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                                    Bundle params = new Bundle();
-                                    params.putString("user_id", Model.id);
-                                    Model.mFirebaseAnalytics.logEvent("icq100hrs_Query_Post", params);
-                                    //------------ Google firebase Analitics----------------------------------------------
+                                        //------------ Google firebase Analitics-----------------------------------------------
+                                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                                        Bundle params = new Bundle();
+                                        params.putString("user_id", Model.id);
+                                        Model.mFirebaseAnalytics.logEvent("icq100hrs_Query_Post", params);
+                                        //------------ Google firebase Analitics----------------------------------------------
 
-                                } else
-                                    edt_query.setError("Please enter your query");
+                                    } else
+                                        edt_query.setError("Please enter your query");
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                Toast.makeText(Instant_Chat.this, "Please select a family profile", Toast.LENGTH_LONG).show();
                             }
+
                         } else {
                             // relogin();
                         }
@@ -484,51 +491,57 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
 
                         if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("") && !(Model.id).equals("null")) {
 
-                            try {
-                                String query_str = edt_query.getText().toString();
+                            if (radio_id != null && !radio_id.isEmpty() && !radio_id.equals("null") && !radio_id.equals("") && !radio_id.equals("0")) {
 
-                                if ((query_str.length()) > 0) {
+                                try {
+                                    String query_str = edt_query.getText().toString();
+
+                                    if ((query_str.length()) > 0) {
 
                                     /*String spintext = spinner_speciality.getSelectedItem().toString();
                                     spec_val = spec_map.get(spintext);*/
 
-                                    String spintext = tv_spec_name.getText().toString();
+                                        String spintext = tv_spec_name.getText().toString();
 
-                                    spec_val = Model.select_spec_val;
-                                    System.out.println("Saving spec_val---------- " + spec_val);
+                                        spec_val = Model.select_spec_val;
+                                        System.out.println("Saving spec_val---------- " + spec_val);
 
-                                    query_txt = URLEncoder.encode((edt_query.getText().toString()), "UTF-8");
-                                    json = new JSONObject();
-                                    json.put("query", (edt_query.getText().toString()));
+                                        query_txt = URLEncoder.encode((edt_query.getText().toString()), "UTF-8");
+                                        json = new JSONObject();
+                                        json.put("query", (edt_query.getText().toString()));
 
-                                    //---------------------------------------------------------
-                                    if (spintext.equals("Choose speciality (optional)"))
-                                        spec_val = "0";
-                                    if (spintext.length() <= 0)
-                                        spec_val = "0";
-                                    //---------------------------------------------------------
+                                        //---------------------------------------------------------
+                                        if (spintext.equals("Choose speciality (optional)"))
+                                            spec_val = "0";
+                                        if (spintext.length() <= 0)
+                                            spec_val = "0";
+                                        //---------------------------------------------------------
 
-                                    System.out.println("spec_val-------------------" + spec_val);
-                                    json.put("is_icq100", "2");
-                                    json.put("speciality", spec_val);
-                                    json.put("doctor_id", doc_id);
-                                    json.put("pqid", "0");
-                                    json.put("qid", "0");
+                                        System.out.println("spec_val-------------------" + spec_val);
+                                        json.put("is_icq100", "2");
+                                        json.put("speciality", spec_val);
+                                        json.put("doctor_id", doc_id);
+                                        json.put("pqid", "0");
+                                        json.put("qid", "0");
+                                        json.put("fp_id", radio_id);
 
-                                    inf_for = "icq50";
-                                    new JSONPostQuery().execute(json);
-                                    //------------ Google firebase Analitics-----------------------------------------------
-                                    Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                                    Bundle params = new Bundle();
-                                    params.putString("user_id", Model.id);
-                                    Model.mFirebaseAnalytics.logEvent("icq100hrs_Query_Post", params);
-                                    //------------ Google firebase Analitics----------------------------------------------
+                                        inf_for = "icq50";
+                                        new JSONPostQuery().execute(json);
+                                        //------------ Google firebase Analitics-----------------------------------------------
+                                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                                        Bundle params = new Bundle();
+                                        params.putString("user_id", Model.id);
+                                        Model.mFirebaseAnalytics.logEvent("icq100hrs_Query_Post", params);
+                                        //------------ Google firebase Analitics----------------------------------------------
 
-                                } else
-                                    edt_query.setError("Please enter your query");
+                                    } else
+                                        edt_query.setError("Please enter your query");
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Toast.makeText(Instant_Chat.this, "Please select a family profile", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             // relogin();
@@ -631,15 +644,12 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                 tv_spec_name.setText(Model.select_specname);
                 img_remove.setVisibility(View.VISIBLE);
             }
+        } else if ((Model.query_launch).equals("SomeOneEdit")) {
+
+            Model.query_launch = "";
+            apply_relaships_radio(Model.family_list);
+
         }
-
-/*
-        //------------------ Button Animation -------------------------
-        Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shakeanim);
-        btn_submit.startAnimation(shake);
-        //------------------ Button Animation -------------------------
-*/
-
     }
 
     private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
@@ -704,7 +714,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                     } else {
                         Toast.makeText(Instant_Chat.this, "Something went wrong. Please go back and try again..!", Toast.LENGTH_LONG).show();
 
-/*                        Intent intent = new Intent(Instant_Chat.this, CenterFabActivity.class);
+/*                        Intent intent = new Intent(Instant_Chat.this, Connect_Home_Actvity.class);
                         startActivity(intent);*/
                         finish();
 
@@ -1582,7 +1592,7 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                                     break;
                                 }
                                 case "Myself": {
-                                   // ask_someone("myself");
+                                    // ask_someone("myself");
 
                                     Intent intent = new Intent(Instant_Chat.this, SomeoneEdit_Dialog.class);
                                     intent.putExtra("add_type", "myself");
@@ -4112,7 +4122,6 @@ public class Instant_Chat extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("height_val", height_val);
                 intent.putExtra("weight_val", weight_val);
                 startActivity(intent);
-
 
 
             } catch (Exception e) {

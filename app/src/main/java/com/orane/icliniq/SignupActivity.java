@@ -1466,7 +1466,7 @@ public class SignupActivity extends AppCompatActivity {
                             //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
                             finishAffinity();
-                            Intent i = new Intent(SignupActivity.this, CenterFabActivity.class);
+                            Intent i = new Intent(SignupActivity.this, Connect_Home_Actvity.class);
                             startActivity(i);
                             finish();
                             //-----------------------------------------------------*/

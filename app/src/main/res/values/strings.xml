@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iCliniq</string>
+    <string name="app_name">iCliniq-Connect</string>
 
     <string name="btn_pick">Single Pick From Gallery</string>
     <string name="btn_pick_mul"> Multiple Pick From Gallery</string>

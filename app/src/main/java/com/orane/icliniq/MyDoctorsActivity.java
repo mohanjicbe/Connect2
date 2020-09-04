@@ -479,8 +479,8 @@ public class MyDoctorsActivity extends BaseActivity implements ObservableScrollV
         @Override
         protected Void doInBackground(String... params) {
             try {
-               // str_response = new JSONParser().getJSONString(params[0]);
-                new JSONParser().getJSONString2("");
+               str_response = new JSONParser().getJSONString(params[0]);
+                //new JSONParser().getJSONString2("");
 
                 System.out.println("str_response--------------" + str_response);
 

@@ -183,16 +183,6 @@ public class Answeres_Activity extends AppCompatActivity implements ObservableSc
                 Model.curmedi = "";
                 Model.pastmedi = "";
                 Model.labtest = "";
-                Noyyal Packings and Paper Products
-                -----------------
-                1. Company Logo, Visiting card, Broucher, Letter Pad, Seal,
-                2. Company RC, Bank A/c, Accounts Note,
-                3.
-                Marketting Tac ticks
-                ----------------------
-                1. Advertise in Noyyal Media
-                2. Paid Ads in facebook
-                3.
 
                 Model.query_cache = "";
                 Model.upload_files = "";

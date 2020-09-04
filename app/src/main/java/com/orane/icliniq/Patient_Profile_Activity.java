@@ -917,7 +917,7 @@ public class Patient_Profile_Activity extends AppCompatActivity implements
                             //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
                             finishAffinity();
-                            Intent i = new Intent(Patient_Profile_Activity.this, CenterFabActivity.class);
+                            Intent i = new Intent(Patient_Profile_Activity.this, Connect_Home_Actvity.class);
                             startActivity(i);
                             finish();
                             //-----------------------------------------------------*/

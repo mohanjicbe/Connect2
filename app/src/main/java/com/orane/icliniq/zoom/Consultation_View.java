@@ -240,7 +240,7 @@ public class Consultation_View extends AppCompatActivity implements Constants, Z
 		/*btn_joinvideocons.setOnClickListener(new View.OnClickListener() {
             @Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, com.orane.icliniq.zoom.CenterFabActivity.class);
+				Intent intent = new Intent(MainActivity.this, com.orane.icliniq.zoom.Connect_Home_Actvity.class);
 				startActivity(intent);
 			}
 		});*/

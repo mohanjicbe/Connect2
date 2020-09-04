@@ -607,7 +607,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     Intent intent = new Intent(getActivity(), DoctorsListActivity.class);
-                    //Intent intent = new Intent(getActivity(), Home_CenterFabActivity.class);
+                    //Intent intent = new Intent(getActivity(), Home_Connect_Home_Actvity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 } catch (Exception e) {

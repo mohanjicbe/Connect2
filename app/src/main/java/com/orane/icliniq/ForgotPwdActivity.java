@@ -797,7 +797,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
                     }
 
                     ((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
-                    Intent i = new Intent(ForgotPwdActivity.this, CenterFabActivity.class);
+                    Intent i = new Intent(ForgotPwdActivity.this, Connect_Home_Actvity.class);
                     startActivity(i);
                     finish();
 

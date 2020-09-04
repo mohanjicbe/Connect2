@@ -111,7 +111,7 @@ public class NotificationViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(NotificationViewActivity.this, CenterFabActivity.class);
+                Intent i = new Intent(NotificationViewActivity.this, Connect_Home_Actvity.class);
                 startActivity(i);
                 finish();
 

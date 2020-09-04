@@ -206,7 +206,6 @@ public class Ratting_activity extends AppCompatActivity {
                     json_ratting.put("user_2_rate", doctor_id);
                     json_ratting.put("rating", ratting_val);
 
-
                     //--------------------------
                     json_inner = new JSONObject();
 

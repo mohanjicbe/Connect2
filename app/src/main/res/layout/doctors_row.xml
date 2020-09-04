@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="fill_parent"
@@ -28,7 +27,6 @@
                 android:paddingBottom="0dp"
                 card_view:cardCornerRadius="5dp"
                 card_view:contentPadding="0dp">
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -123,12 +121,12 @@
 
                                             <RatingBar
                                                 android:id="@+id/ratingBar"
+                                                style="@style/Widget.AppCompat.RatingBar.Small"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
+                                                android:layout_gravity="left|center"
                                                 android:layout_marginTop="2dp"
                                                 android:isIndicator="false"
-                                                android:layout_gravity="left|center"
-                                                style="@style/Widget.AppCompat.RatingBar.Small"
                                                 app:layout_constraintEnd_toEndOf="parent"
                                                 app:layout_constraintStart_toStartOf="parent"
                                                 app:layout_constraintTop_toTopOf="parent" />
@@ -218,7 +216,6 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginLeft="10dp"
-                                                android:onClick="onClick"
                                                 android:visibility="gone">
 
                                                 <ImageView
@@ -245,8 +242,6 @@
                                                     android:layout_gravity="center_vertical"
                                                     android:padding="8dp"
                                                     android:src="@mipmap/share_grey_new" />
-
-
 
                                                 <TextView
                                                     android:id="@+id/tvdocname_new"
@@ -282,7 +277,6 @@
                                                 android:textSize="12sp"
                                                 android:textStyle="bold"
                                                 android:visibility="gone" />
-
 
                                             <TextView
                                                 android:layout_width="wrap_content"
@@ -455,7 +449,6 @@
                                     android:layout_marginRight="10dp"
                                     android:background="@drawable/button_rounded"
                                     android:fontFamily="sans-serif-medium"
-                                    android:onClick="onClick"
                                     android:paddingLeft="5dp"
                                     android:paddingRight="5dp"
                                     android:text="View Plan"

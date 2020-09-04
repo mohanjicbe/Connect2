@@ -91,12 +91,12 @@ public class ThankyouActivity extends AppCompatActivity {
                         finish();
                     } else if (type_val.equals("subscription")) {
                         finishAffinity();
-                        Intent intent = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent intent = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(intent);
                         finish();
                     } else if (type_val.equals("prepaid")) {
                         finishAffinity();
-                        Intent intent = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent intent = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(intent);
                         finish();
                     } else if (type_val.equals("icq100")) {
@@ -104,7 +104,7 @@ public class ThankyouActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        //Intent intent = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        //Intent intent = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         //startActivity(intent);
                         finish();
                     }
@@ -129,7 +129,7 @@ public class ThankyouActivity extends AppCompatActivity {
                         startActivity(i);
                         finish();
                     } else {
-                        Intent intent = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent intent = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(intent);
                         finish();
                     }*/
@@ -144,12 +144,12 @@ public class ThankyouActivity extends AppCompatActivity {
                         finish();
                     } else if (type_val.equals("subscription")) {
                         finishAffinity();
-                        Intent i = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent i = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(i);
                         finish();
                     } else if (type_val.equals("prepaid")) {
                         finishAffinity();
-                        Intent i = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent i = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(i);
                         finish();
                     } else if (type_val.equals("icq100")) {
@@ -158,7 +158,7 @@ public class ThankyouActivity extends AppCompatActivity {
                         startActivity(i);
                         finish();
                     } else {
-                        Intent intent = new Intent(ThankyouActivity.this, CenterFabActivity.class);
+                        Intent intent = new Intent(ThankyouActivity.this, Connect_Home_Actvity.class);
                         startActivity(intent);
                         finish();
                     }

@@ -200,7 +200,7 @@ public class OTPActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
 
                     finishAffinity();
-                    Intent i = new Intent(OTPActivity.this, CenterFabActivity.class);
+                    Intent i = new Intent(OTPActivity.this, Connect_Home_Actvity.class);
                     startActivity(i);
                     finish();
 

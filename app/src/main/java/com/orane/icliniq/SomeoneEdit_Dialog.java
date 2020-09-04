@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class SomeoneEdit_Dialog extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener {
 
+    RadioGroup radgrp_gender;
     RadioButton radio_male, radio_female, radio_thirdgender;
     TextView tv_tooltit, tv_fee11, tv_fee1, tv_name_title, relation_title, tv_spec_name;
     TextView tvdocname, weight_title, height_title, tvqfee, tvtit, tvfquery, tvprice;
@@ -119,7 +121,7 @@ public class SomeoneEdit_Dialog extends AppCompatActivity implements
         btn_submit = findViewById(R.id.btn_submit);
         final EditText edt_name = findViewById(R.id.edt_name);
         final MaterialEditText edt_age = findViewById(R.id.edt_age);
-        //final RadioGroup radgrp_gender = (RadioGroup) findViewById(R.id.radgrp_gender);
+        radgrp_gender = (RadioGroup) findViewById(R.id.radgrp_gender);
         radio_male = findViewById(R.id.radio_male);
         radio_female = findViewById(R.id.radio_female);
         radio_thirdgender = findViewById(R.id.radio_thirdgender);
@@ -151,16 +153,13 @@ public class SomeoneEdit_Dialog extends AppCompatActivity implements
         }
         //---------------------------------------
 
-        if (dob_val != null && !dob_val.isEmpty() && !dob_val.equals("null") && !dob_val.equals("")){
+        if (dob_val != null && !dob_val.isEmpty() && !dob_val.equals("null") && !dob_val.equals("")) {
             btn_date.setText(dob_val);
             cons_select_date = dob_val;
-        }
-        else{
+        } else {
             btn_date.setText("Please select your DOB");
             cons_select_date = "";
         }
-
-
 
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
@@ -2584,6 +2583,60 @@ public class SomeoneEdit_Dialog extends AppCompatActivity implements
                 rel_name = select_text;
 
                 relation_title.setText(rel_name);
+                System.out.println("rel_val-------" + rel_val);
+
+                switch (rel_val) {
+
+                    case "1":
+                        break;
+                    case "2":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val2-------" + rel_val);
+                        break;
+                    case "3":
+                        radio_female.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "4":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "5":
+                        radio_female.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "6":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "7":
+                        radio_female.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "8":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "9":
+                        radio_female.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "10":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "11":
+                        radio_male.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+                    case "12":
+                        radio_female.setChecked(true);
+                        System.out.println("rel_val3-------" + rel_val);
+                        break;
+
+                }
+
+
             }
         });
         builderSingle.show();
@@ -2689,5 +2742,29 @@ public class SomeoneEdit_Dialog extends AppCompatActivity implements
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
+      /*  public void hashmap_relation() {
+            gen_map.put("Myself", "1");
+            gen_map.put("Father", "2");
+            gen_map.put("Mother", "3");
+            gen_map.put("Brother", "4");
+            gen_map.put("Sister", "5");
+            gen_map.put("Husband", "6");
+            gen_map.put("Wife", "7");
+            gen_map.put("Son", "8");
+            gen_map.put("Daughter", "9");
+            gen_map.put("Cousin", "10");
+            gen_map.put("Grand Father", "11");
+            gen_map.put("Grand Mother", "12");
+            gen_map.put("Friend", "13");
+            gen_map.put("Others", "14");
+        }*/
 
 }
